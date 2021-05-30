@@ -24,7 +24,7 @@ const formalArgs = function(func) {
 // Broadcasting (handles different shape of data)
 const broadcast = function(f) {
     let argNames = formalArgs(f);
-    let g = f;
+    let g = R.curry(f);
     function h(fs, maybe_b, id) {
         let b_is_Arr = Array.isArray(maybe_b);
         if (b_is_Arr && (fs.length != maybe_b.length)) {
