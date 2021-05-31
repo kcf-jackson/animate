@@ -1,32 +1,48 @@
 #! config(debug = T, rules = basic_rules(), deparsers = dp("basic", "auto"))
 
 #! load_library("dom")
-#! load_library("d3")
-#! load_library("websocket")
+#! load_library("io")
+#! load_script("assets/d3.v5.min.js")
 
 #! load_script("message.R")
 #! load_script("import.R")
 
-#! load_library("ramda")
+#! load_script("assets/ramda.min.js")
 #! load_script("d3_helpers.R")
 #! load_script("assets/broadcast.js")
 #! load_script("assets/d3-symbol-extra.min.js")
 
-build_arg_list <- broadcast(function(x, y, id, size, shape, fill, stroke, stroke_width) {
-  list(x = x, y = y, id = id, size = size, shape = shape, fill = fill,
-       stroke = stroke, `stroke-width` = stroke_width)
-})
-
-
 plot2 <- R6Class(
   "plot2",
   list(
-    # Device
+    # Device -------------------------------------------------------------------
     plot_stack = Array(),
+
+    stack_size = 0,
+
     device = list(width = NULL, height = NULL),
 
-    # ID utility
     id_count = 0,
+
+    player_pointer = -1,
+
+    player_handle = NULL,
+
+    dispatchers = Array(
+      decoder("fn_init_svg",
+              x %=>% (x == "fn_init_svg"),
+              message %=>% JS_device$add_svg(message)),
+      decoder("fn_points",
+              x %=>% (x == "fn_points"),
+              message %=>% JS_device$points(message))
+    ),
+
+    initialize = function(stack_size = 0) {
+      self$stack_size <- stack_size
+      self$player_pointer <- ifelse(stack_size > 0, 0, -1)
+      self
+    },
+
     generate_id = function(prefix, n = 1) {
       res <- Array()
       for (i in seq(1, n)) {
@@ -41,7 +57,7 @@ plot2 <- R6Class(
       res
     },
 
-    # Rendering functions
+    # Rendering functions ------------------------------------------------------
     add_svg = function(param) {
       cw   <- param$cw
       ch   <- param$ch
@@ -124,10 +140,87 @@ plot2 <- R6Class(
         remove()
 
       return(TRUE)
-    }
+    },
 
+    record = function(data) {
+      if (self$stack_size == 0) {
+        return(self$plot_stack)
+      }
+
+      if ((self$stack_size == -1) || (self$plot_stack$length < self$stack_size)) {
+        self$plot_stack$push(data)
+        return(self$plot_stack)
+      }
+
+      if (self$plot_stack$length == self$stack_size) {
+        self$plot_stack$shift()
+        self$plot_stack$push(data)
+        return(self$plot_stack)
+      }
+
+      if (self$plot_stack$length > self$stack_size) {
+        stop("Plot stack exceeded the allocated size. There may be racing issues.")
+      }
+
+      stop("This line should not be reached. Please raise an issue on Github. Your `plot_stack` has size " %+%
+             self$plot_stack$length %+% ", and your allocated `stack_size` is " %+%
+             self$stack_size %+% " (note that -1 corresponds to 'unlimited').")
+    },
+
+    # Control functions --------------------------------------------------------
+    dispatch = function(data) {
+      for (dispatch_fn in self$dispatchers) {
+        if (dispatch_fn$predicate(data$type)) {
+          dispatch_fn$handler(data$message)
+        }
+      }
+      TRUE
+    },
+
+    play = function() {
+      if (self$player_pointer >= 0) {
+        self$dispatch(plot_stack[self$player_pointer])
+        self$player_pointer <- (self$player_pointer + 1) %% self$plot_stack$length
+      }
+      TRUE
+    },
+
+    loop = function() {
+      if (self$player_pointer >= 0) {
+        self$player_handle <- setInterval(function() {
+          self$dispatch(plot_stack[self$player_pointer])
+          self$player_pointer <- (self$player_pointer + 1) %% self$plot_stack$length
+        }, 300)
+        self$player_handle
+      }
+    },
+
+    #' Import the plot setting
+    #' @param setting A JSON object
+    import = function(setting) {
+      self$plot_stack <- setting$plot_stack
+      self$stack_size <- setting$stack_size
+      self
+    },
+
+    #' Export the plot setting
+    export = function() {
+      setting <- JSON::stringify(list(
+        plot_stack = self$plot_stack,
+        stack_size = self$stack_size
+      ))
+      write(setting, "animate.json")
+    }
   ),
   list()
+)
+
+build_arg_list <- broadcast(
+  function(x, y, id, size, shape, fill, stroke, stroke_width) {
+    list(x = x, y = y, id = id,
+         size = size, shape = shape, fill = fill,
+         stroke = stroke, `stroke-width` = stroke_width)
+  }
 )
 
 cond <- function(selection, f, pred) {
@@ -159,8 +252,12 @@ pch <- function(x) {
   d3::symbolCircle
 }
 
+decoder <- function(name, predicate, handler) {
+  list(name = name, predicate = predicate, handler = handler)
+}
 
-# # Main -------------------------------------------------------------------------
-JS_device <- plot2$new()
+
+# Main -------------------------------------------------------------------------
+# JS_device <- plot2$new()
 # JS_device$add_svg(list(cw=600, ch=400))
 # JS_device$points(list(x=seq(1,10), y=seq(1,10), shape="diamond_square"))

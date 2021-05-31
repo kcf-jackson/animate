@@ -1,30 +1,12 @@
 #! config(debug = F, rules = basic_rules(), deparsers = dp("basic", "d3", "auto"))
 
-# Receive data from R and dispatch according to the data type ------------------
-decoder <- function(name, predicate, handler) {
-  list(name = name, predicate = predicate, handler = handler)
-}
 
-dispatchers <- Array(
-  decoder("fn_init_svg",
-          x %=>% (x == "fn_init_svg"),
-          message %=>% JS_device$add_svg(message)),
-  decoder("fn_points",
-          x %=>% (x == "fn_points"),
-          message %=>% JS_device$points(message))
-)
-
+# Receive data from R and dispatch according to the data type
 ws$onmessage <- function(msg) {
   data <- JSON::parse(msg$data, remap_args)
   # console::log(JSON::stringify(data))
-  JS_device$plot_stack$push(data)
-
-  for (dispatch_fn in dispatchers) {
-    if (dispatch_fn$predicate(data$type)) {
-      dispatch_fn$handler(data$message)
-    }
-  }
-  TRUE
+  JS_device$record(data)
+  dispatch(data)
 }
 
 

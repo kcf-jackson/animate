@@ -27,13 +27,7 @@ d3_style <- R::curry(function(selection, styles) {
 d3_transition <- R::curry(function(selection, transition) {
   s <- selection$transition()
   for (x in Object::keys(transition)) {
-    if (x == "style") {
-      s <- d3_style(s, transition[x])
-    } else if (x == "attr") {
-      s <- d3_attr(s, transition[x])
-    } else {
-      s <- s[x](transition[x])
-    }
+    s <- s[x](transition[x])
   }
   return(s)
 })

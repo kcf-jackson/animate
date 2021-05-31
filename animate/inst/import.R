@@ -8,8 +8,7 @@ seq <- function(from, to, by = 1) {
   }
 
   if (Math::sign(to - from) != Math::sign(by)) {
-    console::log("Cannot go from the first argument to the second arguemnt using a step size given in the third argument")
-    return(NULL)
+    stop("Cannot go from the first argument to the second arguemnt using a step size given in the third argument")
   }
 
   cur <- from + by
