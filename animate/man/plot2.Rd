@@ -42,15 +42,15 @@ exported to generate a standalone plot.}
 \subsection{Method \code{new()}}{
 Constructor of the device
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{plot2$new(use_websocket = TRUE, import, stack_size = -1)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{plot2$new(file, use_websocket = TRUE, stack_size = -1)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{use_websocket}}{TRUE / FALSE; whether to enable websocket connection.}
+\item{\code{file}}{A file path; needed when one wants to detach a plot from R.}
 
-\item{\code{import}}{A file path; needed when one wants to detach a plot from R.}
+\item{\code{use_websocket}}{TRUE / FALSE; whether to enable websocket connection.}
 
 \item{\code{stack_size}}{An integer; the number of commands \code{plot_stack} can hold.
 Use -1 for unlimited number of commands.}

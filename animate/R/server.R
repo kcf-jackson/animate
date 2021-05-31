@@ -21,33 +21,53 @@ plot2 <- R6::R6Class(
     # WebSocket ---------------------------------------------------------------
     #' @description
     #' Constructor of the device
+    #' @param file A file path; needed when one wants to detach a plot from R.
     #' @param use_websocket TRUE / FALSE; whether to enable websocket connection.
-    #' @param import A file path; needed when one wants to detach a plot from R.
     #' @param stack_size An integer; the number of commands `plot_stack` can hold.
     #' Use -1 for unlimited number of commands.
-    initialize = function(use_websocket = TRUE, import, stack_size = -1) {
-      # Start WebSocket connection
-      conn <- sketch::websocket$new()
-      conn$startServer()
-      self$connection <- conn
+    initialize = function(file, use_websocket = TRUE, stack_size = -1) {
       self$stack_size <- stack_size
 
+      # Start WebSocket connection
+      if (use_websocket) {
+        conn <- sketch::websocket$new()
+        conn$startServer()
+        self$connection <- conn
+      }
+
       # Configure the application
-      lines <- system.file("plot.R", package = "animate")
+      lines <- readLines(system.file("plot.R", package = "animate"))
       if (use_websocket) {
         lines <- append(lines, "#! load_library('websocket')", 4)
-      }
-      if (!missing(import)) {
-        import_line <- paste0("#! load_data('", import, "')")
-        lines <- append(lines, import_line, 5)
-
+        lines <- append(lines, "#! load_script('message.R')", 5)
       }
       main <- paste0("JS_device <- plot2$new(", stack_size, ")")
       lines <- append(lines, main)
 
-      f <- tempfile(pattern = "temp_", fileext = ".R")
-      writeLines(lines, f)
-      sketch::source_r(f)
+      # Detach mode
+      if (!missing(file)) {
+        import_line <- paste0("#! load_data('", file, "')")
+        lines <- append(lines, import_line, 5)
+        object_name <- paste0(tools::file_path_sans_ext(basename(file)), "_json")
+        lines <- append(lines, paste0("JS_device$import(", object_name,")"))
+        lines <- append(lines, "JS_device$loop()")
+      }
+
+      # Write to and serve from a temporary folder
+      dir0 <- tempdir()
+      message(paste("The App is served from:", dir0))
+      file.copy(system.file("assets", package = "animate"), dir0, recursive = TRUE)
+      file.copy(system.file("d3_helpers.R", package = "animate"), dir0)
+      file.copy(system.file("import.R", package = "animate"), dir0)
+      file.copy(system.file("message.R", package = "animate"), dir0)
+      temp_file <- file.path(dir0, "plot.R")
+      writeLines(lines, temp_file)
+
+      cur_dir <- getwd()
+      on.exit(setwd(cur_dir))
+
+      setwd(dir0)
+      sketch::source_r("plot.R")
     },
 
     #' @description
@@ -108,13 +128,13 @@ plot2 <- R6::R6Class(
     #' @description
     #' Import an animated plot
     import = function() {
-      self$send(Message("fn_import", list()))
+      self$send(Message("fn_import", list(skip_log = TRUE)))
     },
 
     #' @description
     #' Export an animated plot
     export = function() {
-      self$send(Message("fn_export", list()))
+      self$send(Message("fn_export", list(skip_log = TRUE)))
     }
   ),
   list()

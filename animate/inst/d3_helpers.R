@@ -1,4 +1,4 @@
-#! config(debug = T, rules = basic_rules(), deparsers = dp("basic", "auto"))
+#! config(debug = F, rules = basic_rules(), deparsers = dp("basic", "auto"))
 
 d3_scaleLinear <- function(domain, range) {
   d3::scaleLinear()$domain(domain)$range(range)

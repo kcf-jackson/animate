@@ -4,7 +4,6 @@
 #! load_library("io")
 #! load_script("assets/d3.v5.min.js")
 
-#! load_script("message.R")
 #! load_script("import.R")
 
 #! load_script("assets/ramda.min.js")
@@ -34,12 +33,15 @@ plot2 <- R6Class(
               message %=>% JS_device$add_svg(message)),
       decoder("fn_points",
               x %=>% (x == "fn_points"),
-              message %=>% JS_device$points(message))
+              message %=>% JS_device$points(message)),
+      decoder("fn_export",
+              x %=>% (x == "fn_export"),
+              message %=>% JS_device$export())
     ),
 
     initialize = function(stack_size = 0) {
       self$stack_size <- stack_size
-      self$player_pointer <- ifelse(stack_size > 0, 0, -1)
+      self$player_pointer <- ifelse(self$plot_stack$length > 0, 0, -1)
       self
     },
 
@@ -143,7 +145,7 @@ plot2 <- R6Class(
     },
 
     record = function(data) {
-      if (self$stack_size == 0) {
+      if ((self$stack_size == 0) || (data$type == "fn_export")) {
         return(self$plot_stack)
       }
 
@@ -165,6 +167,8 @@ plot2 <- R6Class(
       stop("This line should not be reached. Please raise an issue on Github. Your `plot_stack` has size " %+%
              self$plot_stack$length %+% ", and your allocated `stack_size` is " %+%
              self$stack_size %+% " (note that -1 corresponds to 'unlimited').")
+
+      TRUE
     },
 
     # Control functions --------------------------------------------------------
@@ -178,9 +182,11 @@ plot2 <- R6Class(
     },
 
     play = function() {
-      if (self$player_pointer >= 0) {
-        self$dispatch(plot_stack[self$player_pointer])
-        self$player_pointer <- (self$player_pointer + 1) %% self$plot_stack$length
+      plot_stack <- self$plot_stack
+      player_pointer <- self$player_pointer
+      if (player_pointer >= 0) {
+        self$dispatch(plot_stack[player_pointer])
+        self$player_pointer <- (player_pointer + 1) %% plot_stack$length
       }
       TRUE
     },
@@ -188,11 +194,12 @@ plot2 <- R6Class(
     loop = function() {
       if (self$player_pointer >= 0) {
         self$player_handle <- setInterval(function() {
-          self$dispatch(plot_stack[self$player_pointer])
+          self$dispatch(self$plot_stack[self$player_pointer])
           self$player_pointer <- (self$player_pointer + 1) %% self$plot_stack$length
+          TRUE
         }, 300)
-        self$player_handle
       }
+      TRUE
     },
 
     #' Import the plot setting
@@ -200,6 +207,7 @@ plot2 <- R6Class(
     import = function(setting) {
       self$plot_stack <- setting$plot_stack
       self$stack_size <- setting$stack_size
+      self$player_pointer <- ifelse(self$plot_stack$length > 0, 0, -1)
       self
     },
 
@@ -208,7 +216,7 @@ plot2 <- R6Class(
       setting <- JSON::stringify(list(
         plot_stack = self$plot_stack,
         stack_size = self$stack_size
-      ))
+      )) %+% "\n"
       write(setting, "animate.json")
     }
   ),

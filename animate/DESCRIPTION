@@ -1,6 +1,6 @@
 Package: animate
 Title: A Web-based Graphics Device For Animated Plots
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     person(given = "Chun Fung",
            family = "Kwok",
@@ -15,3 +15,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports: 
     R6
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr

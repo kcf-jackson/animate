@@ -6,7 +6,7 @@ ws$onmessage <- function(msg) {
   data <- JSON::parse(msg$data, remap_args)
   # console::log(JSON::stringify(data))
   JS_device$record(data)
-  dispatch(data)
+  JS_device$dispatch(data)
 }
 
 
