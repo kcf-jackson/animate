@@ -40,6 +40,6 @@ const broadcast = function(f) {
         ,    init = Array.isArray(fstArgs) ? fstArgs : [fstArgs];
 
         let result = R.reduce(h, init.map(x => g(x)), R.tail(args));
-        return Array.isArray(fstArgs) ? result : result[0];
+        return result;
     };
 };
