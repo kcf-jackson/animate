@@ -34,6 +34,15 @@ plot2 <- R6Class(
       decoder("fn_points",
               x %=>% (x == "fn_points"),
               message %=>% JS_device$points(message)),
+      decoder("fn_lines",
+              x %=>% (x == "fn_lines"),
+            message %=>% JS_device$lines(message)),
+      decoder("fn_image",
+              x %=>% (x == "fn_image"),
+              message %=>% JS_device$image(message)),
+      decoder("fn_text",
+              x %=>% (x == "fn_text"),
+              message %=>% JS_device$text(message)),
       decoder("fn_export",
               x %=>% (x == "fn_export"),
               message %=>% JS_device$export())
@@ -80,6 +89,14 @@ plot2 <- R6Class(
     },
 
     points = function(param) {
+      build_arg_list <- broadcast(
+        function(x, y, id, size, shape, fill, stroke, stroke_width) {
+          list(x = x, y = y, id = id,
+               size = size, shape = shape, fill = fill,
+               stroke = stroke, `stroke-width` = stroke_width)
+        }
+      )
+
       x     <- param$x
       y     <- param$y
       id    <- param$id || self$generate_id("point", x$length)
@@ -129,6 +146,158 @@ plot2 <- R6Class(
       selection$
         enter()$
         append("path") %>%
+        d3_update()
+
+      # Update ----
+      selection %>%
+        cond(d3_transition(ARG, transition), transition) %>%
+        d3_update()
+
+      # Exit ----
+      selection$
+        exit()$
+        remove()
+
+      return(TRUE)
+    },
+
+    image = function(param) {
+      selection <- d3::select("svg")$
+        append("image") %>%
+        d3_attr(param)
+      selection
+    },
+
+    lines = function(param) {
+      build_arg_list <- broadcast(
+        function(id, fill, stroke, stroke_width, stroke_dasharray,
+                 stroke_linejoin, stroke_linecap, stroke_miterlimit) {
+          list(id = id, fill = fill,
+               stroke = stroke,
+               "stroke-width" = stroke_width,
+               "stroke-dasharray" = stroke_dasharray,
+               "stroke-linejoin" = stroke_linejoin,
+               "stroke-linecap" = stroke_linecap,
+               "stroke-miterlimit" = stroke_miterlimit)
+        }
+      )
+
+      x  <- param$x
+      y  <- param$y
+      id <- param$id || self$generate_id("lines")
+
+      fill  <- param$fill || "none"
+      stroke <- param$stroke || "black"
+      stroke_width <- param["stroke-width"] || 1
+      stroke_dasharray <- param["stroke-dasharray"]
+      stroke_linejoin <- param["stroke-linejoin"] || "miter"
+      stroke_linecap <- param["stroke-linecap"] || "butt"
+      stroke_miterlimit <- param["miterlimit"] || 4
+
+      attributes <- param$attr
+      styles <- param$style
+      transition <- param$transition
+
+      xlim <- param$xlim || range(x)
+      ylim <- param$ylim || range(y)
+
+      # Set auxiliary variables ----
+      ARG <- R::`__`
+      data0 <- build_arg_list(id, fill, stroke, stroke_width,
+                              stroke_dasharray, stroke_linejoin,
+                              stroke_linecap, stroke_miterlimit)
+      cw <- self$device$width
+      ch <- self$device$height
+      ext <- Array(0.05, 0.95)
+
+      # Scale ----
+      x_scale <- d3_scaleLinear(domain = xlim, range = ext$map(~.x * cw))
+      y_scale <- d3_scaleLinear(domain = ylim, range = ext$map(~.x * ch))
+      line_data <- R::zip(x$map(d %=>% x_scale(d)),
+                          y$map(d %=>% y_scale(d)))
+
+      # Main update ----
+      selection <- d3::select("svg")$
+        selectAll("path")$
+        data(data0)
+
+      d3_update <- function(s) {
+        s$attr("id", d %=>% d$id)$
+          attr("d", d3::line()(line_data))$
+          style("stroke-width", d %=>% d["stroke-width"])$
+          style("stroke", d %=>% d$stroke)$
+          style("fill", d %=>% d$fill) %>%
+          cond(d3_attr(ARG, attributes), attributes) %>%
+          cond(d3_style(ARG, styles), styles)
+      }
+
+      # Enter ----
+      selection$
+        enter()$
+        append("path") %>%
+        d3_update()
+
+      # Update ----
+      selection %>%
+        cond(d3_transition(ARG, transition), transition) %>%
+        d3_update()
+
+      # Exit ----
+      selection$
+        exit()$
+        remove()
+
+      return(TRUE)
+    },
+
+    text = function(param) {
+      build_arg_list <- broadcast(
+        function(x, y, text, id) {
+          list(x = x, y = y, text = text, id = id)
+        }
+      )
+
+      x     <- param$x
+      y     <- param$y
+      text  <- param$text
+      id    <- param$id || self$generate_id("lines", x$length)
+
+      attributes <- param$attr
+      styles <- param$style
+      transition <- param$transition
+
+      xlim <- param$xlim || range(x)
+      ylim <- param$ylim || range(y)
+
+      # Set auxiliary variables ----
+      ARG <- R::`__`
+      data0 <- build_arg_list(x, y, text, id)
+      cw <- self$device$width
+      ch <- self$device$height
+      ext <- Array(0.05, 0.95)
+
+      # Scale ----
+      x_scale <- d3_scaleLinear(domain = xlim, range = ext$map(~.x * cw))
+      y_scale <- d3_scaleLinear(domain = ylim, range = ext$map(~.x * ch))
+
+      # Main update ----
+      selection <- d3::select("svg")$
+        selectAll("text")$
+        data(data0)
+
+      d3_update <- function(s) {
+        s$attr("id", d %=>% d$id)$
+          attr("x", d %=>% x_scale(d$x))$
+          attr("y", d %=>% y_scale(d$y))$
+          text(d %=>% d$text) %>%
+          cond(d3_attr(ARG, attributes), attributes) %>%
+          cond(d3_style(ARG, styles), styles)
+      }
+
+      # Enter ----
+      selection$
+        enter()$
+        append("text") %>%
         d3_update()
 
       # Update ----
@@ -221,14 +390,6 @@ plot2 <- R6Class(
     }
   ),
   list()
-)
-
-build_arg_list <- broadcast(
-  function(x, y, id, size, shape, fill, stroke, stroke_width) {
-    list(x = x, y = y, id = id,
-         size = size, shape = shape, fill = fill,
-         stroke = stroke, `stroke-width` = stroke_width)
-  }
 )
 
 cond <- function(selection, f, pred) {

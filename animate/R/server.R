@@ -126,6 +126,16 @@ plot2 <- R6::R6Class(
     },
 
     #' @description
+    #' Add background image to a plot
+    #' @param href The link to the image.
+    #' @param width The width of the image.
+    #' @param height Th height of the image.
+    #' @param ... Additional graphical parameters.
+    image = function(href, width, height, ...) {
+      self$send(Message("fn_image", list(href = href, width = width, height = height, ...)))
+    },
+
+    #' @description
     #' Import an animated plot
     import = function() {
       self$send(Message("fn_import", list(skip_log = TRUE)))
