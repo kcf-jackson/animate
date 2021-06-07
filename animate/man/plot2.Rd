@@ -31,6 +31,7 @@ exported to generate a standalone plot.}
 \item \href{#method-points}{\code{plot2$points()}}
 \item \href{#method-lines}{\code{plot2$lines()}}
 \item \href{#method-text}{\code{plot2$text()}}
+\item \href{#method-image}{\code{plot2$image()}}
 \item \href{#method-import}{\code{plot2$import()}}
 \item \href{#method-export}{\code{plot2$export()}}
 \item \href{#method-clone}{\code{plot2$clone()}}
@@ -165,6 +166,29 @@ Add text to a plot
 \item{\code{y}}{The y coordinates of the plot.}
 
 \item{\code{labels}}{The text.}
+
+\item{\code{...}}{Additional graphical parameters.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-image"></a>}}
+\if{latex}{\out{\hypertarget{method-image}{}}}
+\subsection{Method \code{image()}}{
+Add background image to a plot
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{plot2$image(href, width, height, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{href}}{The link to the image.}
+
+\item{\code{width}}{The width of the image.}
+
+\item{\code{height}}{Th height of the image.}
 
 \item{\code{...}}{Additional graphical parameters.}
 }
