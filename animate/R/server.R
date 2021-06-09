@@ -88,13 +88,13 @@ plot2 <- R6::R6Class(
     # Functions ---------------------------------------------------------------
     #' @description
     #' Initialise a SVG element
-    #' @param cw Width of the canvas in pixels.
-    #' @param ch Height of the canvas in pixels.
+    #' @param width Width of the canvas in pixels.
+    #' @param height Height of the canvas in pixels.
     #' @param ... Additional graphical parameters.
     # @param root Character; a selector path to the container of the canvas.
     # @param id Character; the id of the SVG element
-    init = function(cw = 800, ch = 600, ...) {
-      self$send(Message("fn_init_svg", list(cw = cw, ch = ch, ...)))
+    init = function(width = 800, height = 600, ...) {
+      self$send(Message("fn_init_svg", list(width = width, height = height, ...)))
     },
 
     #' @description
@@ -133,6 +133,27 @@ plot2 <- R6::R6Class(
     #' @param ... Additional graphical parameters.
     image = function(href, width, height, ...) {
       self$send(Message("fn_image", list(href = href, width = width, height = height, ...)))
+    },
+
+    #' @description
+    #' Set the active device to a SVG element
+    #' @param selector A character vector; ID of the SVG.
+    set = function(selector) {
+      self$send(Message("fn_set", list(selector = selector)))
+    },
+
+    #' @description
+    #' Remove a SVG element
+    #' @param selector A character vector; ID of an element.
+    remove = function(selector) {
+      self$send(Message("fn_remove", list(selector = selector)))
+    },
+
+    #' @description
+    #' Perform a group of graphical operations to a plot
+    #' @param ... Any number of graphical operations.
+    group = function(...) {
+      self$send(Message("fn_group", c(...)))
     },
 
     #' @description

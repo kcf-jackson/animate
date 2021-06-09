@@ -22,6 +22,8 @@ const formalArgs = function(func) {
 
 
 // Broadcasting (handles different shape of data)
+// Note that broadcast only works for function that has at most 10 arguments.
+// The limitation is due to `Ramda.curry` implementation.
 const broadcast = function(f) {
     let argNames = formalArgs(f);
     let g = R.curry(f);

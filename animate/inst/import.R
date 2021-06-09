@@ -16,8 +16,9 @@ seq <- function(from, to, by = 1) {
     res$push(cur)
     cur <- cur + by
   }
-  return(res)
+  res
 }
 
 range <- R::range2
+
 map2 <- R::map2
