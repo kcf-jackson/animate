@@ -13,11 +13,7 @@ A web-based graphics device
 \describe{
 \item{\code{connection}}{A handle for the WebSocket connection.}
 
-\item{\code{plot_stack}}{A stack to store the processed commands. This can be
-exported to generate a standalone plot.}
-
-\item{\code{stack_size}}{The number of commands \code{plot_stack} can hold. Use
--1 for unlimited number of commands.}
+\item{\code{ready_state}}{The ready state of the connection.}
 }
 \if{html}{\out{</div>}}
 }
@@ -25,13 +21,20 @@ exported to generate a standalone plot.}
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{plot2$new()}}
+\item \href{#method-set_max_stacksize}{\code{plot2$set_max_stacksize()}}
 \item \href{#method-off}{\code{plot2$off()}}
 \item \href{#method-send}{\code{plot2$send()}}
 \item \href{#method-init}{\code{plot2$init()}}
+\item \href{#method-bars}{\code{plot2$bars()}}
+\item \href{#method-plot}{\code{plot2$plot()}}
 \item \href{#method-points}{\code{plot2$points()}}
 \item \href{#method-lines}{\code{plot2$lines()}}
 \item \href{#method-text}{\code{plot2$text()}}
 \item \href{#method-image}{\code{plot2$image()}}
+\item \href{#method-set}{\code{plot2$set()}}
+\item \href{#method-par}{\code{plot2$par()}}
+\item \href{#method-remove}{\code{plot2$remove()}}
+\item \href{#method-clear}{\code{plot2$clear()}}
 \item \href{#method-import}{\code{plot2$import()}}
 \item \href{#method-export}{\code{plot2$export()}}
 \item \href{#method-clone}{\code{plot2$clone()}}
@@ -43,18 +46,35 @@ exported to generate a standalone plot.}
 \subsection{Method \code{new()}}{
 Constructor of the device
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{plot2$new(file, use_websocket = TRUE, stack_size = -1)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{plot2$new(width, height, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{file}}{A file path; needed when one wants to detach a plot from R.}
+\item{\code{width}}{An integer; the width in pixels.}
 
-\item{\code{use_websocket}}{TRUE / FALSE; whether to enable websocket connection.}
+\item{\code{height}}{An integer; the height in pixels.}
 
-\item{\code{stack_size}}{An integer; the number of commands \code{plot_stack} can hold.
-Use -1 for unlimited number of commands.}
+\item{\code{...}}{Additional arguments.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-set_max_stacksize"></a>}}
+\if{latex}{\out{\hypertarget{method-set_max_stacksize}{}}}
+\subsection{Method \code{set_max_stacksize()}}{
+Set the maximum size of the stack
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{plot2$set_max_stacksize(n)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{n}}{The number of commands the plot stack can hold. Use
+-1 for unlimited number of commands.}
 }
 \if{html}{\out{</div>}}
 }
@@ -92,15 +112,63 @@ Send commands to device
 \subsection{Method \code{init()}}{
 Initialise a SVG element
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{plot2$init(cw = 800, ch = 600, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{plot2$init(width = 800, height = 600, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{cw}}{Width of the canvas in pixels.}
+\item{\code{width}}{Width of the canvas in pixels.}
 
-\item{\code{ch}}{Height of the canvas in pixels.}
+\item{\code{height}}{Height of the canvas in pixels.}
+
+\item{\code{...}}{Additional graphical parameters.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-bars"></a>}}
+\if{latex}{\out{\hypertarget{method-bars}{}}}
+\subsection{Method \code{bars()}}{
+Add points to a plot
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{plot2$bars(x, y, w, h, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{The x coordinates of the bars.}
+
+\item{\code{y}}{The y coordinates of the bars.}
+
+\item{\code{w}}{The width of the bars.}
+
+\item{\code{h}}{The height of the bars.}
+
+\item{\code{...}}{Additional graphical parameters.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-plot"></a>}}
+\if{latex}{\out{\hypertarget{method-plot}{}}}
+\subsection{Method \code{plot()}}{
+Generic X-Y plotting
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{plot2$plot(x, y, type = "p", ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{The x coordinates of the data.}
+
+\item{\code{y}}{The y coordinates of the data.}
+
+\item{\code{type}}{Type of the plot; one of 'p' and 'l'.}
 
 \item{\code{...}}{Additional graphical parameters.}
 }
@@ -119,9 +187,9 @@ Add points to a plot
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{x}}{The x coordinates of the plot.}
+\item{\code{x}}{The x coordinates of the points.}
 
-\item{\code{y}}{The y coordinates of the plot.}
+\item{\code{y}}{The y coordinates of the points.}
 
 \item{\code{...}}{Additional graphical parameters.}
 }
@@ -140,9 +208,9 @@ Add line segments / paths to a plot
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{x}}{The x coordinates of the plot.}
+\item{\code{x}}{The x coordinates of the line.}
 
-\item{\code{y}}{The y coordinates of the plot.}
+\item{\code{y}}{The y coordinates of the line.}
 
 \item{\code{...}}{Additional graphical parameters.}
 }
@@ -161,9 +229,9 @@ Add text to a plot
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{x}}{The x coordinates of the plot.}
+\item{\code{x}}{The x coordinates of the text.}
 
-\item{\code{y}}{The y coordinates of the plot.}
+\item{\code{y}}{The y coordinates of the text.}
 
 \item{\code{labels}}{The text.}
 
@@ -194,6 +262,73 @@ Add background image to a plot
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-set"></a>}}
+\if{latex}{\out{\hypertarget{method-set}{}}}
+\subsection{Method \code{set()}}{
+Set the active device to a SVG element
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{plot2$set(selector)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{selector}}{A character vector; ID of the SVG.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-par"></a>}}
+\if{latex}{\out{\hypertarget{method-par}{}}}
+\subsection{Method \code{par()}}{
+Set the graphical parameters
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{plot2$par(parameters)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{parameters}}{The graphical parameters}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-remove"></a>}}
+\if{latex}{\out{\hypertarget{method-remove}{}}}
+\subsection{Method \code{remove()}}{
+Remove a SVG element
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{plot2$remove(selector)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{selector}}{A character vector; ID of an element.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clear"></a>}}
+\if{latex}{\out{\hypertarget{method-clear}{}}}
+\subsection{Method \code{clear()}}{
+Remove all elements of the active SVG element
+#' @description
+#' Perform a group of graphical operations to a plot
+#' @param ... Any number of graphical operations.
+group = function(...) {
+self$send(Message("fn_group", c(...)))
+},
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{plot2$clear()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-import"></a>}}

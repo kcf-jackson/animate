@@ -1,7 +1,10 @@
 #! config(debug = F, rules = basic_rules(), deparsers = dp("basic", "auto"))
 
-d3_scaleLinear <- function(domain, range) {
-  d3::scaleLinear()$domain(domain)$range(range)
+#' One of 'linear', 'power', 'log', 'identity', 'time', 'radial',
+#' 'sequential', 'diverging', ''quantize', 'quantile', 'threshold',
+#' 'band', 'point'
+d3_scale <- function(domain, range, type = "scaleLinear") {
+  d3[type]()$domain(domain)$range(range)
 }
 
 d3_symbol <- function(size, shape) {
@@ -31,6 +34,15 @@ d3_transition <- R::curry(function(selection, transition) {
   }
   return(s)
 })
+
+d3_call <- function(selection, f) {
+  selection$call(f)
+}
+
+d3_extent <- function(x) {
+  if (Array.isArray(x)) return(d3::extent(x))
+  Array(x, x)
+}
 
 translate <- function(x, y) {
   "translate(" %+% x %+% "," %+% y %+% ")"

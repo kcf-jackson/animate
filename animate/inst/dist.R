@@ -2,6 +2,8 @@
 
 #! load_library("dom")
 #! load_library("io")
+#! load_library('websocket')
+#! load_script('message.R')
 #! load_script("assets/d3.v5.min.js")
 
 #! load_script("import.R")
@@ -779,3 +781,4 @@ pch <- function(x) {
 # JS_device <- plot2$new()
 # JS_device$add_svg(list(cw=600, ch=400))
 # JS_device$points(list(x=seq(1,10), y=seq(1,10), shape="diamond_square"))
+JS_device <- plot2$new(0)

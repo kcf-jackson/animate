@@ -10,69 +10,51 @@ plot2 <- R6::R6Class(
     #' @field connection A handle for the WebSocket connection.
     connection = NULL,
 
-    #' @field plot_stack A stack to store the processed commands. This can be
-    #' exported to generate a standalone plot.
-    plot_stack = list(),
-
-    #' @field stack_size The number of commands `plot_stack` can hold. Use
-    #' -1 for unlimited number of commands.
-    stack_size = -1,
+    #' @field ready_state The ready state of the connection.
+    ready_state = 0,
 
     # WebSocket ---------------------------------------------------------------
     #' @description
     #' Constructor of the device
-    #' @param file A file path; needed when one wants to detach a plot from R.
-    #' @param use_websocket TRUE / FALSE; whether to enable websocket connection.
-    #' @param stack_size An integer; the number of commands `plot_stack` can hold.
-    #' Use -1 for unlimited number of commands.
-    initialize = function(file, use_websocket = TRUE, stack_size = -1) {
-      self$stack_size <- stack_size
+    #' @param width An integer; the width in pixels.
+    #' @param height An integer; the height in pixels.
+    #' @param ... Additional arguments.
+    initialize = function(width, height, ...) {
+      args <- append(list(width = width, height = height), list(...))
+      in_handler <- function(x) {
+        msg <- jsonlite::fromJSON(x)
+        if (msg$type == "WebSocket.onopen") {
+          self$ready_state <- 1
+          message("Device is ready.")
+          do.call(self$init, args)
+        }
+      }
 
       # Start WebSocket connection
-      if (use_websocket) {
-        conn <- sketch::websocket$new()
-        conn$startServer()
-        self$connection <- conn
-      }
+      conn <- websocket$new(in_handler = in_handler)
+      conn$startServer()
+      self$connection <- conn
 
-      # Configure the application
-      lines <- readLines(system.file("plot.R", package = "animate"))
-      if (use_websocket) {
-        lines <- append(lines, "#! load_library('websocket')", 4)
-        lines <- append(lines, "#! load_script('message.R')", 5)
-      }
-      main <- paste0("JS_device <- plot2$new(", stack_size, ")")
-      lines <- append(lines, main)
+      # Serve the app
+      app <- system.file("dist/websocket_dist.html", package = "animate")
+      temp <- file.path(tempdir(), "index.html")
+      file.copy(app, temp)
+      viewer <- ifelse(rstudioapi::isAvailable(), rstudioapi::viewer, utils::browseURL)
+      viewer(temp)
+    },
 
-      # Detach mode
-      if (!missing(file)) {
-        import_line <- paste0("#! load_data('", file, "')")
-        lines <- append(lines, import_line, 5)
-        object_name <- paste0(tools::file_path_sans_ext(basename(file)), "_json")
-        lines <- append(lines, paste0("JS_device$import(", object_name,")"))
-        lines <- append(lines, "JS_device$loop()")
-      }
-
-      # Write to and serve from a temporary folder
-      dir0 <- tempdir()
-      message(paste("The App is served from:", dir0))
-      file.copy(system.file("assets", package = "animate"), dir0, recursive = TRUE)
-      file.copy(system.file("d3_helpers.R", package = "animate"), dir0)
-      file.copy(system.file("import.R", package = "animate"), dir0)
-      file.copy(system.file("message.R", package = "animate"), dir0)
-      temp_file <- file.path(dir0, "plot.R")
-      writeLines(lines, temp_file)
-
-      cur_dir <- getwd()
-      on.exit(setwd(cur_dir))
-
-      setwd(dir0)
-      sketch::source_r("plot.R")
+    #' @description
+    #' Set the maximum size of the stack
+    #' @param n The number of commands the plot stack can hold. Use
+    #' -1 for unlimited number of commands.
+    set_max_stacksize = function(n) {
+      self$send(Message("fn_max_stacksize", list(n = n)))
     },
 
     #' @description
     #' Switch off the device; this function closes the WebSocket connection
     off = function() {
+      self$ready_state <- 0
       self$connection$stopServer()
     },
 
@@ -80,9 +62,13 @@ plot2 <- R6::R6Class(
     #' Send commands to device
     #' @param message The message to send to the device.
     send = function(message) {
-      self$connection$ws$send(
-        jsonlite::toJSON(message, auto_unbox = T)
-      )
+      if (self$ready_state == 0) {
+        message("Device is not yet available.")
+      } else {
+        self$connection$ws$send(
+          jsonlite::toJSON(message, auto_unbox = T)
+        )
+      }
     },
 
     # Functions ---------------------------------------------------------------
@@ -99,8 +85,29 @@ plot2 <- R6::R6Class(
 
     #' @description
     #' Add points to a plot
-    #' @param x The x coordinates of the plot.
-    #' @param y The y coordinates of the plot.
+    #' @param x The x coordinates of the bars.
+    #' @param y The y coordinates of the bars.
+    #' @param w The width of the bars.
+    #' @param h The height of the bars.
+    #' @param ... Additional graphical parameters.
+    bars = function(x, y, w, h, ...) {
+      self$send(Message("fn_bars", list(x = x, y = y, w = w, h = h, ...)))
+    },
+
+    #' @description
+    #' Generic X-Y plotting
+    #' @param x The x coordinates of the data.
+    #' @param y The y coordinates of the data.
+    #' @param type Type of the plot; one of 'p' and 'l'.
+    #' @param ... Additional graphical parameters.
+    plot = function(x, y, type = "p", ...) {
+      self$send(Message("fn_plot", list(x = x, y = y, type = type, ...)))
+    },
+
+    #' @description
+    #' Add points to a plot
+    #' @param x The x coordinates of the points.
+    #' @param y The y coordinates of the points.
     #' @param ... Additional graphical parameters.
     points = function(x, y, ...) {
       self$send(Message("fn_points", list(x = x, y = y, ...)))
@@ -108,8 +115,8 @@ plot2 <- R6::R6Class(
 
     #' @description
     #' Add line segments / paths to a plot
-    #' @param x The x coordinates of the plot.
-    #' @param y The y coordinates of the plot.
+    #' @param x The x coordinates of the line.
+    #' @param y The y coordinates of the line.
     #' @param ... Additional graphical parameters.
     lines = function(x, y, ...) {
       self$send(Message("fn_lines", list(x = x, y = y, ...)))
@@ -117,8 +124,8 @@ plot2 <- R6::R6Class(
 
     #' @description
     #' Add text to a plot
-    #' @param x The x coordinates of the plot.
-    #' @param y The y coordinates of the plot.
+    #' @param x The x coordinates of the text.
+    #' @param y The y coordinates of the text.
     #' @param labels The text.
     #' @param ... Additional graphical parameters.
     text = function(x, y, labels, ...) {
@@ -143,6 +150,13 @@ plot2 <- R6::R6Class(
     },
 
     #' @description
+    #' Set the graphical parameters
+    #' @param parameters The graphical parameters
+    par = function(parameters) {
+      self$send(Message("fn_par", parameters))
+    },
+
+    #' @description
     #' Remove a SVG element
     #' @param selector A character vector; ID of an element.
     remove = function(selector) {
@@ -150,11 +164,17 @@ plot2 <- R6::R6Class(
     },
 
     #' @description
-    #' Perform a group of graphical operations to a plot
-    #' @param ... Any number of graphical operations.
-    group = function(...) {
-      self$send(Message("fn_group", c(...)))
+    #' Remove all elements of the active SVG element
+    clear = function() {
+      self$send(Message("fn_clear", list()))
     },
+
+    #' #' @description
+    #' #' Perform a group of graphical operations to a plot
+    #' #' @param ... Any number of graphical operations.
+    #' group = function(...) {
+    #'   self$send(Message("fn_group", c(...)))
+    #' },
 
     #' @description
     #' Import an animated plot

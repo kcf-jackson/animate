@@ -20,6 +20,14 @@ const formalArgs = function(func) {
   return args.split(",").map(x => x.split("=")[0].trim());
 };
 
+const maxLen = function(args) {
+  let lens = args
+    .filter(x => Array.isArray(x))
+    .map(x => x.length);
+
+  if (lens.length === 0) return 1;
+  return lens.reduce((a, b) => Math.max(a, b));
+};
 
 // Broadcasting (handles different shape of data)
 // Note that broadcast only works for function that has at most 10 arguments.
@@ -39,7 +47,7 @@ const broadcast = function(f) {
     return function() {
         let  args = [...arguments]
         , fstArgs = R.head(args)
-        ,    init = Array.isArray(fstArgs) ? fstArgs : [fstArgs];
+        ,    init = Array.isArray(fstArgs) ? fstArgs : Array(maxLen(args)).fill(fstArgs);
 
         let result = R.reduce(h, init.map(x => g(x)), R.tail(args));
         return result;
