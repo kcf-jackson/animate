@@ -3,14 +3,13 @@
 #! load_library("dom")
 #! load_library("io")
 #! load_script("assets/d3.v5.min.js")
-
-#! load_script("import.R")
-
 #! load_script("assets/ramda.min.js")
-#! load_script("d3_helpers.R")
 #! load_script("assets/broadcast.js")
-#! load_script("utils.R")
 #! load_script("assets/d3-symbol-extra.min.js")
+
+#! load_script("d3_helpers.R")
+#! load_script("utils.R")
+#! load_script("http://html2canvas.hertzen.com/dist/html2canvas.min.js")
 
 plot2 <- R6Class(
   "plot2",
@@ -24,14 +23,8 @@ plot2 <- R6Class(
     stack_size = 0,
 
     #' @field active device
-    device = list(selection = NULL, width = NULL, height = NULL),
-
-    #' @field graphical parameters
-    par = list(mai = times(0.1, c(0.82, 0.82, 0.82, 0.82))),
-
-    #' @field A variable for generating IDs.
-    id_count = 0,
-
+    device = list(selection = NULL, width = NULL, height = NULL,
+                  par = list(mai = times(0.1, c(0.82, 0.82, 0.82, 0.82)))),
 
     # Methods-------------------------------------------------------------------
     #' Constructor
@@ -40,32 +33,16 @@ plot2 <- R6Class(
       self
     },
 
-    #' ID generator
-    generate_id = function(prefix, n = 1) {
-      res <- c()
-      for (i in seq(1, n)) {
-        self$id_count <- self$id_count + 1
-        id <- ifelse(prefix, prefix %+% "_" %+% self$id_count, self$id_count)
-        res$push(id)
-      }
-      # Return scalar if the Array is of length 1
-      if (res$length == 1) {
-        return(res[0])
-      }
-      res
-    },
-
     #' Add a SVG element
     add_svg = function(param) {
       root   <- param$root || "body"
-      id     <- param$id || self$generate_id("svg")
+      id     <- param$id || generate_id("svg")
       width  <- param$width
       height <- param$height
       attr   <- param$attr
       style  <- param$style
 
       base_attr <- list(id = id, width = width, height = height)
-
 
       svg0 <- d3::select(Id(id))
       if (svg0$empty()) {
@@ -87,7 +64,7 @@ plot2 <- R6Class(
     plot = function(param) {
       x     <- param$x
       y     <- param$y
-      id    <- param$id || self$generate_id("datum", x$length)
+      id    <- param$id || generate_id("datum", x$length)
       type  <- param$type || "p"
       xlim <- param$xlim || d3::extent(x)
       ylim <- param$ylim || d3::extent(y)
@@ -167,7 +144,7 @@ plot2 <- R6Class(
       scale <- param$scale || "scaleLinear"
       axis  <- param$axis || "axisBottom"
       scale_orient <- ifelse(axis == "axisBottom" || axis == "axisTop", "x", "y")
-      id    <- param$id || self$generate_id(type %+% "-axis")
+      id    <- param$id || generate_id(type %+% "-axis")
       lim   <- param$lim || d3::extent(data)
       transition <- param$transition
 
@@ -219,7 +196,7 @@ plot2 <- R6Class(
       y <- param$y
       w <- param$w
       h <- param$h
-      id     <- param$id || self$generate_id("rect", x$length)
+      id     <- param$id || generate_id("rect", x$length)
       fill   <- param$fill || "black"
       stroke <- param$stroke || "black"
       stroke_width <- param["stroke-width"] || 0
@@ -294,7 +271,7 @@ plot2 <- R6Class(
       # Parameters destructuring ----
       x     <- param$x
       y     <- param$y
-      id    <- param$id || self$generate_id("point", x$length)
+      id    <- param$id || generate_id("point", x$length)
 
       shape <- param$shape || "circle"
       size  <- param$size || 30
@@ -309,11 +286,12 @@ plot2 <- R6Class(
       data0 <- build_arg_list(x, y, id, size, shape, fill, stroke, stroke_width)
 
       # Scale ----
-      scale <- param$scale || "scaleLinear"
-      xlim <- param$xlim || d3::extent(x)
-      ylim <- param$ylim || d3::extent(y)
-      x_scale <- d3_scale(domain = xlim, range = self$range("x"), scale)
-      y_scale <- d3_scale(domain = ylim, range = self$range("y"), scale)
+      scale <- ifelse(param$log, logScale(param$log),
+                      param$scale || list(x = "scaleLinear", y = "scaleLinear"))
+      xlim <- param$xlim || d3_extent(x)
+      ylim <- param$ylim || d3_extent(y)
+      x_scale <- d3_scale(domain = xlim, range = self$range("x"), scale$x)
+      y_scale <- d3_scale(domain = ylim, range = self$range("y"), scale$y)
 
       # Main update ----
       d3_update <- function(s) {
@@ -330,7 +308,7 @@ plot2 <- R6Class(
       # Select ----
       selection <- self$device$selection$
         selectAll("path.points")$
-        filter(d %=>% id$includes(d$id))$
+        filter(has_id(id))$
         data(data0)
 
       # Enter ----
@@ -367,7 +345,7 @@ plot2 <- R6Class(
       width  <- param$width
       height <- param$height
       href   <- param$href
-      id     <- param$id || self$generate_id("image", x$length || 1)
+      id     <- param$id || generate_id("image", x$length || 1)
 
       attributes <- param$attr
       styles <- param$style
@@ -439,7 +417,7 @@ plot2 <- R6Class(
       # Parameters destructuring ----
       x  <- param$x
       y  <- param$y
-      id <- param$id || self$generate_id("lines")
+      id <- param$id || generate_id("lines")
 
       fill  <- param$fill || "none"
       stroke <- param$stroke || "black"
@@ -515,7 +493,7 @@ plot2 <- R6Class(
       x     <- param$x
       y     <- param$y
       text  <- param$text
-      id    <- param$id || self$generate_id("text", x$length)
+      id    <- param$id || generate_id("text", x$length)
 
       attributes <- param$attr
       styles <- param$style
@@ -585,7 +563,7 @@ plot2 <- R6Class(
 
     #' Set graphical parameters
     set_par = function(parameters) {
-      Object::assign(self$par, parameters)
+      Object::assign(self$device$par, parameters)
     },
 
     #' Set active device
@@ -721,10 +699,10 @@ plot2 <- R6Class(
               x %=>% (x == "fn_par"),
               message %=>% JS_device$set_par(message))
     ),
-    bottom = function() { self$par$mai[0] },
-    left   = function() { self$par$mai[1] },
-    top    = function() { self$par$mai[2] },
-    right  = function() { self$par$mai[3] },
+    bottom = function() { self$device$par$mai[0] },
+    left   = function() { self$device$par$mai[1] },
+    top    = function() { self$device$par$mai[2] },
+    right  = function() { self$device$par$mai[3] },
     width  = function() { self$device$width },
     height = function() { self$device$height }
   )
@@ -736,21 +714,29 @@ Decoder <- function(name, predicate, handler) {
   list(name = name, predicate = predicate, handler = handler)
 }
 
-Device <- function(selection, width, height) {
-  list(selection = selection, width = width, height = height)
+Device <- function(selection, width, height,
+                   par = list(mai = times(0.1, c(0.82, 0.82, 0.82, 0.82)))) {
+  list(selection = selection, width = width, height = height, par = par)
 }
 
-Id <- function(x) { "#" %+% x }
-
-parse_px <- function(x) {
-  parseInt(x$replace("px", ""))
+logScale <- function(log) {
+  if (log == "x") return(list(x = "scaleLog", y = "scaleLinear"))
+  if (log == "y") return(list(x = "scaleLinear", y = "scaleLog"))
+  if (log == "xy") return(list(x = "scaleLog", y = "scaleLog"))
+  if (log == "yx") return(list(x = "scaleLog", y = "scaleLog"))
+  stop("Wrong input for the parameter 'log'. It must be 'x', 'y', 'xy' or 'yx'.")
 }
-
-end_string <- function(x) { x %+% "\n"}
 
 cond <- function(selection, f, pred) {
   if (pred) return(selection %>% f())
   return(selection)
+}
+
+has_id <- function(id) {
+  if (!isArray(id)) id <- Array(1)$fill(id)
+  function(d) {
+    d && d$id && id$includes(d$id)
+  }
 }
 
 pch <- function(x) {
