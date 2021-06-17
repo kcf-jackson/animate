@@ -40,10 +40,11 @@ d3_call <- function(selection, f) {
 }
 
 d3_extent <- function(x) {
-  if (Array.isArray(x)) return(d3::extent(x))
-  Array(x, x)
-}
-
-translate <- function(x, y) {
-  "translate(" %+% x %+% "," %+% y %+% ")"
+  if (Array::isArray(x) && x$length > 1) {
+    return(d3::extent(x))
+  }
+  # Scalar or Array of length 1
+  y <- ifelse(Array::isArray(x), x[0], x)
+  if (y == 0) return(Array(-1, 1))
+  d3::extent(Array(0.6 * y, 1.4 * y))
 }
