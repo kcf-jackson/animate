@@ -48,3 +48,8 @@ d3_extent <- function(x) {
   if (y == 0) return(Array(-1, 1))
   d3::extent(Array(0.6 * y, 1.4 * y))
 }
+
+d3_cond <- function(selection, f, pred) {
+  if (pred) return(selection %>% f())
+  return(selection)
+}
