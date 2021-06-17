@@ -18,7 +18,3 @@ seq <- function(from, to, by = 1) {
   }
   res
 }
-
-range <- R::range2
-
-map2 <- R::map2

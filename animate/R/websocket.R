@@ -1,9 +1,4 @@
 #' Start a Websocket server
-#'
-#' @description This combines the *-Server family of functions in 'httpuv'
-#' with the transpilation functionality provided by 'sketch'.
-#'
-#' @export
 websocket <- R6::R6Class("websocket", public = list(
   #' @field app A list of functions that define the application.
   app = NULL,

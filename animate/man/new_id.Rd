@@ -17,3 +17,7 @@ and an ID.}
 \description{
 A utility function for generating IDs
 }
+\examples{
+new_id(x = runif(10), prefix = "points")
+
+}

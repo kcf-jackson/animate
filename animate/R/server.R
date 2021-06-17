@@ -4,8 +4,8 @@ Message <- function(type, message) {
 
 #' A web-based graphics device
 #' @export
-plot2 <- R6::R6Class(
-  "plot2",
+animate <- R6::R6Class(
+  "animate",
   list(
     #' @field connection A handle for the WebSocket connection.
     connection = NULL,
@@ -159,8 +159,8 @@ plot2 <- R6::R6Class(
     #' @description
     #' Remove a SVG element
     #' @param selector A character vector; ID of an element.
-    remove = function(selector) {
-      self$send(Message("fn_remove", list(selector = selector)))
+    remove = function(selector = "*", id) {
+      self$send(Message("fn_remove", list(selector = selector, id = id)))
     },
 
     #' @description

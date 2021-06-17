@@ -5,6 +5,9 @@
 #' @param sep A character string; the separator to be added between the prefix
 #' and an ID.
 #'
+#' @examples
+#' new_id(x = runif(10), prefix = "points")
+#'
 #' @export
 new_id <- function(x, prefix = "ID", sep = "-") {
     paste(prefix, seq_along(x), sep = sep)

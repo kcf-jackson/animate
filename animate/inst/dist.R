@@ -180,10 +180,10 @@ plot2 <- R6Class(
       # Axes ----
       selection <- self$device$selection
 
-      bottom <- (1 - self$par$mai[0]) * self$device$height
-      left   <- self$par$mai[1] * self$device$width
-      top    <- self$par$mai[2] * self$device$height
-      right  <- (1 - self$par$mai[3]) * self$device$width
+      bottom <- (1 - private$bottom()) * self$device$height
+      left   <- private$left() * self$device$width
+      top    <- private$top() * self$device$height
+      right  <- (1 - private$right()) * self$device$width
       if (axis == "axisLeft")   transform <- "translate(" %+% left %+% ", 0)"
       if (axis == "axisRight")  transform <- "translate(" %+% right %+% ", 0)"
       if (axis == "axisTop")    transform <- "translate(0, " %+% top %+% ")"
@@ -230,16 +230,14 @@ plot2 <- R6Class(
       attr <- param$attr
       style <- param$style
       transition <- param$transition
-      xlim <- param$xlim || d3::extent(x)
-      ylim <- param$ylim || d3::extent(y)
 
       # Set auxiliary variables ----
       data0 <- build_arg_list(x, y, w, h, id, fill, stroke, stroke_width, stroke_dasharray)
 
       # Scale ----
       scale <- param$scale || "scaleLinear"
-      xlim <- param$xlim || d3::extent(x)
-      ylim <- param$ylim || d3::extent(y)
+      xlim <- param$xlim || d3::extent(add(x, w))
+      ylim <- param$ylim || d3::extent(add(y, h))
       x_scale <- d3_scale(domain = xlim, range = self$range("x"), scale)
       y_scale <- d3_scale(domain = ylim, range = self$range("y"), scale)
       cw <- self$device$width
@@ -604,8 +602,13 @@ plot2 <- R6Class(
     },
 
     #' Remove an element
-    remove = function(selector) {
-      d3::select(selector)$remove()
+    remove = function(selector = "*", id) {
+      filter_by_id <- selection %=>%
+        selection$filter(d %=>% d && d$id && id$includes(d$id))
+
+      (d3::selectAll(selector) %>%
+        cond(filter_by_id, id))$
+        remove()
     },
 
     #' Remove all elements of the active device
@@ -709,7 +712,7 @@ plot2 <- R6Class(
               message %=>% JS_device$set(message$selector)),
       Decoder("fn_remove",
               x %=>% (x == "fn_remove"),
-              message %=>% JS_device$remove(message$selector)),
+              message %=>% JS_device$remove(message$selector, message$id)),
       Decoder("fn_clear",
               x %=>% (x == "fn_clear"),
               message %=>% JS_device$clear()),

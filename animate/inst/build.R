@@ -16,7 +16,7 @@ build <- function(stack_size = 0, debug = FALSE) {
             "./dist/websocket_dist.html", overwrite = T)
 }
 
-build(0, TRUE)
+build(0, FALSE)
 
 
 # Build detach mode
@@ -30,14 +30,3 @@ build_detach <- function() {
   lines <- append(lines, paste0("JS_device$import(", object_name,")"))
   lines <- append(lines, "JS_device$loop()")
 }
-
-
-# ORIGINAL
-# # Detach mode
-# if (!missing(file)) {
-#   import_line <- paste0("#! load_data('", file, "')")
-#   lines <- append(lines, import_line, 5)
-#   object_name <- paste0(tools::file_path_sans_ext(basename(file)), "_json")
-#   lines <- append(lines, paste0("JS_device$import(", object_name,")"))
-#   lines <- append(lines, "JS_device$loop()")
-# }

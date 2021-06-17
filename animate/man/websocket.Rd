@@ -4,8 +4,9 @@
 \alias{websocket}
 \title{Start a Websocket server}
 \description{
-This combines the *-Server family of functions in 'httpuv'
-with the transpilation functionality provided by 'sketch'.
+Start a Websocket server
+
+Start a Websocket server
 }
 \examples{
 
