@@ -14,6 +14,10 @@ A web-based graphics device
 \item{\code{connection}}{A handle for the WebSocket connection.}
 
 \item{\code{ready_state}}{The ready state of the connection.}
+
+\item{\code{shiny}}{Whether the device is used with shiny.}
+
+\item{\code{session}}{A shiny session.}
 }
 \if{html}{\out{</div>}}
 }
@@ -21,9 +25,9 @@ A web-based graphics device
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{animate$new()}}
-\item \href{#method-set_max_stacksize}{\code{animate$set_max_stacksize()}}
 \item \href{#method-off}{\code{animate$off()}}
 \item \href{#method-send}{\code{animate$send()}}
+\item \href{#method-set_max_stacksize}{\code{animate$set_max_stacksize()}}
 \item \href{#method-init}{\code{animate$init()}}
 \item \href{#method-bars}{\code{animate$bars()}}
 \item \href{#method-plot}{\code{animate$plot()}}
@@ -62,24 +66,6 @@ Constructor of the device
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_max_stacksize"></a>}}
-\if{latex}{\out{\hypertarget{method-set_max_stacksize}{}}}
-\subsection{Method \code{set_max_stacksize()}}{
-Set the maximum size of the stack
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{animate$set_max_stacksize(n)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{n}}{The number of commands the plot stack can hold. Use
--1 for unlimited number of commands.}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-off"></a>}}
 \if{latex}{\out{\hypertarget{method-off}{}}}
 \subsection{Method \code{off()}}{
@@ -102,6 +88,24 @@ Send commands to device
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{message}}{The message to send to the device.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-set_max_stacksize"></a>}}
+\if{latex}{\out{\hypertarget{method-set_max_stacksize}{}}}
+\subsection{Method \code{set_max_stacksize()}}{
+Set the maximum size of the stack
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$set_max_stacksize(n)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{n}}{The number of commands the plot stack can hold. Use
+-1 for unlimited number of commands.}
 }
 \if{html}{\out{</div>}}
 }
@@ -309,7 +313,9 @@ Remove a SVG element
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{selector}}{A character vector; ID of an element.}
+\item{\code{selector}}{A character vector; the CSS selector.}
+
+\item{\code{id}}{A character string; ID of an element.}
 }
 \if{html}{\out{</div>}}
 }

@@ -13,13 +13,31 @@ animate <- R6::R6Class(
     #' @field ready_state The ready state of the connection.
     ready_state = 0,
 
-    # WebSocket ---------------------------------------------------------------
+    #' @field shiny Whether the device is used with shiny.
+    shiny = FALSE,
+
+    #' @field session A shiny session.
+    session = NULL,
+
+    # WebSocket ----------------------------------------------------------------
     #' @description
     #' Constructor of the device
     #' @param width An integer; the width in pixels.
     #' @param height An integer; the height in pixels.
     #' @param ... Additional arguments.
     initialize = function(width, height, ...) {
+      if (private$is_shiny(...)) {
+        self$shiny <- TRUE
+        args <- list(...)
+
+        self$session <- args$session
+        self$session$sendCustomMessage("animate", message)
+
+        args$session <- NULL
+        js_args <- append(list(width = width, height = height), args)
+        return(do.call(self$init, js_args))
+      }
+
       args <- append(list(width = width, height = height), list(...))
       in_handler <- function(x) {
         msg <- jsonlite::fromJSON(x)
@@ -36,7 +54,7 @@ animate <- R6::R6Class(
       self$connection <- conn
 
       # Serve the app
-      app <- system.file("dist/websocket_dist.html", package = "animate")
+      app <- system.file("dist/animate_websocket.html", package = "animate")
       temp <- file.path(tempdir(), "index.html")
       file.copy(app, temp)
       viewer <- ifelse(rstudioapi::isAvailable(), rstudioapi::viewer, utils::browseURL)
@@ -44,16 +62,10 @@ animate <- R6::R6Class(
     },
 
     #' @description
-    #' Set the maximum size of the stack
-    #' @param n The number of commands the plot stack can hold. Use
-    #' -1 for unlimited number of commands.
-    set_max_stacksize = function(n) {
-      self$send(Message("fn_max_stacksize", list(n = n)))
-    },
-
-    #' @description
     #' Switch off the device; this function closes the WebSocket connection
     off = function() {
+      if (self$shiny) return(NULL)
+
       self$ready_state <- 0
       self$connection$stopServer()
     },
@@ -62,6 +74,8 @@ animate <- R6::R6Class(
     #' Send commands to device
     #' @param message The message to send to the device.
     send = function(message) {
+      if (self$shiny) return(private$shiny_send(message))
+
       if (self$ready_state == 0) {
         message("Device is not yet available.")
       } else {
@@ -69,6 +83,14 @@ animate <- R6::R6Class(
           jsonlite::toJSON(message, auto_unbox = T)
         )
       }
+    },
+
+    #' @description
+    #' Set the maximum size of the stack
+    #' @param n The number of commands the plot stack can hold. Use
+    #' -1 for unlimited number of commands.
+    set_max_stacksize = function(n) {
+      self$send(Message("fn_max_stacksize", list(n = n)))
     },
 
     # Functions ---------------------------------------------------------------
@@ -158,7 +180,8 @@ animate <- R6::R6Class(
 
     #' @description
     #' Remove a SVG element
-    #' @param selector A character vector; ID of an element.
+    #' @param selector A character vector; the CSS selector.
+    #' @param id A character string; ID of an element.
     remove = function(selector = "*", id) {
       self$send(Message("fn_remove", list(selector = selector, id = id)))
     },
@@ -188,5 +211,14 @@ animate <- R6::R6Class(
       self$send(Message("fn_export", list(skip_log = TRUE)))
     }
   ),
-  list()
+  # Private fields and methods -------------------------------------------------
+  list(
+    shiny_send = function(message) {
+      self$session$sendCustomMessage("animate", message)
+    },
+    is_shiny = function(...) {
+      args <- list(...)
+      "session" %in% names(args)
+    }
+  )
 )
