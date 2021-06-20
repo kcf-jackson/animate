@@ -1,6 +1,6 @@
 Package: animate
 Title: A Web-based Graphics Device For Animated Plots
-Version: 0.0.5
+Version: 0.0.7
 Authors@R: 
     person(given = "Chun Fung",
            family = "Kwok",
@@ -17,5 +17,6 @@ Imports:
     R6,
     rmarkdown
 Suggests: 
-    knitr
+    knitr,
+    shiny
 VignetteBuilder: knitr
