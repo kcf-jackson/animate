@@ -5,14 +5,14 @@
 #! load_library('websocket')
 #! load_script('message.R')
 #! load_script("assets/d3.v5.min.js")
-
-#! load_script("import.R")
-
 #! load_script("assets/ramda.min.js")
-#! load_script("d3_helpers.R")
 #! load_script("assets/broadcast.js")
-#! load_script("utils.R")
 #! load_script("assets/d3-symbol-extra.min.js")
+
+#! load_script("d3_helpers.R")
+#! load_script("utils.R")
+#! load_script("plot_helpers.R")
+#! load_script("svg_to_png.R")
 
 plot2 <- R6Class(
   "plot2",
@@ -26,14 +26,8 @@ plot2 <- R6Class(
     stack_size = 0,
 
     #' @field active device
-    device = list(selection = NULL, width = NULL, height = NULL),
-
-    #' @field graphical parameters
-    par = list(mai = times(0.1, c(0.82, 0.82, 0.82, 0.82))),
-
-    #' @field A variable for generating IDs.
-    id_count = 0,
-
+    device = list(selection = NULL, width = NULL, height = NULL,
+                  par = list(mai = times(0.1, c(0.82, 0.82, 0.82, 0.82)))),
 
     # Methods-------------------------------------------------------------------
     #' Constructor
@@ -42,25 +36,10 @@ plot2 <- R6Class(
       self
     },
 
-    #' ID generator
-    generate_id = function(prefix, n = 1) {
-      res <- c()
-      for (i in seq(1, n)) {
-        self$id_count <- self$id_count + 1
-        id <- ifelse(prefix, prefix %+% "_" %+% self$id_count, self$id_count)
-        res$push(id)
-      }
-      # Return scalar if the Array is of length 1
-      if (res$length == 1) {
-        return(res[0])
-      }
-      res
-    },
-
     #' Add a SVG element
     add_svg = function(param) {
       root   <- param$root || "body"
-      id     <- param$id || self$generate_id("svg")
+      id     <- param$id || generate_id("svg")
       width  <- param$width
       height <- param$height
       attr   <- param$attr
@@ -68,13 +47,12 @@ plot2 <- R6Class(
 
       base_attr <- list(id = id, width = width, height = height)
 
-
       svg0 <- d3::select(Id(id))
       if (svg0$empty()) {
         svg0 <- d3::select(root)$append("svg") %>%
           d3_attr(base_attr) %>%
-          cond(d3_attr(ARG, attr), attr) %>%
-          cond(d3_style(ARG, style), style)
+          d3_cond(d3_attr(ARG, attr), attr) %>%
+          d3_cond(d3_style(ARG, style), style)
 
         self$device <- Device(svg0, width, height)
       } else {
@@ -87,10 +65,10 @@ plot2 <- R6Class(
     # Rendering functions ------------------------------------------------------
     #' Generic X-Y plotting
     plot = function(param) {
-      x     <- param$x
-      y     <- param$y
-      id    <- param$id || self$generate_id("datum", x$length)
-      type  <- param$type || "p"
+      x    <- param$x
+      y    <- param$y
+      id   <- param$id || generate_id("datum", length_data(x, y))
+      type <- param$type || "p"
       xlim <- param$xlim || d3::extent(x)
       ylim <- param$ylim || d3::extent(y)
       main <- param$main
@@ -169,7 +147,7 @@ plot2 <- R6Class(
       scale <- param$scale || "scaleLinear"
       axis  <- param$axis || "axisBottom"
       scale_orient <- ifelse(axis == "axisBottom" || axis == "axisTop", "x", "y")
-      id    <- param$id || self$generate_id(type %+% "-axis")
+      id    <- param$id || generate_id(type %+% "-axis")
       lim   <- param$lim || d3::extent(data)
       transition <- param$transition
 
@@ -201,7 +179,7 @@ plot2 <- R6Class(
 
       selected_axis$
         attr("transform", transform) %>%
-        cond(d3_transition(ARG, transition), transition) %>%
+        d3_cond(d3_transition(ARG, transition), transition) %>%
         d3_call(axis_fun)
     },
 
@@ -221,7 +199,7 @@ plot2 <- R6Class(
       y <- param$y
       w <- param$w
       h <- param$h
-      id     <- param$id || self$generate_id("rect", x$length)
+      id     <- param$id || generate_id("rect", length_data(x, y, w, h))
       fill   <- param$fill || "black"
       stroke <- param$stroke || "black"
       stroke_width <- param["stroke-width"] || 0
@@ -259,8 +237,8 @@ plot2 <- R6Class(
           style("stroke-dasharray", d %=>% d["stroke-dasharray"])$
           style("stroke-width", d %=>% d["stroke-width"])$
           style("stroke", d %=>% d$stroke) %>%
-          cond(d3_attr(ARG, attr), attr) %>%
-          cond(d3_style(ARG, style), style)
+          d3_cond(d3_attr(ARG, attr), attr) %>%
+          d3_cond(d3_style(ARG, style), style)
       }
 
       # Enter ----
@@ -272,7 +250,7 @@ plot2 <- R6Class(
 
       # Update ----
       selection %>%
-        cond(d3_transition(ARG, transition), transition) %>%
+        d3_cond(d3_transition(ARG, transition), transition) %>%
         d3_update()
 
       # Exit ----
@@ -296,7 +274,7 @@ plot2 <- R6Class(
       # Parameters destructuring ----
       x     <- param$x
       y     <- param$y
-      id    <- param$id || self$generate_id("point", x$length)
+      id    <- param$id || generate_id("point", length_data(x, y))
 
       shape <- param$shape || "circle"
       size  <- param$size || 30
@@ -311,11 +289,11 @@ plot2 <- R6Class(
       data0 <- build_arg_list(x, y, id, size, shape, fill, stroke, stroke_width)
 
       # Scale ----
-      scale <- param$scale || "scaleLinear"
-      xlim <- param$xlim || d3::extent(x)
-      ylim <- param$ylim || d3::extent(y)
-      x_scale <- d3_scale(domain = xlim, range = self$range("x"), scale)
-      y_scale <- d3_scale(domain = ylim, range = self$range("y"), scale)
+      scale <- handle_scale(param)
+      xlim <- param$xlim || d3_extent(x)
+      ylim <- param$ylim || d3_extent(y)
+      x_scale <- d3_scale(domain = xlim, range = self$range("x"), scale$x)
+      y_scale <- d3_scale(domain = ylim, range = self$range("y"), scale$y)
 
       # Main update ----
       d3_update <- function(s) {
@@ -325,14 +303,14 @@ plot2 <- R6Class(
           style("fill", d %=>% d$fill)$
           style("stroke-width", d %=>% d["stroke-width"])$
           style("stroke", d %=>% d$stroke) %>%
-          cond(d3_attr(ARG, attributes), attributes) %>%
-          cond(d3_style(ARG, styles), styles)
+          d3_cond(d3_attr(ARG, attributes), attributes) %>%
+          d3_cond(d3_style(ARG, styles), styles)
       }
 
       # Select ----
       selection <- self$device$selection$
         selectAll("path.points")$
-        filter(d %=>% id$includes(d$id))$
+        filter(has_id(id))$
         data(data0)
 
       # Enter ----
@@ -344,7 +322,7 @@ plot2 <- R6Class(
 
       # Update ----
       selection %>%
-        cond(d3_transition(ARG, transition), transition) %>%
+        d3_cond(d3_transition(ARG, transition), transition) %>%
         d3_update()
 
       # Exit ----
@@ -369,7 +347,7 @@ plot2 <- R6Class(
       width  <- param$width
       height <- param$height
       href   <- param$href
-      id     <- param$id || self$generate_id("image", x$length || 1)
+      id     <- param$id || generate_id("image", length_data(x, y))
 
       attributes <- param$attr
       styles <- param$style
@@ -400,8 +378,8 @@ plot2 <- R6Class(
           attr("href", d %=>% d$href)$
           attr("width", d %=>% d$width)$
           attr("height", d %=>% d$height) %>%
-          cond(d3_attr(ARG, attributes), attributes) %>%
-          cond(d3_style(ARG, styles), styles)
+          d3_cond(d3_attr(ARG, attributes), attributes) %>%
+          d3_cond(d3_style(ARG, styles), styles)
       }
 
       # Enter ----
@@ -412,7 +390,7 @@ plot2 <- R6Class(
 
       # Update ----
       selection %>%
-        cond(d3_transition(ARG, transition), transition) %>%
+        d3_cond(d3_transition(ARG, transition), transition) %>%
         d3_update()
 
       # Exit ----
@@ -441,7 +419,7 @@ plot2 <- R6Class(
       # Parameters destructuring ----
       x  <- param$x
       y  <- param$y
-      id <- param$id || self$generate_id("lines")
+      id <- param$id || generate_id("lines")
 
       fill  <- param$fill || "none"
       stroke <- param$stroke || "black"
@@ -481,8 +459,8 @@ plot2 <- R6Class(
           style("stroke-width", d %=>% d["stroke-width"])$
           style("stroke", d %=>% d$stroke)$
           style("fill", d %=>% d$fill) %>%
-          cond(d3_attr(ARG, attributes), attributes) %>%
-          cond(d3_style(ARG, styles), styles)
+          d3_cond(d3_attr(ARG, attributes), attributes) %>%
+          d3_cond(d3_style(ARG, styles), styles)
       }
 
       # Enter ----
@@ -494,7 +472,7 @@ plot2 <- R6Class(
 
       # Update ----
       selection %>%
-        cond(d3_transition(ARG, transition), transition) %>%
+        d3_cond(d3_transition(ARG, transition), transition) %>%
         d3_update()
 
       # Exit ----
@@ -517,7 +495,7 @@ plot2 <- R6Class(
       x     <- param$x
       y     <- param$y
       text  <- param$text
-      id    <- param$id || self$generate_id("text", x$length)
+      id    <- param$id || generate_id("text", length_data(x, y))
 
       attributes <- param$attr
       styles <- param$style
@@ -546,8 +524,8 @@ plot2 <- R6Class(
         s$attr("id", d %=>% d$id)$
           attr("transform", d %=>% translate(x_scale(d$x), y_scale(d$y)) %+% transform)$
           text(d %=>% d$text) %>%
-          cond(d3_attr(ARG, attributes), attributes) %>%
-          cond(d3_style(ARG, styles), styles)
+          d3_cond(d3_attr(ARG, attributes), attributes) %>%
+          d3_cond(d3_style(ARG, styles), styles)
       }
 
       # Enter ----
@@ -558,7 +536,7 @@ plot2 <- R6Class(
 
       # Update ----
       selection %>%
-        cond(d3_transition(ARG, transition), transition) %>%
+        d3_cond(d3_transition(ARG, transition), transition) %>%
         d3_update()
 
       # Exit ----
@@ -577,17 +555,17 @@ plot2 <- R6Class(
       top    <- private$top()
       right  <- private$right()
       if (type == "x") {
-        res <- times(c(left, 1 - right), self$device$width)
+        res <- times(c(left, 1 - right), private$width())
       }
       if (type == "y") {
-        res <- times(c(top, 1 - bottom), self$device$height)$reverse()
+        res <- times(c(top, 1 - bottom), private$height())$reverse()
       }
       res
     },
 
     #' Set graphical parameters
     set_par = function(parameters) {
-      Object::assign(self$par, parameters)
+      Object::assign(self$device$par, parameters)
     },
 
     #' Set active device
@@ -607,7 +585,7 @@ plot2 <- R6Class(
         selection$filter(d %=>% d && d$id && id$includes(d$id))
 
       (d3::selectAll(selector) %>%
-        cond(filter_by_id, id))$
+        d3_cond(filter_by_id, id))$
         remove()
     },
 
@@ -723,65 +701,12 @@ plot2 <- R6Class(
               x %=>% (x == "fn_par"),
               message %=>% JS_device$set_par(message))
     ),
-    bottom = function() { self$par$mai[0] },
-    left   = function() { self$par$mai[1] },
-    top    = function() { self$par$mai[2] },
-    right  = function() { self$par$mai[3] },
+    bottom = function() { self$device$par$mai[0] },
+    left   = function() { self$device$par$mai[1] },
+    top    = function() { self$device$par$mai[2] },
+    right  = function() { self$device$par$mai[3] },
     width  = function() { self$device$width },
     height = function() { self$device$height }
   )
 )
-
-
-# Helper functions -------------------------------------------------------------
-Decoder <- function(name, predicate, handler) {
-  list(name = name, predicate = predicate, handler = handler)
-}
-
-Device <- function(selection, width, height) {
-  list(selection = selection, width = width, height = height)
-}
-
-Id <- function(x) { "#" %+% x }
-
-parse_px <- function(x) {
-  parseInt(x$replace("px", ""))
-}
-
-end_string <- function(x) { x %+% "\n"}
-
-cond <- function(selection, f, pred) {
-  if (pred) return(selection %>% f())
-  return(selection)
-}
-
-pch <- function(x) {
-  # stock
-  if (x == "plus")     return(d3::symbolCross)
-  if (x == "diamond")  return(d3::symbolDiamond)
-  if (x == "square")   return(d3::symbolSquare)
-  if (x == "star")     return(d3::symbolStar)
-  if (x == "triangle") return(d3::symbolTriangle)
-  if (x == "wye")      return(d3::symbolWye)
-  # transform
-  if (x == "triangle_down")  return(d3::symbolTriangleDown)
-  if (x == "triangle_left")  return(d3::symbolTriangleLeft)
-  if (x == "triangle_right") return(d3::symbolTriangleRight)
-  if (x == "diamond_alt")    return(d3::symbolDiamondAlt)
-  if (x == "diamond_square") return(d3::symbolDiamondSquare)
-  if (x == "pentagon")    return(d3::symbolPentagon)
-  if (x == "hexagon")     return(d3::symbolHexagon)
-  if (x == "hexagon_alt") return(d3::symbolHexagonAlt)
-  if (x == "octagon")     return(d3::symbolOctagon)
-  if (x == "octagon_alt") return(d3::symbolOctagonAlt)
-  if (x == "cross") return(d3::symbolX)
-  # default
-  d3::symbolCircle
-}
-
-
-# Main -------------------------------------------------------------------------
-# JS_device <- plot2$new()
-# JS_device$add_svg(list(cw=600, ch=400))
-# JS_device$points(list(x=seq(1,10), y=seq(1,10), shape="diamond_square"))
 JS_device <- plot2$new(0)

@@ -1,3 +1,5 @@
+#! config(debug = F, rules = basic_rules(), deparsers = dp("basic", "auto"))
+
 # Interface --------------------------------------------------------------------
 Decoder <- function(name, predicate, handler) {
   list(name = name, predicate = predicate, handler = handler)
@@ -9,7 +11,11 @@ Device <- function(selection, width, height,
 }
 
 # Handler ----------------------------------------------------------------------
-
+handle_scale <- function(param) {
+  res <- ifelse(param$log, logScale(param$log),
+                param$scale || list(x = "scaleLinear", y = "scaleLinear"))
+  res
+}
 
 # Conversion -------------------------------------------------------------------
 logScale <- function(log) {
@@ -18,6 +24,7 @@ logScale <- function(log) {
   if (log == "xy") return(list(x = "scaleLog", y = "scaleLog"))
   if (log == "yx") return(list(x = "scaleLog", y = "scaleLog"))
   stop("Wrong input for the parameter 'log'. It must be 'x', 'y', 'xy' or 'yx'.")
+  NULL
 }
 
 length_data <- function() {

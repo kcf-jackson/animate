@@ -10,6 +10,7 @@
 #! load_script("d3_helpers.R")
 #! load_script("utils.R")
 #! load_script("plot_helpers.R")
+#! load_script("svg_to_png.R")
 
 plot2 <- R6Class(
   "plot2",
@@ -57,7 +58,6 @@ plot2 <- R6Class(
       }
       svg0
     },
-
 
     # Rendering functions ------------------------------------------------------
     #' Generic X-Y plotting
@@ -286,8 +286,7 @@ plot2 <- R6Class(
       data0 <- build_arg_list(x, y, id, size, shape, fill, stroke, stroke_width)
 
       # Scale ----
-      scale <- ifelse(param$log, logScale(param$log),
-                      param$scale || list(x = "scaleLinear", y = "scaleLinear"))
+      scale <- handle_scale(param)
       xlim <- param$xlim || d3_extent(x)
       ylim <- param$ylim || d3_extent(y)
       x_scale <- d3_scale(domain = xlim, range = self$range("x"), scale$x)
@@ -553,10 +552,10 @@ plot2 <- R6Class(
       top    <- private$top()
       right  <- private$right()
       if (type == "x") {
-        res <- times(c(left, 1 - right), self$device$width)
+        res <- times(c(left, 1 - right), private$width())
       }
       if (type == "y") {
-        res <- times(c(top, 1 - bottom), self$device$height)$reverse()
+        res <- times(c(top, 1 - bottom), private$height())$reverse()
       }
       res
     },
