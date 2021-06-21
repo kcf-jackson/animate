@@ -16,7 +16,7 @@ load_animate <- function(n = 0) {
     tags$script(src = "ramda.min.js"),
     tags$script(src = "broadcast.js"),
     tags$script(src = "d3-symbol-extra.min.js"),
-    tags$script(src = "animate_shiny.js"),
+    tags$script(src = "animate.js"),
     tags$script(src = "shiny.js"),
     tags$script(paste0("JS_device = new plot2(", n, ")"))
   )
@@ -35,6 +35,6 @@ setup_animate <- function(path) {
   file.copy(asset("assets/ramda.min.js"), path)
   file.copy(asset("assets/broadcast.js"), path)
   file.copy(asset("assets/d3-symbol-extra.min.js"), path)
-  file.copy(asset("dist/animate_shiny.js"), path)
+  file.copy(asset("dist/animate.js"), path)
   file.copy(asset("dist/shiny.js"), path)
 }

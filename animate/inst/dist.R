@@ -13,6 +13,7 @@
 #! load_script("utils.R")
 #! load_script("plot_helpers.R")
 #! load_script("svg_to_png.R")
+#! load_script("controller.R")
 
 plot2 <- R6Class(
   "plot2",
@@ -22,7 +23,7 @@ plot2 <- R6Class(
     #' @field plot_stack A stack to store plotting commands.
     plot_stack = c(),
 
-    #' @field stack_size The maximum stack size.
+    #' @field stack_size The maximum stack size. Use -1 for unlimited.
     stack_size = 0,
 
     #' @field active device
@@ -56,11 +57,10 @@ plot2 <- R6Class(
 
         self$device <- Device(svg0, width, height)
       } else {
-        stop("Element with ID '" %+% id %+% "' already exists. Please use another ID or remove the existing element.")
+        console::warn("Element with ID '" %+% id %+% "' already exists. The element will not be created again.")
       }
       svg0
     },
-
 
     # Rendering functions ------------------------------------------------------
     #' Generic X-Y plotting
@@ -563,6 +563,12 @@ plot2 <- R6Class(
       res
     },
 
+    #' Set maximum stacksize
+    set_max_stacksize = function(n) {
+      self$stack_size <- n
+      n
+    },
+
     #' Set graphical parameters
     set_par = function(parameters) {
       Object::assign(self$device$par, parameters)
@@ -635,7 +641,7 @@ plot2 <- R6Class(
 
     dispatch_by_idx = function(idx) {
       data <- self$plot_stack[idx]
-      dispatch(data)
+      self$dispatch(data)
     },
 
     length = function() {
@@ -647,18 +653,27 @@ plot2 <- R6Class(
     import = function(setting) {
       self$plot_stack <- setting$plot_stack
       self$stack_size <- setting$stack_size
+      self$device <- setting$device
       self
     },
 
     #' Export the plot setting
     export = function() {
+      # Replace reference object by its ID
+      temp <- self$device$selection
+      self$device$selection <- temp$attr("id")
+      # Export
       setting <- list(
         plot_stack = self$plot_stack,
-        stack_size = self$stack_size
+        stack_size = self$stack_size,
+        device = self$device
       ) %>%
         JSON::stringify() %>%
         end_string()
       write(setting, "animate.json")
+      # Restore reference object
+      self$device$selection <- temp
+      TRUE
     }
   ),
   # Private fields and methods =================================================
@@ -699,7 +714,10 @@ plot2 <- R6Class(
               message %=>% JS_device$plot(message)),
       Decoder("fn_par",
               x %=>% (x == "fn_par"),
-              message %=>% JS_device$set_par(message))
+              message %=>% JS_device$set_par(message)),
+      Decoder("fn_max_stacksize",
+              x %=>% (x == "fn_max_stacksize"),
+              message %=>% JS_device$set_max_stacksize(message$n))
     ),
     bottom = function() { self$device$par$mai[0] },
     left   = function() { self$device$par$mai[1] },
@@ -709,4 +727,4 @@ plot2 <- R6Class(
     height = function() { self$device$height }
   )
 )
-JS_device <- plot2$new(0)
+JS_device <- plot2$new(-1)

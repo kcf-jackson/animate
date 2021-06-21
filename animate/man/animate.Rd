@@ -50,7 +50,7 @@ A web-based graphics device
 \subsection{Method \code{new()}}{
 Constructor of the device
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{animate$new(width, height, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{animate$new(width, height, id = "SVG_1", ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -59,6 +59,8 @@ Constructor of the device
 \item{\code{width}}{An integer; the width in pixels.}
 
 \item{\code{height}}{An integer; the height in pixels.}
+
+\item{\code{id}}{A character string; the id assigned to the device.}
 
 \item{\code{...}}{Additional arguments.}
 }

@@ -24,8 +24,9 @@ animate <- R6::R6Class(
     #' Constructor of the device
     #' @param width An integer; the width in pixels.
     #' @param height An integer; the height in pixels.
+    #' @param id A character string; the id assigned to the device.
     #' @param ... Additional arguments.
-    initialize = function(width, height, ...) {
+    initialize = function(width, height, id = "SVG_1", ...) {
       if (private$is_shiny(...)) {
         self$shiny <- TRUE
         args <- list(...)
@@ -34,11 +35,11 @@ animate <- R6::R6Class(
         self$session$sendCustomMessage("animate", message)
 
         args$session <- NULL
-        js_args <- append(list(width = width, height = height), args)
+        js_args <- append(list(width = width, height = height, id = id), args)
         return(do.call(self$init, js_args))
       }
 
-      args <- append(list(width = width, height = height), list(...))
+      args <- append(list(width = width, height = height, id = id), list(...))
       in_handler <- function(x) {
         msg <- jsonlite::fromJSON(x)
         if (msg$type == "WebSocket.onopen") {
@@ -54,7 +55,7 @@ animate <- R6::R6Class(
       self$connection <- conn
 
       # Serve the app
-      app <- system.file("dist/animate_websocket.html", package = "animate")
+      app <- system.file("dist/animate.html", package = "animate")
       temp <- file.path(tempdir(), "index.html")
       file.copy(app, temp)
       viewer <- ifelse(rstudioapi::isAvailable(), rstudioapi::viewer, utils::browseURL)
