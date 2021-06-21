@@ -1,11 +1,12 @@
-#' Load the assets for an animate plot
+#' Load the assets of an animate plot into a Shiny app
 #'
 #' @param n The number of commands the plot stack can hold. Use -1 for unlimited
 #' number of commands.
 #'
-#' @note This function will only work if the 'www' folder of the Shiny app contains
-#' the relevant JavaScript files. The files can be created using the function
-#' `setup_animate`.
+#' @note This function should be called inside the `ui` function of a Shiny app.
+#' Note that this function will work only if the 'www' folder of the Shiny app
+#' contains the relevant JavaScript files. These files can be created using the
+#' function `setup_animate`.
 #'
 #' @export
 load_animate <- function(n = 0) {

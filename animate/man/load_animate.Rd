@@ -2,7 +2,7 @@
 % Please edit documentation in R/shiny.R
 \name{load_animate}
 \alias{load_animate}
-\title{Load the assets for an animate plot}
+\title{Load the assets of an animate plot into a Shiny app}
 \usage{
 load_animate(n = 0)
 }
@@ -11,10 +11,11 @@ load_animate(n = 0)
 number of commands.}
 }
 \description{
-Load the assets for an animate plot
+Load the assets of an animate plot into a Shiny app
 }
 \note{
-This function will only work if the 'www' folder of the Shiny app contains
-the relevant JavaScript files. The files can be created using the function
-\code{setup_animate}.
+This function should be called inside the \code{ui} function of a Shiny app.
+Note that this function will work only if the 'www' folder of the Shiny app
+contains the relevant JavaScript files. These files can be created using the
+function \code{setup_animate}.
 }

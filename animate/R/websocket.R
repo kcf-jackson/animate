@@ -1,4 +1,7 @@
 #' Start a Websocket server
+#'
+#' @description A thin wrapper of the `httpuv` package, modified to serve animated
+#' plots.
 websocket <- R6::R6Class("websocket", public = list(
   #' @field app A list of functions that define the application.
   app = NULL,

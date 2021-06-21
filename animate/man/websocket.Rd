@@ -4,9 +4,8 @@
 \alias{websocket}
 \title{Start a Websocket server}
 \description{
-Start a Websocket server
-
-Start a Websocket server
+A thin wrapper of the \code{httpuv} package, modified to serve animated
+plots.
 }
 \examples{
 
