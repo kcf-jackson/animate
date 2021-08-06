@@ -12,7 +12,7 @@
 load_animate <- function(n = 0) {
   tags <- shiny::tags
   tags$head(
-    shiny::tags$script(src = "d3.v5.min.js"),
+    tags$script(src = "d3.v5.min.js"),
     tags$script(src = "ramda.min.js"),
     tags$script(src = "broadcast.js"),
     tags$script(src = "d3-symbol-extra.min.js"),

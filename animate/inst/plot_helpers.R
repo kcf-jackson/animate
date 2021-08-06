@@ -5,9 +5,10 @@ Decoder <- function(name, predicate, handler) {
   list(name = name, predicate = predicate, handler = handler)
 }
 
-Device <- function(selection, width, height,
+Device <- function(selection, width, height, id,
                    par = list(mai = times(0.1, c(0.82, 0.82, 0.82, 0.82)))) {
-  list(selection = selection, width = width, height = height, par = par)
+  list(selection = selection, width = width, height = height, 
+       id = id, par = par)
 }
 
 # Handler ----------------------------------------------------------------------

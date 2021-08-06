@@ -1,19 +1,28 @@
-#! config(debug = F, rules = basic_rules(), deparsers = dp("basic", "auto"))
+#! config(debug = T, rules = basic_rules(), deparsers = dp("basic", "auto"))
+#! load_script("assets/ramda.min.js")
+#! load_script("assets/broadcast.js")
+
 
 add <- broadcast(lambda(x, y, x + y))
 minus <- broadcast(lambda(x, y, x - y))
 times <- broadcast(lambda(x, y, x * y))
 divide <- broadcast(lambda(x, y, x / y))
 
+
+# Alias
 ARG <- R::`__`
 c <- Array
 isArray <- Array::isArray
+names <- Object::keys
+
 
 Id <- lambda(x, "#" %+% x)
 parse_px <- lambda(x, parseInt(x$replace("px", "")))
 end_string <- lambda(x, x %+% "\n")
 translate <- lambda(x, y, "translate(" %+% x %+% "," %+% y %+% ")")
 
+
+# Helpers
 seq <- function(from, to, by = 1) {
   res <- Array()
   res$push(from)
@@ -32,7 +41,7 @@ seq <- function(from, to, by = 1) {
   res
 }
 
-generate_id = (function(id_count) {
+generate_id <- (function(id_count) {
   res_fun <- function(prefix, n = 1) {
     res <- c()
     for (i in seq(1, n)) {
@@ -46,3 +55,12 @@ generate_id = (function(id_count) {
   }
   res_fun
 })(0)
+
+set_default <- function(param, default_param) {
+  for (item in names(default_param)) {
+    if (!param[item]) {
+      param[item] <- default_param[item]
+    }
+  }
+  param
+}

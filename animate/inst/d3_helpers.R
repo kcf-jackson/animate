@@ -1,4 +1,5 @@
 #! config(debug = F, rules = basic_rules(), deparsers = dp("basic", "auto"))
+#! load_script("assets/ramda.min.js")
 
 #' One of 'linear', 'power', 'log', 'identity', 'time', 'radial',
 #' 'sequential', 'diverging', ''quantize', 'quantile', 'threshold',

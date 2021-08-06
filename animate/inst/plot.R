@@ -21,20 +21,62 @@ plot2 <- R6Class(
     #' @field plot_stack A stack to store plotting commands.
     plot_stack = c(),
 
-    #' @field stack_size The maximum stack size. Use -1 for unlimited.
+    #' @field stack_size The maximum stack size for `plot_stack`. Use -1 for
+    #' unlimited. This is useful when one wants to replay the animation without
+    #' regenerating the animation.
     stack_size = 0,
 
-    #' @field active device
-    device = list(selection = NULL, width = NULL, height = NULL,
+    #' @field device The active device. The device refers to a plotting area and
+    #' its attributes. In our context, the `selection` is often a <svg> DOM
+    #' element.
+    device = list(selection = NULL, width = NULL, height = NULL, id = NULL,
                   par = list(mai = times(0.1, c(0.82, 0.82, 0.82, 0.82)))),
 
-    # Methods-------------------------------------------------------------------
-    #' Constructor
-    initialize = function(stack_size = 0) {
+    #' @field device_stack A stack to store devices.
+    device_stack = c(),
+
+    #' @field mode One of "r", "shiny" and "detach".
+    mode = "r",
+
+    # Constructor, Get and Set -------------------------------------------------
+    #' Constructing / initialising the 'plot2' object
+    initialize = function(stack_size = 0, mode = "r") {
       self$stack_size <- stack_size
+      self$mode <- mode
       self
     },
 
+    #' Set methods
+    #' Set maximum stack size of the plot
+    set_max_stacksize = function(n) {
+      self$stack_size <- n
+      self
+    },
+
+    #' Set graphical parameters
+    set_par = function(parameters) {
+      Object::assign(self$device$par, parameters)
+    },
+
+    #' Set mode
+    set_mode = function(mode) {
+      self$mode <- mode
+      self
+    },
+
+    #' Set active device
+    #' TODO: copy from device stack
+    set = function(selector) {
+      selection <- d3::select(selector)
+      if (!selection$empty()) {
+        self$device$selection <- selection
+        self$device$width <- parse_px(selection$style("width"))
+        self$device$height <- parse_px(selection$style("height"))
+      }
+      selection
+    },
+
+    # Drawing methods ----------------------------------------------------------
     #' Add a SVG element
     add_svg = function(param) {
       root   <- param$root || "body"
@@ -53,7 +95,8 @@ plot2 <- R6Class(
           d3_cond(d3_attr(ARG, attr), attr) %>%
           d3_cond(d3_style(ARG, style), style)
 
-        self$device <- Device(svg0, width, height)
+        self$device <- Device(svg0, width, height, id)
+        self$device_stack$push(self$device)
       } else {
         console::warn("Element with ID '" %+% id %+% "' already exists. The element will not be created again.")
       }
@@ -559,28 +602,6 @@ plot2 <- R6Class(
         res <- times(c(top, 1 - bottom), private$height())$reverse()
       }
       res
-    },
-
-    #' Set maximum stacksize
-    set_max_stacksize = function(n) {
-      self$stack_size <- n
-      n
-    },
-
-    #' Set graphical parameters
-    set_par = function(parameters) {
-      Object::assign(self$device$par, parameters)
-    },
-
-    #' Set active device
-    set = function(selector) {
-      selection <- d3::select(selector)
-      if (!selection$empty()) {
-        self$device$selection <- selection
-        self$device$width <- parse_px(selection$style("width"))
-        self$device$height <- parse_px(selection$style("height"))
-      }
-      selection
     },
 
     #' Remove an element
