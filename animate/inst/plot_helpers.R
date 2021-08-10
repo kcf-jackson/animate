@@ -1,42 +1,19 @@
-#! config(debug = F, rules = basic_rules(), deparsers = dp("basic", "auto"))
+#! config(debug = T, rules = animate_rules(), deparsers = dp("basic", "auto"))
+#! load_script("assets/ramda.min.js")
+#! load_script("assets/broadcast.js")
+#! load_script("utils.R")
 
-# Interface --------------------------------------------------------------------
-Decoder <- function(name, predicate, handler) {
-  list(name = name, predicate = predicate, handler = handler)
-}
-
-Device <- function(selection, width, height, id,
-                   par = list(mai = times(0.1, c(0.82, 0.82, 0.82, 0.82)))) {
-  list(selection = selection, width = width, height = height, 
-       id = id, par = par)
-}
-
-# Handler ----------------------------------------------------------------------
-handle_scale <- function(param) {
-  res <- ifelse(param$log, logScale(param$log),
-                param$scale || list(x = "scaleLinear", y = "scaleLinear"))
-  res
-}
-
-# Conversion -------------------------------------------------------------------
-logScale <- function(log) {
-  if (log == "x") return(list(x = "scaleLog", y = "scaleLinear"))
-  if (log == "y") return(list(x = "scaleLinear", y = "scaleLog"))
-  if (log == "xy") return(list(x = "scaleLog", y = "scaleLog"))
-  if (log == "yx") return(list(x = "scaleLog", y = "scaleLog"))
-  stop("Wrong input for the parameter 'log'. It must be 'x', 'y', 'xy' or 'yx'.")
-  NULL
-}
-
-length_data <- function() {
-  args <- Array::from(arguments)
-  args_len <- args$map(x %=>% x$length || 1)
-  Math::max(...args_len)
+length_of_data <- function() {
+  max(Array::from(arguments)$map(length))
 }
 
 has_id <- function(id) {
-  if (!isArray(id)) id <- Array(1)$fill(id)
+  if (!isArray(id)) id <- as_array(id)
   lambda(d, d && d$id && id$includes(d$id))
+}
+
+as_array <- function(x) {
+  Array(1)$fill(x)
 }
 
 pch <- function(x) {
@@ -61,4 +38,88 @@ pch <- function(x) {
   if (x == "cross") return(d3::symbolX)
   # default
   d3::symbolCircle
+}
+
+
+#-------------------------------------------------------------------------------
+#' ID generator
+generate_id <- (function(id_count) {
+  res_fun <- function(prefix, n = 1) {
+    res <- Array()
+    i <- 0
+    while (i < n) {
+      id_count <<- id_count + 1
+      id <- ifelse(prefix, prefix %+% "_" %+% id_count, id_count)
+      res$push(id)
+      i <- i + 1
+    }
+    if (res$length == 0) return("")
+    if (res$length == 1) return(res[0])
+    res
+  }
+  res_fun
+})(0)
+
+
+#' Turn a list of parameters of unequal length into a list of attributes of
+#' equal length
+as_data <- function(param, keys) {
+  inside_out(as_data_(param, keys))
+}
+
+as_data_ <- function(param, keys) {
+  if (!keys) keys <- names(param)
+  sub_param <- subset(param, keys)
+  max_length <- max(length_of_list(sub_param))
+  res <- list()
+  for (key in keys) {
+    res[key] <- cycle(param[key], max_length)
+  }
+  res
+}
+
+#' Turns a list of array into an array of list
+inside_out <- function(xs) {
+  res <- c()
+  first_key <- names(xs)[0]
+  n <- length(xs[first_key])
+  i <- 0
+  while (i < n) {
+    new_obj <- list()
+    for (key in names(xs)) {
+      new_obj[key] <- xs[key][i]
+    }
+    res$push(new_obj)
+    i <- i + 1
+  }
+  res
+}
+
+#' Get the length of all the attributes
+length_of_list <- function(x) {
+  lens <- Array()
+  for (key in names(x)) {
+    lens$push(length(x[key]))
+  }
+  lens
+}
+
+is_scalar <- function(x) {
+  c("string", "boolean", "number")$includes(typeof(x))
+}
+
+#' Recycle a list of items to reach a desired length
+cycle <- function(xs, n) {
+  if (is_scalar(xs)) xs <- as_array(xs)
+
+  res <- Array(n)
+  if (n == 0) return(res)
+
+  len_xs <- length(xs)
+  i <- 0
+  while (i < n) {
+    res[i] <- xs[i %% len_xs]
+    i <- i + 1
+  }
+  res
 }

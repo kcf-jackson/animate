@@ -1,4 +1,4 @@
-#! config(debug = F, rules = basic_rules(), deparsers = dp("basic", "auto"))
+#! config(debug = F, rules = animate_rules(), deparsers = dp("basic", "auto"))
 #! load_script("assets/ramda.min.js")
 
 #' One of 'linear', 'power', 'log', 'identity', 'time', 'radial',
@@ -12,7 +12,7 @@ d3_symbol <- function(size, shape) {
   d3::symbol()$size(size)$type(pch(shape))()
 }
 
-d3_attr <- R::curry(function(selection, attrs) {
+d3_attr <- curry(function(selection, attrs) {
   s <- selection
   for (x in Object::keys(attrs)) {
     s <- s$attr(x, attrs[x])
@@ -20,7 +20,7 @@ d3_attr <- R::curry(function(selection, attrs) {
   return(s)
 })
 
-d3_style <- R::curry(function(selection, styles) {
+d3_style <- curry(function(selection, styles) {
   s <- selection
   for (x in Object::keys(styles)) {
     s <- s$style(x, styles[x])
@@ -28,7 +28,7 @@ d3_style <- R::curry(function(selection, styles) {
   return(s)
 })
 
-d3_transition <- R::curry(function(selection, transition) {
+d3_transition <- curry(function(selection, transition) {
   s <- selection$transition()
   for (x in Object::keys(transition)) {
     s <- s[x](transition[x])
@@ -41,16 +41,23 @@ d3_call <- function(selection, f) {
 }
 
 d3_extent <- function(x) {
-  if (Array::isArray(x) && x$length > 1) {
+  if (isArray(x) && x$length > 1) {
     return(d3::extent(x))
   }
   # Scalar or Array of length 1
-  y <- ifelse(Array::isArray(x), x[0], x)
-  if (y == 0) return(Array(-1, 1))
-  d3::extent(Array(0.6 * y, 1.4 * y))
+  y <- as_scalar(x)
+  if (y == 0) {
+    return(c(-1, 1))
+  }
+  # Calling `d3::extent` to also handle the negative case
+  d3::extent(c(0.6 * y, 1.4 * y))
 }
 
 d3_cond <- function(selection, f, pred) {
   if (pred) return(selection %>% f())
   return(selection)
+}
+
+as_scalar <- function(x) {
+  ifelse(isArray(x), x[0], x)
 }
