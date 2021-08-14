@@ -13,20 +13,16 @@ animate_rules <- function() {
 
 
 # Build ------------------------------------------------------------------------
-source("build.R")
-# Build app
+source("inst/dev/build_helpers.R")
+
+# Build the app
 build(-1, FALSE)
 
-# Build library
-setwd("./inst")
-js <- bundle(c(
-  sketch::src("dom"), sketch::src("io"),
-  "d3_helpers.R", "utils.R", "plot_helpers.R", "svg_to_png.R",
-  "controller.R", "plot.R"
-))
-file.copy(js, "dist/animate.js", overwrite = TRUE)
-setwd("../")
+# Build the library (for usage with shiny)
+build_library("inst/src/plot.R")
+build_shiny("inst/src/addons/shiny.R")
 
+# Build the app for detach mode
 
 
 # Testing ----------------------------------------------------------------------
