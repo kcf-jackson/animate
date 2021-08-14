@@ -36,7 +36,7 @@ animate <- R6::R6Class(
 
         args$session <- NULL
         js_args <- append(list(width = width, height = height, id = id), args)
-        return(do.call(self$init, js_args))
+        return(do.call(self$svg, js_args))
       }
 
       args <- append(list(width = width, height = height, id = id), list(...))
@@ -45,7 +45,7 @@ animate <- R6::R6Class(
         if (msg$type == "WebSocket.onopen") {
           self$ready_state <- 1
           message("Device is ready.")
-          do.call(self$init, args)
+          do.call(self$svg, args)
         }
       }
 
@@ -81,7 +81,7 @@ animate <- R6::R6Class(
         message("Device is not yet available.")
       } else {
         self$connection$ws$send(
-          jsonlite::toJSON(message, auto_unbox = T)
+          jsonlite::toJSON(message, auto_unbox = T, null = "null")
         )
       }
     },
@@ -102,7 +102,7 @@ animate <- R6::R6Class(
     #' @param ... Additional graphical parameters.
     # @param root Character; a selector path to the container of the canvas.
     # @param id Character; the id of the SVG element
-    init = function(width = 800, height = 600, ...) {
+    svg = function(width = 800, height = 600, ...) {
       self$send(Message("fn_init_svg", list(width = width, height = height, ...)))
     },
 
@@ -146,6 +146,38 @@ animate <- R6::R6Class(
     },
 
     #' @description
+    #' Add straight lines to a plot
+    #' @param a The intercept.
+    #' @param b The slope.
+    #' @param h The y-value(s) for horizontal line(s).
+    #' @param v The x-value(s) for vertical line(s).
+    #' @param ... Additional graphical parameters.
+    abline = function(a, b, h, v, ...) {
+      if (xor(missing(a), missing(b))) {
+        stop("Error in abline: invalid a=, b= specification. a and b must be present/absent together.")
+      }
+      # General lines specified with intercept and slope
+      if (!missing(a) && !missing(b)) {
+        args <- list(x = c(0, 1), y = c(a, a + b), xlim = c(0, 1), ...)
+        self$send(Message("fn_lines", args))
+      }
+      # Horizontal lines
+      if (!missing(h)) {
+        for (y_intercept in h) {
+          args <- list(x = c(0, 1), y = rep(y_intercept, 2), xlim = c(0, 1), ...)
+          self$send(Message("fn_lines", args))
+        }
+      }
+      # Vertical lines
+      if (!missing(v)) {
+        for (x_intercept in v) {
+          args <- list(x = rep(x_intercept, 2), y = c(0, 1), ylim = c(0, 1), ...)
+          self$send(Message("fn_lines", args))
+        }
+      }
+    },
+
+    #' @description
     #' Add text to a plot
     #' @param x The x coordinates of the text.
     #' @param y The y coordinates of the text.
@@ -167,9 +199,9 @@ animate <- R6::R6Class(
 
     #' @description
     #' Set the active device to a SVG element
-    #' @param selector A character vector; ID of the SVG.
-    set = function(selector) {
-      self$send(Message("fn_set", list(selector = selector)))
+    #' @param device_id A character vector; ID of the device.
+    set = function(device_id) {
+      self$send(Message("fn_set", list(device_id = device_id)))
     },
 
     #' @description
@@ -180,17 +212,19 @@ animate <- R6::R6Class(
     },
 
     #' @description
-    #' Remove a SVG element
+    #' Remove elements from the active SVG element
+    #' @param id A character vector; the ID of the elements.
     #' @param selector A character vector; the CSS selector.
-    #' @param id A character string; ID of an element.
-    remove = function(selector = "*", id) {
+    remove = function(id = NULL, selector = "*") {
       self$send(Message("fn_remove", list(selector = selector, id = id)))
     },
 
     #' @description
-    #' Remove all elements of the active SVG element
-    clear = function() {
-      self$send(Message("fn_clear", list()))
+    #' Remove a SVG element
+    #' @param id A character string; the ID of the SVG. If not provided, remove
+    #' the active SVG element.
+    delete = function(id = NULL) {
+      self$send(Message("fn_delete", list(id = id)))
     },
 
     #' #' @description
