@@ -167,6 +167,7 @@ plot2 <- R6Class(
   list(
     dispatchers = c(
       Decoder("fn_init_svg", message %=>% self$new_device(message)),
+      Decoder("fn_axis", message %=>% self$axis(message)),
       Decoder("fn_bars", message %=>% self$bars(message)),
       Decoder("fn_points", message %=>% self$points(message)),
       Decoder("fn_lines", message %=>% self$lines(message)),
@@ -190,7 +191,6 @@ find_device <- function(list_of_device, device_id) {
 remove_device <- function(list_of_device, device_id) {
   list_of_device$filter(x %=>% x$id != device_id)
 }
-
 
 import_device <- function(setting) {
   new_device <- Device()

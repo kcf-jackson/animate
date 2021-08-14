@@ -2,34 +2,40 @@
 
 #' Add an axis to a plot
 axis = function(param, device) {
-  data  <- param$data
-  axis  <- param$axis || "axisBottom"
-
-  lim   <- param$lim || d3::extent(data)
-  orientation <- ifelse(axis == "axisBottom" || axis == "axisTop", "x", "y")
+  lim   <- param$lim || d3_extent(param$data)
+  side  <- axis_code(param$side || 1)
+  xy_axis <- ifelse(side == "axisBottom" || side == "axisTop", "x", "y")
+  position <- param$position || side
+  id    <- param$id || generate_id(xy_axis %+% "-axis")
   scale <- param$scale || "scaleLinear"
 
-  scale_fun <- d3_scale(domain = lim, range = device$range()[orientation], scale)
-  axis_fun  <- d3[axis]()$scale(scale_fun)
-
-  id <- param$id || generate_id(param$orientation %+% "-axis")
-  transition <- param$transition
+  scale_fun <- d3_scale(domain = lim, range = device$range()[xy_axis], scale)
+  axis_fun  <- d3[position]()$scale(scale_fun)
 
   # Axes ----
   selected_axis <- device$selection$
-    selectAll("g" %+% Id(id))
+    select("g" %+% Id(id))
 
   if (selected_axis$empty()) {
-    selected_axis <- selection$
+    selected_axis <- device$selection$
       append("g")$
       attr("id", id)$
       classed("axis", TRUE)
   }
 
   selected_axis$
-    attr("transform", axis_transform(param$axis, device)) %>%
-    d3_cond(d3_transition(ARG, transition), transition) %>%
+    attr("transform", axis_transform(side, device)) %>%
+    d3_cond(d3_transition(ARG, param$transition), param$transition) %>%
     d3_call(axis_fun)
+}
+
+# Convert an axis code into the d3 axis option
+axis_code <- function(x) {
+  if (x == 1) return("axisBottom")
+  if (x == 2) return("axisLeft")
+  if (x == 3) return("axisTop")
+  if (x == 4) return("axisRight")
+  x
 }
 
 # Compute the transform attribute given the axis position
@@ -38,9 +44,9 @@ axis_transform <- function(axis_type, device) {
   right  <- (1 - device$right()) * device$width
   top    <- device$top() * device$height
   bottom <- (1 - device$bottom()) * device$height
-  if (axis == "axisLeft")   transform <- "translate(" %+% left %+% ", 0)"
-  if (axis == "axisRight")  transform <- "translate(" %+% right %+% ", 0)"
-  if (axis == "axisTop")    transform <- "translate(0, " %+% top %+% ")"
-  if (axis == "axisBottom") transform <- "translate(0, " %+% bottom %+% ")"
+  if (axis_type == "axisLeft")   transform <- "translate(" %+% left %+% ", 0)"
+  if (axis_type == "axisRight")  transform <- "translate(" %+% right %+% ", 0)"
+  if (axis_type == "axisTop")    transform <- "translate(0, " %+% top %+% ")"
+  if (axis_type == "axisBottom") transform <- "translate(0, " %+% bottom %+% ")"
   transform
 }

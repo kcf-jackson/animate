@@ -178,6 +178,16 @@ animate <- R6::R6Class(
     },
 
     #' @description
+    #' Add an axis to a plot
+    #' @param x The x coordinates of the text.
+    #' @param y The y coordinates of the text.
+    #' @param labels The text.
+    #' @param ... Additional graphical parameters.
+    axis = function(x, ...) {
+      self$send(Message("fn_axis", list(data = x, ...)))
+    },
+
+    #' @description
     #' Add text to a plot
     #' @param x The x coordinates of the text.
     #' @param y The y coordinates of the text.
