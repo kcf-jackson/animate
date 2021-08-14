@@ -7,7 +7,7 @@
 #' Add points to a plot
 points = function(param, device) {
   param %<>% set_default(
-    list(id = length_of_data(param$x, param$y),
+    list(id = generate_id("point", length_of_data(param$x, param$y)),
          shape = "circle", size = 30, fill = "black",
          stroke = "black", `stroke-width` = 0)
   )
