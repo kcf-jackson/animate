@@ -9,10 +9,8 @@ bars = function(param, device) {
   keys <- c("x", "y", "w", "h", "id", "fill", "stroke", "stroke-width", "stroke-dasharray")
   data0 <- as_data(param, keys)
 
-  xlim <- param$xlim || d3_extent(add(param$x, param$w))
-  ylim <- param$ylim || d3_extent(add(param$y, param$h))
-  cw <- device$width
-  ch <- device$height
+  param$xlim <- param$xlim || device$xlim || d3_extent(param$x$concat(add(param$x, param$w)))
+  param$ylim <- param$ylim || device$ylim || d3_extent(param$y$concat(add(param$y, param$h)))
 
   barplot_update <- function(selection, scale) {
     selection$

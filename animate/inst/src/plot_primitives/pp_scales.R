@@ -8,8 +8,8 @@ new_scale <- function(param, device) {
   xrange <- param$xrange || range$x
   yrange <- param$yrange || range$y
   scale <- get_scale_spec(param)
-  list(x = d3_scale(domain = xlim, range = range$x, type = scale$x),
-       y = d3_scale(domain = ylim, range = range$y, type = scale$y))
+  list(x = d3_scale(domain = xlim, range = xrange, type = scale$x),
+       y = d3_scale(domain = ylim, range = yrange, type = scale$y))
 }
 
 # get_scale_spec :: list -> list(x: character, y: character)
