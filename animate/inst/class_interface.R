@@ -41,8 +41,8 @@ Device <- function(selection, width, height, id, par = list()) {
 
   #' Remove a selected element from the device
   remove <- function(selector = "*", id) {
-    filter_by_id <- selection %=>% selection$filter(has_id)
-    selected <- d3::selectAll(selector) %>% d3_cond(filter_by_id, id)
+    filter_by_id <- selection %=>% selection$filter(has_id(id))
+    selected <- selection$selectAll(selector) %>% d3_cond(filter_by_id, id)
     selected$remove()
   }
 
