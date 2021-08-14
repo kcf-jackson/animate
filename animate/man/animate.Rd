@@ -28,17 +28,19 @@ A web-based graphics device
 \item \href{#method-off}{\code{animate$off()}}
 \item \href{#method-send}{\code{animate$send()}}
 \item \href{#method-set_max_stacksize}{\code{animate$set_max_stacksize()}}
-\item \href{#method-init}{\code{animate$init()}}
+\item \href{#method-svg}{\code{animate$svg()}}
 \item \href{#method-bars}{\code{animate$bars()}}
 \item \href{#method-plot}{\code{animate$plot()}}
 \item \href{#method-points}{\code{animate$points()}}
 \item \href{#method-lines}{\code{animate$lines()}}
+\item \href{#method-abline}{\code{animate$abline()}}
+\item \href{#method-axis}{\code{animate$axis()}}
 \item \href{#method-text}{\code{animate$text()}}
 \item \href{#method-image}{\code{animate$image()}}
 \item \href{#method-set}{\code{animate$set()}}
 \item \href{#method-par}{\code{animate$par()}}
 \item \href{#method-remove}{\code{animate$remove()}}
-\item \href{#method-clear}{\code{animate$clear()}}
+\item \href{#method-delete}{\code{animate$delete()}}
 \item \href{#method-import}{\code{animate$import()}}
 \item \href{#method-export}{\code{animate$export()}}
 \item \href{#method-clone}{\code{animate$clone()}}
@@ -113,12 +115,12 @@ Set the maximum size of the stack
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-init"></a>}}
-\if{latex}{\out{\hypertarget{method-init}{}}}
-\subsection{Method \code{init()}}{
+\if{html}{\out{<a id="method-svg"></a>}}
+\if{latex}{\out{\hypertarget{method-svg}{}}}
+\subsection{Method \code{svg()}}{
 Initialise a SVG element
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{animate$init(width = 800, height = 600, ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{animate$svg(width = 800, height = 600, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -224,6 +226,54 @@ Add line segments / paths to a plot
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-abline"></a>}}
+\if{latex}{\out{\hypertarget{method-abline}{}}}
+\subsection{Method \code{abline()}}{
+Add straight lines to a plot
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$abline(a, b, h, v, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{a}}{The intercept.}
+
+\item{\code{b}}{The slope.}
+
+\item{\code{h}}{The y-value(s) for horizontal line(s).}
+
+\item{\code{v}}{The x-value(s) for vertical line(s).}
+
+\item{\code{...}}{Additional graphical parameters.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-axis"></a>}}
+\if{latex}{\out{\hypertarget{method-axis}{}}}
+\subsection{Method \code{axis()}}{
+Add an axis to a plot
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$axis(x, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{The x coordinates of the text.}
+
+\item{\code{...}}{Additional graphical parameters.}
+
+\item{\code{y}}{The y coordinates of the text.}
+
+\item{\code{labels}}{The text.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-text"></a>}}
 \if{latex}{\out{\hypertarget{method-text}{}}}
 \subsection{Method \code{text()}}{
@@ -275,13 +325,13 @@ Add background image to a plot
 \subsection{Method \code{set()}}{
 Set the active device to a SVG element
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{animate$set(selector)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{animate$set(device_id)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{selector}}{A character vector; ID of the SVG.}
+\item{\code{device_id}}{A character vector; ID of the device.}
 }
 \if{html}{\out{</div>}}
 }
@@ -307,36 +357,44 @@ Set the graphical parameters
 \if{html}{\out{<a id="method-remove"></a>}}
 \if{latex}{\out{\hypertarget{method-remove}{}}}
 \subsection{Method \code{remove()}}{
-Remove a SVG element
+Remove elements from the active SVG element
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{animate$remove(selector = "*", id)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{animate$remove(id = NULL, selector = "*")}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{selector}}{A character vector; the CSS selector.}
+\item{\code{id}}{A character vector; the ID of the elements.}
 
-\item{\code{id}}{A character string; ID of an element.}
+\item{\code{selector}}{A character vector; the CSS selector.}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clear"></a>}}
-\if{latex}{\out{\hypertarget{method-clear}{}}}
-\subsection{Method \code{clear()}}{
-Remove all elements of the active SVG element
+\if{html}{\out{<a id="method-delete"></a>}}
+\if{latex}{\out{\hypertarget{method-delete}{}}}
+\subsection{Method \code{delete()}}{
+Remove a SVG element
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$delete(id = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{id}}{A character string; the ID of the SVG. If not provided, remove
+the active SVG element.
 #' @description
 #' Perform a group of graphical operations to a plot
 #' @param ... Any number of graphical operations.
 group = function(...) {
 self$send(Message("fn_group", c(...)))
-},
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{animate$clear()}\if{html}{\out{</div>}}
+},}
 }
-
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-import"></a>}}

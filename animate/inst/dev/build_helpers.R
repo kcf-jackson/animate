@@ -1,23 +1,32 @@
 #' Build and configure the application
-build <- function(stack_size = 0, debug = FALSE) {
+build <- function(stack_size = 0, debug = FALSE, keep = FALSE) {
   if (basename(getwd()) != "animate") {
     stop("You seem to be in the wrong folder to call this function.")
   }
   curwd <- getwd()
   on.exit(setwd(curwd))
-  setwd("./inst")
+  # Need to go to the main directory for compiling the R files into JS files
+  setwd("./inst/src/")
   lines <- readLines("plot.R")
   lines <- append(lines, "#! load_library('websocket')", 4)
   lines <- append(lines, "#! load_script('message.R')", 5)
   lines <- append(lines, glue::glue("JS_device <- plot2$new({stack_size})"))
 
-  message("Writing to ", file.path("./inst", "dist.R"))
+  message("Writing to ", file.path("./", "dist.R"))
   write(lines, "dist.R")
 
-  message("Writing to ", file.path("./inst/dist", "animate.html"))
-  file.copy(sketch::source_r("dist.R", debug = debug, launch_browser = NULL),
-            "./dist/animate.html", overwrite = T)
+  message("Writing to ", file.path("../dist", "animate.html"))
+  res <- file.copy(
+    from = sketch::source_r("dist.R", debug = debug, launch_browser = NULL),
+    tp = "./dist/animate.html",
+    overwrite = T
+  )
+  if (!keep) file.remove("./dist.R")
+
+  res
 }
+
+
 
 
 #' Build detach mode
@@ -71,18 +80,3 @@ bundle <- function(fs) {
   }
   res_js
 }
-
-
-# Main
-# Build app
-build(-1, FALSE)
-
-# Build library
-setwd("./inst")
-js <- bundle(c(
-  sketch::src("dom"), sketch::src("io"),
-  "d3_helpers.R", "utils.R", "plot_helpers.R", "svg_to_png.R",
-  "controller.R", "plot.R"
-))
-file.copy(js, "dist/animate.js", overwrite = TRUE)
-setwd("../")

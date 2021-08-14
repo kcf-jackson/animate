@@ -3,14 +3,14 @@
 #! load_library("dom")
 #! load_library("io")
 
-#! load_script("assets/")  # d3, ramda, broadcast, d3-symbol
-#! load_script("src/plot_primitives/")
+#! load_script("../assets/")  # d3, ramda, broadcast, d3-symbol
+#! load_script("plot_primitives/")
 #! load_script("class_interface.R")
 #! load_script("d3_helpers.R")
 #! load_script("utils.R")
 #! load_script("plot_helpers.R")
-#! load_script("svg_to_png.R")
-#! load_script("controller.R")
+#! load_script("addons/svg_to_png.R")
+#! load_script("addons/controller.R")
 
 
 plot2 <- R6Class(
