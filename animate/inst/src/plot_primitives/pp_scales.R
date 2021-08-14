@@ -2,8 +2,8 @@
 
 #' Return the scale function for the X-Y plotting
 new_scale <- function(param, device) {
-  xlim <- param$xlim || d3_extent(param$x)
-  ylim <- param$ylim || d3_extent(param$y)
+  xlim <- param$xlim || device$par$xlim || d3_extent(param$x)
+  ylim <- param$ylim || device$par$ylim || d3_extent(param$y)
   range <- device$range()
   xrange <- param$xrange || range$x
   yrange <- param$yrange || range$y
