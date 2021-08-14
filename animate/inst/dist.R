@@ -55,7 +55,7 @@ plot2 <- R6Class(
     #' Set active device
     #' @param device_id A character string.
     set_active_device = function(device_id) {
-      target_device <- find_device(list_of_device, device_id)
+      target_device <- find_device(self$list_of_device, device_id)
       if (target_device) {
         self$device <- target_device
       }
@@ -70,22 +70,31 @@ plot2 <- R6Class(
       self$list_of_device$push(device)
     },
 
+    delete_device = function(device_id) {
+      # use the active device by default
+      if (!device_id) {
+        device_id <- self$device$id
+        self$device <- NULL
+      }
+      # remove all elements in that selected device and then the device itself
+      cur_device <- find_device(self$list_of_device, device_id)
+      cur_device$remove("*", NULL)
+      remove_device(self$list_of_device, device_id)
+    },
+
     plot   = function(param) { plot(param, self$device)   },
     axis   = function(param) { axis(param, self$device)   },
     lines  = function(param) { lines(param, self$device)  },
     points = function(param) { points(param, self$device) },
     text   = function(param) { text(param, self$device)   },
     image  = function(param) { image(param, self$device)  },
-    barplot = function(param) { barplot(param, self$device)   },
+    bars   = function(param) { bars(param, self$device)   },
 
     #' Set a parameter of the active device
     set_par = function(param) { self$device$set_par(param) },
 
     #' Remove an element from the active device
     remove = function(selector, id) { self$device$remove(selector, id) },
-
-    #' Remove all elements of the active device
-    clear = function() { self$device$clear() },
 
     # Interactions with external functions --------------------------------------------------------
     #' Save the plotting commands so that the plots can be detached
@@ -160,15 +169,16 @@ plot2 <- R6Class(
   list(
     dispatchers = c(
       Decoder("fn_init_svg", message %=>% self$new_device(message)),
+      Decoder("fn_axis", message %=>% self$axis(message)),
       Decoder("fn_bars", message %=>% self$bars(message)),
       Decoder("fn_points", message %=>% self$points(message)),
       Decoder("fn_lines", message %=>% self$lines(message)),
       Decoder("fn_image", message %=>% self$image(message)),
       Decoder("fn_text", message %=>% self$text(message)),
       Decoder("fn_export", message %=>% self$export()),
-      Decoder("fn_set", message %=>% self$set(message$selector)),
+      Decoder("fn_set", message %=>% self$set_active_device(message$device_id)),
       Decoder("fn_remove", message %=>% self$remove(message$selector, message$id)),
-      Decoder("fn_clear", message %=>% self$clear()),
+      Decoder("fn_delete", message %=>% self$delete_device(message$id)),
       Decoder("fn_plot", message %=>% self$plot(message)),
       Decoder("fn_par", message %=>% self$set_par(message)),
       Decoder("fn_max_stacksize", message %=>% self$set_max_num_commands(message$n))
@@ -176,17 +186,12 @@ plot2 <- R6Class(
   )
 )
 
-
 find_device <- function(list_of_device, device_id) {
-  i <- 0
-  while (i < list_of_device$length) {
-    current_device <- list_of_device[i]
-    if (current_device$id == device_id) {
-      return(current_device)
-    }
-    i <- i + 1
-  }
-  NULL
+  list_of_device$find(x %=>% x$id == device_id)
+}
+
+remove_device <- function(list_of_device, device_id) {
+  list_of_device$filter(x %=>% x$id != device_id)
 }
 
 import_device <- function(setting) {
@@ -194,4 +199,18 @@ import_device <- function(setting) {
   new_device$import(setting)
   new_device
 }
+
+
+# # Imperative style for potential performance gain
+# find_device <- function(list_of_device, device_id) {
+#   i <- 0
+#   while (i < list_of_device$length) {
+#     current_device <- list_of_device[i]
+#     if (current_device$id == device_id) {
+#       return(current_device)
+#     }
+#     i <- i + 1
+#   }
+#   NULL
+# }
 JS_device <- plot2$new(-1)
