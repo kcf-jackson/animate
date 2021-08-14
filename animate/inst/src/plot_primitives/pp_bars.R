@@ -1,77 +1,39 @@
-#' #' Add bars to a plot
-#' bars = function(param) {
-#'   build_arg_list <- broadcast(
-#'     function(x, y, w, h, id, fill, stroke, stroke_width, stroke_dasharray) {
-#'       list(x = x, y = y, w = w, h = h, id = id,
-#'            fill = fill, stroke = stroke,
-#'            "stroke-width" = stroke_width,
-#'            "stroke-dasharray" = stroke_dasharray)
-#'     }
-#'   )
-#'
-#'   # Parameters destructuring ----
-#'   x <- param$x
-#'   y <- param$y
-#'   w <- param$w
-#'   h <- param$h
-#'   id     <- param$id || generate_id("rect", length_data(x, y, w, h))
-#'   fill   <- param$fill || "black"
-#'   stroke <- param$stroke || "black"
-#'   stroke_width <- param["stroke-width"] || 0
-#'   stroke_dasharray <- param["stroke-dasharray"] || "none"
-#'
-#'   attr <- param$attr
-#'   style <- param$style
-#'   transition <- param$transition
-#'
-#'   # Set auxiliary variables ----
-#'   data0 <- build_arg_list(x, y, w, h, id, fill, stroke, stroke_width, stroke_dasharray)
-#'
-#'   # Scale ----
-#'   scale <- param$scale || "scaleLinear"
-#'   xlim <- param$xlim || d3::extent(add(x, w))
-#'   ylim <- param$ylim || d3::extent(add(y, h))
-#'   x_scale <- d3_scale(domain = xlim, range = self$range("x"), scale)
-#'   y_scale <- d3_scale(domain = ylim, range = self$range("y"), scale)
-#'   cw <- self$device$width
-#'   ch <- self$device$height
-#'
-#'   # Main update ----
-#'   selection <- self$device$selection$
-#'     selectAll("rect.bars")$
-#'     filter(d %=>% id$includes(d$id))$
-#'     data(data0)
-#'
-#'   d3_update <- function(s) {
-#'     s$attr("id", d %=>% d$id)$
-#'       attr("x", d %=>% x_scale(d$x))$
-#'       attr("y", d %=>% y_scale(d$y + d$h))$
-#'       attr("width", d %=>% x_scale(d$w) - cw * private$left())$
-#'       attr("height", d %=>% ch * (1 - private$bottom()) - y_scale(d$h))$
-#'       style("fill", d %=>% d$fill)$
-#'       style("stroke-dasharray", d %=>% d["stroke-dasharray"])$
-#'       style("stroke-width", d %=>% d["stroke-width"])$
-#'       style("stroke", d %=>% d$stroke) %>%
-#'       d3_cond(d3_attr(ARG, attr), attr) %>%
-#'       d3_cond(d3_style(ARG, style), style)
-#'   }
-#'
-#'   # Enter ----
-#'   selection$
-#'     enter()$
-#'     append("rect")$
-#'     classed("bars", TRUE) %>%
-#'     d3_update()
-#'
-#'   # Update ----
-#'   selection %>%
-#'     d3_cond(d3_transition(ARG, transition), transition) %>%
-#'     d3_update()
-#'
-#'   # Exit ----
-#'   selection$
-#'     exit()$
-#'     remove()
-#'
-#'   return(TRUE)
-#' },
+#! config(rules = animate_rules(), deparsers = dp("basic", "auto"))
+
+#' Add bars to a plot
+bars = function(param, device) {
+  param %<>% set_default(
+    list(id = generate_id("rect", length_of_data(param$x, param$y, param$w, param$h)),
+         fill = "black", stroke = "black", "stroke-width" = 0, "stroke-dasharray" = "none")
+  )
+  keys <- c("x", "y", "w", "h", "id", "fill", "stroke", "stroke-width", "stroke-dasharray")
+  data0 <- as_data(param, keys)
+
+  xlim <- param$xlim || d3_extent(add(param$x, param$w))
+  ylim <- param$ylim || d3_extent(add(param$y, param$h))
+  cw <- device$width
+  ch <- device$height
+
+  barplot_update <- function(selection, scale) {
+    selection$
+      attr("id", d %=>% d$id)$
+      attr("x", d %=>% scale$x(d$x))$
+      attr("y", d %=>% scale$y(d$y + d$h))$  # top-left corner of the 'rect'
+      attr("width", d %=>% scale$x(d$w) - scale$x(0))$   # see note 1 below
+      attr("height", d %=>% scale$y(0) - scale$y(d$h))$  # see note 2 below.
+      style("fill", d %=>% d$fill)$
+      style("stroke-dasharray", d %=>% d["stroke-dasharray"])$
+      style("stroke-width", d %=>% d["stroke-width"])$
+      style("stroke", d %=>% d$stroke)
+  }
+  d3_enter_update_exit(param, device, data0,
+                       tag = "rect", className = "bars",
+                       barplot_update)
+}
+
+# Note 1: Suppose we map [0,1,2] to [50,100,150], note that 1 is map to 100, 
+# but the length of 1 should map to 50. This is done by mapping [0, 1] to 
+# [50, 100], then take the difference.
+#
+# Note 2: The direction of the subtraction is reversed because the y-scale is
+# inverted, so 0 maps to the greater number.
