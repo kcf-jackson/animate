@@ -1,13 +1,13 @@
 Package: animate
-Title: A Web-based Graphics Device For Animated Plots
-Version: 0.2.1
+Title: A Web-based Graphics Device For Animated Visualisations
+Version: 0.2.5
 Authors@R: 
     person(given = "Chun Fung",
            family = "Kwok",
            role = c("aut", "cre"),
            email = "kcf.jackson@gmail.com",
            comment = c(ORCID = "0000-0002-0716-3879"))
-Description: A web-based graphics device for animated plots.
+Description: Implements a web-based graphics device for animated visualisations. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

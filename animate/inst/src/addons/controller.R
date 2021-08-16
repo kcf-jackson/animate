@@ -34,7 +34,7 @@ controller <- R6Class(
     #' @param n_frames An integer.
     #' @param wait A number; the number of milliseconds to wait for before the
     #' next frame is drawn.
-    play_for = function(n_frames, wait = 20) {
+    play_for = function(n_frames, wait = 20, callback) {
       if (self$player_pointer < 0) {
         return(NULL)
       }
@@ -45,6 +45,7 @@ controller <- R6Class(
           frame_counter <<- frame_counter + 1
           if (frame_counter >= n_frames) {
             window$cancelAnimationFrame(handle)
+            if (callback) callback()
           }
           TRUE
         }
@@ -60,7 +61,7 @@ controller <- R6Class(
     #' @note The playing of the frames is exclusive, i.e., the function stops
     #' right before the target frame is reached, and the target frame is not
     #' executed. To loop through the entire commands stack, use 0 for the `frame_num`.
-    play_until = function(frame_num, wait = 20) {
+    play_until = function(frame_num, wait = 20, callback) {
       if (self$player_pointer < 0) {
         return(NULL)
       }
@@ -69,6 +70,7 @@ controller <- R6Class(
           self$play()
           if (self$player_pointer == frame_num) {
             window$cancelAnimationFrame(handle)
+            if (callback) callback()
           }
           TRUE
         }
@@ -81,7 +83,7 @@ controller <- R6Class(
     #' @param times An integer; the number of times to loop.
     #' @param wait A number; the number of milliseconds to wait for before the
     #' next frame is drawn.
-    loop = function(times = 1, wait = 20) {
+    loop = function(times = 1, wait = 20, callback) {
       if (self$player_pointer < 0) {
         return(NULL)
       }
@@ -94,6 +96,7 @@ controller <- R6Class(
           }
           if (counter >= times) {
             window$cancelAnimationFrame(handle)
+            if (callback) callback()
           }
           TRUE
         }
@@ -135,7 +138,7 @@ controller <- R6Class(
 #' res <- timer_1()
 #'
 #' @export
-make_animation <- function(f, wait) {
+make_animation <- function(f, wait, callback) {
   then <- performance$now()
   main <- function() {
     timer <- requestAnimationFrame(main)
@@ -144,7 +147,7 @@ make_animation <- function(f, wait) {
     if (elapsed > wait) {
       then <<- now - (elapsed %% wait)
       # main animation loop
-      f(timer)
+      f(timer, callback)
     }
     return(timer)
   }

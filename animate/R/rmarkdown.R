@@ -57,9 +57,7 @@ insert_animate <- function(file, options = click_to_play(), style) {
 click_to_play <- function(selector = "#SVG_1", start = 2) {
   sprintf(
     'ctrl = new controller(JS_device);
-    (async () => {
-      await ctrl.play_until(%s, 1);
-    })().then(() => {
+    ctrl.play_until(%s, 1, () => {
       ctrl.watch("%s", "click", function() { ctrl.play() });
     })',
     start, selector
@@ -77,24 +75,25 @@ click_to_play <- function(selector = "#SVG_1", start = 2) {
 click_to_loop <- function(selector = "#SVG_1", start = 2, wait = 20) {
   sprintf(
     'ctrl = new controller(JS_device);
-    ctrl.play_until(%s, 1);
-    ctrl.watch("%s", "click", function() { ctrl.play_until(0, %s) });',
+    ctrl.play_until(%s, 1, () => {
+      ctrl.watch("%s", "click", function() { ctrl.play_until(0, %s) });
+    })',
     start, selector, wait
   )
 }
 
-#' #' Loop through the available frames n times
-#' #' @param times An integer; the number of times to loop.
-#' #' @param wait A number; the number of milliseconds to wait for before the
-#' #' next frame is drawn.
-#' #' @export
-#' loop <- function(times = 1, wait = 20) {
-#'   sprintf(
-#'     "ctrl = new controller(JS_device);
-#'     ctrl.loop(%s, %s);",
-#'     times, wait
-#'   )
-#' }
+# #' Loop through the available frames n times
+# #' @param times An integer; the number of times to loop.
+# #' @param wait A number; the number of milliseconds to wait for before the
+# #' next frame is drawn.
+# #' @export
+# loop <- function(times = 1, wait = 20) {
+#   sprintf(
+#     "ctrl = new controller(JS_device);
+#     ctrl.loop(%s, %s);",
+#     times, wait
+#   )
+# }
 
 
 # Convert JSON to JS ----------------------------------------------------------
