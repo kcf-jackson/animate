@@ -376,34 +376,39 @@ var Decoder = function(name, handler) {
 }
 var Device = function(selection, width, height, id, par = {  }) {
     var par = set_default(par, { "mai": rep(0.082, 4) })
-    var bottom = function() { return par.mai[0] }
-    var left = function() { return par.mai[1] }
-    var top = function() { return par.mai[2] }
-    var right = function() { return par.mai[3] }
+    var env = { "selection": selection, "width": width, "height": height, "id": id, "par": par }
+    var bottom = function() { return env.par.mai[0] }
+    var left = function() { return env.par.mai[1] }
+    var top = function() { return env.par.mai[2] }
+    var right = function() { return env.par.mai[3] }
     var range = function() {
-        return { "x": times(Array(left(), 1 - right()), width), "y": times(Array(top(), 1 - bottom()), height).reverse() }
+        return { "x": times(Array(left(), 1 - right()), env.width), "y": times(Array(top(), 1 - bottom()), env.height).reverse() }
     }
-    var set_par = function(parameters) { return Object.assign(par, parameters) }
+    var set_par = function(parameters) {
+        env.par = Object.assign(env.par, parameters)
+        return env
+    }
     var clear = function() {
-        return selection.selectAll("*").remove()
+        return env.selection.selectAll("*").remove()
     }
     var remove = function(selector = "*", id) {
         var filter_by_id = selection => selection.filter(has_id(id))
-        var selected = d3_cond(selection.selectAll(selector), filter_by_id, id)
+        var selected = d3_cond(env.selection.selectAll(selector), filter_by_id, id)
         return selected.remove()
     }
     var export_ = function() {
-        return { "selection": selection.attr("id"), "width": width, "height": height, "id": id, "par": par }
+        env.selection = env.selection.attr("id")
+        return env
     }
     var import_ = function(setting) {
-        selection = document.querySelector(setting.selection)
-        width = setting.width
-        height = setting.height
-        id = setting.id
-        par = setting.par
+        env.selection = document.querySelector(Id(setting.selection))
+        env.width = setting.width
+        env.height = setting.height
+        env.id = setting.id
+        env.par = setting.par
         return true
     }
-    return { "selection": selection, "width": width, "height": height, "id": id, "par": par, "bottom": bottom, "left": left, "top": top, "right": right, "range": range, "set_par": set_par, "clear": clear, "remove": remove, "export": export_, "import": import_ }
+    return Object.assign(env, { "bottom": bottom, "left": left, "top": top, "right": right, "range": range, "set_par": set_par, "clear": clear, "remove": remove, "export": export_, "import": import_ })
 }
 
 
@@ -650,28 +655,79 @@ var controller = function(p) {
     self.player_handle = null
     self.initialize = function(p) {
         self.plots = p
-        self.player_pointer = p.length() > 0 ? 0 : -1
+        var num_cmd = self.plots.get_max_num_commands()
+        self.player_pointer = num_cmd > 0 || num_cmd == -1 ? 0 : -1
         return self
     }
     self.play = function() {
         var p_obj = self.plots
+        var num_cmd = self.plots.get_max_num_commands()
         var ind = self.player_pointer
         if (ind >= 0) {
             p_obj.dispatch_by_idx(ind)
-            self.player_pointer = (ind + 1) % p_obj.length()
+            self.player_pointer = (ind + 1) % num_cmd
         }
         return true
     }
-    self.loop = function() {
-        var p_obj = self.plots
-        if (!self.player_handle && self.player_pointer >= 0) {
-            self.player_handle = setInterval(function() {
-                p_obj.dispatch_by_idx(self.player_pointer)
-                self.player_pointer = (self.player_pointer + 1) % p_obj.length()
-                return true
-            }, 300)
+    self.play_for = function(n_frames, wait = 20, callback) {
+        if (self.player_pointer < 0) {
+            return null
         }
+        var play_n_frame = function() {
+            var frame_counter = 0
+            return function(handle) {
+                self.play()
+                frame_counter = frame_counter + 1
+                if (frame_counter >= n_frames) {
+                    window.cancelAnimationFrame(handle)
+                    if (callback) callback()
+                }
+                return true
+            }
+        }
+        self.player_handle = make_animation(play_n_frame(), wait)()
         return true
+    }
+    self.play_until = function(frame_num, wait = 20, callback) {
+        if (self.player_pointer < 0) {
+            return null
+        }
+        var play_until_frame = function() {
+            return function(handle) {
+                self.play()
+                if (self.player_pointer == frame_num) {
+                    window.cancelAnimationFrame(handle)
+                    if (callback) callback()
+                }
+                return true
+            }
+        }
+        self.player_handle = make_animation(play_until_frame(), wait)()
+        return true
+    }
+    self.loop = function(times = 1, wait = 20, callback) {
+        if (self.player_pointer < 0) {
+            return null
+        }
+        var loop_through = function() {
+            var counter = 0
+            return function(handle) {
+                self.play()
+                if (self.player_pointer == 0) {
+                    counter = counter + 1
+                }
+                if (counter >= times) {
+                    window.cancelAnimationFrame(handle)
+                    if (callback) callback()
+                }
+                return true
+            }
+        }
+        self.player_handle = make_animation(loop_through(), wait)()
+        return true
+    }
+    self.watch = function(selector, event, callback) {
+        return select_dom(selector).addEventListener(event, callback)
     }
     // private variables and methods
     let private = {}
@@ -679,6 +735,20 @@ var controller = function(p) {
     if (self.initialize) {
         self.initialize(p)
     }
+}
+var make_animation = function(f, wait, callback) {
+    var then = performance.now()
+    var main = function() {
+        var timer = requestAnimationFrame(main)
+        var now = performance.now()
+        var elapsed = now - then
+        if (elapsed > wait) {
+            then = now - (elapsed % wait)
+            f(timer, callback)
+        }
+        return timer
+    }
+    return main
 }
 
 
@@ -710,8 +780,13 @@ var plot2 = function(max_num_commands = 0) {
     }
     self.new_device = function(param) {
         var device = svg_device(param)
-        self.device = device
-        return self.list_of_device.push(device)
+        if (device) {
+            self.device = device
+            self.list_of_device.push(device)
+        } else {
+            self.device = find_device(self.list_of_device, param.id)
+        }
+        return device
     }
     self.delete_device = function(device_id) {
         if (!device_id) {
@@ -782,8 +857,6 @@ var plot2 = function(max_num_commands = 0) {
     }
     self.import = function(setting) {
         self.plot_commands = setting.plot_commands
-        self.device = import_device(setting.device)
-        self.list_of_device = setting.list_of_device.map(import_device)
         self.max_num_commands = setting.max_num_commands
         return self
     }
