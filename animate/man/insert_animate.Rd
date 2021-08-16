@@ -4,10 +4,14 @@
 \alias{insert_animate}
 \title{Insert an animated plot into an R Markdown document}
 \usage{
-insert_animate(file)
+insert_animate(file, options = click_to_play())
 }
 \arguments{
 \item{file}{The exported plot.}
+
+\item{options}{A character string; the JavaScript to customise the playback options.
+Two basic options \code{click_to_play()} and \code{click_to_loop()} have been implemented
+for general usage.}
 }
 \description{
 Insert an animated plot into an R Markdown document
