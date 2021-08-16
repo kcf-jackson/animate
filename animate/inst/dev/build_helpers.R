@@ -75,7 +75,7 @@ build_library <- function(main_file) {
   if (!file.exists(main_file)) {
     stop("File '", main_file, "' does not exist.")
   }
-  dep <- sketch:::get_dependencies(main_file)
+  dep <- sketch::get_dependencies(main_file)
 
   message("Building the library...")
   curwd <- getwd()
@@ -83,66 +83,7 @@ build_library <- function(main_file) {
   src_path <- dirname(main_file)
   setwd(src_path)
 
-  js <- bundle(c(sketch::src("dom"), sketch::src("io"), dep, basename(main_file)))
+  js <- sketch::bundle(c(sketch::src("dom"), sketch::src("io"), dep, basename(main_file)))
   message("Writing to ./inst/dist/animate.js")
   file.copy(js, "../dist/animate.js", overwrite = TRUE)
-}
-
-
-#' Bundle a list of files into a single JavaScript file
-#'
-#' @param fs A character vector; a list of files.
-#'
-#' @note This is needed for the shiny app.
-#'
-#' @export
-bundle <- function(fs) {
-  fs <- flatten_files(fs, "[.]((r)|(js))$", full.names = TRUE, recursive = TRUE,
-                      ignore.case = TRUE)
-  res_js <- file.path(tempdir(), "bundle.js")
-  for (file in fs) {
-    if (!file.exists(file) && !dir.exists(file)) {
-      stop("Path '", file, "' does not exist.")
-    }
-    file_extension <- tolower(tools::file_ext(file))
-    if (file_extension %in% c("r", "js")) {
-      if (file_extension == "r") {
-        temp <- tempfile()
-        sketch::compile_r(file, temp)
-      } else if (file_extension == "js") {
-        temp <- file
-      }
-      lines <- readLines(temp)
-      write(lines, file = res_js, append = TRUE)
-      write("\n\n", file = res_js, append = TRUE)
-    } else {
-      warning("File '", file, "' is not processed.")
-    }
-  }
-  res_js
-}
-
-
-#' Flatten a list of files / directories into a list of files
-#'
-#' @param fs A character vector; a list of files.
-#' @param pattern An optional regular expression to pass to `list.files` for
-#' filtering files while expanding a directory into a list of files.
-#' @param ... Additional parameter to pass to `list.files`.
-#'
-#' @export
-flatten_files <- function(fs, pattern = NULL, ...) {
-  fs %>%
-    purrr::map(function(path) {
-      if (!file.exists(path) && !dir.exists(path)) {
-        stop("Path '", path, "' does not exist.")
-      }
-      if (file.exists(path)) {
-        return(path)
-      }
-      if (dir.exists(path)) {
-        return(list.files(path, pattern, ...))
-      }
-    }) %>%
-    unlist()
 }
