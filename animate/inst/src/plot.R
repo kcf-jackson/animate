@@ -64,8 +64,13 @@ plot2 <- R6Class(
     # Interactions with the active device --------------------------------------
     new_device = function(param) {
       device <- svg_device(param)
-      self$device <- device
-      self$list_of_device$push(device)
+      if (device) {
+        self$device <- device
+        self$list_of_device$push(device)
+      } else {
+        self$device <- find_device(self$list_of_device, param$id)
+      }
+      device
     },
 
     delete_device = function(device_id) {
@@ -143,8 +148,8 @@ plot2 <- R6Class(
     #' @param setting A JSON object
     import = function(setting) {
       self$plot_commands <- setting$plot_commands
-      self$device <- import_device(setting$device)
-      self$list_of_device <- setting$list_of_device$map(import_device)
+      # self$list_of_device <- setting$list_of_device$map(import_device)
+      # self$device <- find_device(self$list_of_device, setting$device$id)
       self$max_num_commands <- setting$max_num_commands
       self
     },

@@ -19,55 +19,65 @@ Decoder <- function(name, handler) {
 #' @param id A character string; the id of the device.
 #' @param par A list; other additional device parameters.
 Device <- function(selection, width, height, id, par = list()) {
-  par    <- set_default(par, list(mai = rep(0.082, 4)))
+  par <- set_default(par, list(mai = rep(0.082, 4)))
+  env <- list(selection = selection, width = width, height = height,
+              id = id, par = par)
 
   #' Return the margin parameters
-  bottom <- function() par$mai[0]
-  left   <- function() par$mai[1]
-  top    <- function() par$mai[2]
-  right  <- function() par$mai[3]
+  bottom <- function() env$par$mai[0]
+  left   <- function() env$par$mai[1]
+  top    <- function() env$par$mai[2]
+  right  <- function() env$par$mai[3]
 
   #' Return the x and y ranges of the plotting area
   range  <- function() {
-    list(x = times(c(left(), 1 - right()), width),
-         y = times(c(top(), 1 - bottom()), height)$reverse())
+    list(x = times(c(left(), 1 - right()), env$width),
+         y = times(c(top(), 1 - bottom()), env$height)$reverse())
   }
 
   #' Set graphical parameters
-  set_par <- function(parameters) Object::assign(par, parameters)
+  set_par <- function(parameters) {
+    env$par <- Object::assign(env$par, parameters)
+    env
+  }
 
   #' Remove all elements from the device
-  clear <- function() { selection$selectAll("*")$remove() }
+  clear <- function() {
+    env$selection$selectAll("*")$remove()
+  }
 
   #' Remove a selected element from the device
   remove <- function(selector = "*", id) {
     filter_by_id <- selection %=>% selection$filter(has_id(id))
-    selected <- selection$selectAll(selector) %>% d3_cond(filter_by_id, id)
+    selected <- env$selection$
+      selectAll(selector) %>%
+      d3_cond(filter_by_id, id)
     selected$remove()
   }
 
   export_ <- function() {
-    # Replace reference object by its ID
-    list(selection = selection$attr("id"),
-         width = width, height = height,
-         id = id, par = par)
+    # Replace the reference object by its ID
+    env$selection <- env$selection$attr("id")
+    env
   }
 
   import_ <- function(setting) {
-    # Restore reference object
-    selection <<- document$querySelector(setting$selection)
-    width <<- setting$width
-    height <<- setting$height
-    id <<- setting$id
-    par <<- setting$par
+    # Restore the reference object
+    env$selection <- document$querySelector(Id(setting$selection))
+    env$width <- setting$width
+    env$height <- setting$height
+    env$id <- setting$id
+    env$par <- setting$par
     TRUE
   }
 
-  list(selection = selection, width = width, height = height, id = id,
-       par = par,
-       # Methods
+  Object::assign(
+    env,
+    list(# Methods
        bottom = bottom, left = left, top = top, right = right,
        range = range, set_par = set_par,
        clear = clear, remove = remove,
-       export = export_, import = import_)
+       export = export_, import = import_
+    )
+  )
 }
