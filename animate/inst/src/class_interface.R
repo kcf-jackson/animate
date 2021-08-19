@@ -57,7 +57,9 @@ Device <- function(selection, width, height, id, par = list()) {
 
   export_ <- function() {
     # Replace the reference object by its ID
-    env$selection <- env$selection$attr("id")
+    if (env$selection$attr) {
+      env$selection <- env$selection$attr("id")
+    }
     env
   }
 
