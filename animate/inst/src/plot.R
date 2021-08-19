@@ -99,6 +99,9 @@ plot2 <- R6Class(
     #' Remove an element from the active device
     remove = function(selector, id) { self$device$remove(selector, id) },
 
+    #' Remove all elements from the active device
+    clear = function() { self$remove() },
+
     # Interactions with external functions --------------------------------------------------------
     #' Save the plotting commands so that the plots can be detached
     record = function(data) {
@@ -159,7 +162,7 @@ plot2 <- R6Class(
       setting <- list(
         plot_commands = self$plot_commands,
         device = self$device$export(),
-        list_of_device = self$list_of_device$map(~.x$export()),
+        # list_of_device = self$list_of_device$map(~.x$export()),
         max_num_commands = self$max_num_commands
       ) %>%
         JSON::stringify() %>%
@@ -178,9 +181,11 @@ plot2 <- R6Class(
       Decoder("fn_lines", message %=>% self$lines(message)),
       Decoder("fn_image", message %=>% self$image(message)),
       Decoder("fn_text", message %=>% self$text(message)),
+      Decoder("fn_import", message %=>% self$import(message$setting)),
       Decoder("fn_export", message %=>% self$export()),
       Decoder("fn_set", message %=>% self$set_active_device(message$device_id)),
       Decoder("fn_remove", message %=>% self$remove(message$selector, message$id)),
+      Decoder("fn_clear", message %=>% self$clear()),
       Decoder("fn_delete", message %=>% self$delete_device(message$id)),
       Decoder("fn_plot", message %=>% self$plot(message)),
       Decoder("fn_par", message %=>% self$set_par(message)),

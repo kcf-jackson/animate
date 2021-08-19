@@ -216,9 +216,13 @@ animate <- R6::R6Class(
 
     #' @description
     #' Set the graphical parameters
-    #' @param parameters The graphical parameters
-    par = function(parameters) {
-      self$send(Message("fn_par", parameters))
+    #' @param ... The graphical parameters
+    par = function(...) {
+      args <- list(...)
+      if (is.null(names(args)) || any(names(args) == "")) {
+        stop("All graphical parameters must be named.")
+      }
+      self$send(Message("fn_par", args))
     },
 
     #' @description
@@ -228,6 +232,13 @@ animate <- R6::R6Class(
     remove = function(id = NULL, selector = "*") {
       self$send(Message("fn_remove", list(selector = selector, id = id)))
     },
+
+    #' @description
+    #' Remove all elements from the active SVG element
+    clear = function() {
+      self$send(Message("fn_clear", list()))
+    },
+
 
     #' @description
     #' Remove a SVG element
@@ -246,8 +257,9 @@ animate <- R6::R6Class(
 
     #' @description
     #' Import an animated plot
-    import = function() {
-      self$send(Message("fn_import", list(skip_log = TRUE)))
+    #' @param setting A JSON file exported from previous runs.
+    import = function(setting) {
+      self$send(Message("fn_import", list(setting = jsonlite::fromJSON(setting))))
     },
 
     #' @description
