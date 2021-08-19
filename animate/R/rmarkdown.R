@@ -58,9 +58,15 @@ click_to_play <- function(selector = "#SVG_1", start = 2) {
   sprintf(
     'ctrl = new controller(JS_device);
     ctrl.play_until(%s, 1, () => {
-      ctrl.watch("%s", "click", function() { ctrl.play() });
+      ctrl.watch("%s", "click", function() {
+        if (ctrl.player_pointer == 0) {
+          ctrl.play_until(%s, 1);
+        } else {
+          ctrl.play();
+        }
+      });
     })',
-    start, selector
+    start, selector, start
   )
 }
 
