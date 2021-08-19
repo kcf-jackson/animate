@@ -40,6 +40,7 @@ A web-based graphics device
 \item \href{#method-set}{\code{animate$set()}}
 \item \href{#method-par}{\code{animate$par()}}
 \item \href{#method-remove}{\code{animate$remove()}}
+\item \href{#method-clear}{\code{animate$clear()}}
 \item \href{#method-delete}{\code{animate$delete()}}
 \item \href{#method-import}{\code{animate$import()}}
 \item \href{#method-export}{\code{animate$export()}}
@@ -342,13 +343,13 @@ Set the active device to a SVG element
 \subsection{Method \code{par()}}{
 Set the graphical parameters
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{animate$par(parameters)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{animate$par(...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{parameters}}{The graphical parameters}
+\item{\code{...}}{The graphical parameters}
 }
 \if{html}{\out{</div>}}
 }
@@ -371,6 +372,16 @@ Remove elements from the active SVG element
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-clear"></a>}}
+\if{latex}{\out{\hypertarget{method-clear}{}}}
+\subsection{Method \code{clear()}}{
+Remove all elements from the active SVG element
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$clear()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-delete"></a>}}
@@ -402,9 +413,16 @@ self$send(Message("fn_group", c(...)))
 \subsection{Method \code{import()}}{
 Import an animated plot
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{animate$import()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{animate$import(setting)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{setting}}{A JSON file exported from previous runs.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-export"></a>}}

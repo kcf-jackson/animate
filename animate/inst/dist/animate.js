@@ -270,13 +270,13 @@ var plot = function(param, device) {
     if (param.type == "l") {
         lines(param, device)
     }
-    Object.assign(param, { "data": param.x, "lim": param.xlim, "side": 1, "id": "x-axis" })
-    axis(param, device)
-    Object.assign(param, { "data": param.y, "lim": param.ylim, "side": 2, "id": "y-axis" })
-    axis(param, device)
+    var axis_param = Object.assign({  }, param, { "data": param.x, "lim": param.xlim, "side": 1, "id": "x-axis" })
+    axis(axis_param, device)
+    var axis_param = Object.assign({  }, param, { "data": param.y, "lim": param.ylim, "side": 2, "id": "y-axis" })
+    axis(axis_param, device)
     var cw = device.width
     var ch = device.height
-    var base_param = { "xlim": Array(0, 1), "xrange": Array(0, cw), "ylim": Array(0, 1), "yrange": Array(0, ch), "attr": { "text-anchor": "middle" }, "style": { "font-family": "Georgia" } }
+    var base_param = { "xlim": Array(0, 1), "xrange": Array(0, cw), "ylim": Array(0, 1), "yrange": Array(0, ch), "attr": { "text-anchor": "middle" }, "style": { "font-family": "Arial, Helvetica, sans-serif" } }
     if (param.main) {
         var text_param = Object.assign({ "x": 0.5, "y": 0.5 * device.top(), "text": param.main, "id": "main-title" }, base_param)
         text(text_param, device)
@@ -295,7 +295,7 @@ var plot = function(param, device) {
 
 
 var points = function(param, device) {
-    param = set_default(param, { "id": generate_id("point", length_of_data(param.x, param.y)), "shape": "circle", "size": 30, "fill": "black", "stroke": "black", "stroke-width": 0 })
+    param = set_default(param, { "id": generate_id("point", length_of_data(param.x, param.y)), "shape": "circle", "size": device.par.size || 30, "fill": "black", "stroke": "black", "stroke-width": 0 })
     var keys = Array("x", "y", "id", "shape", "size", "fill", "stroke", "stroke-width")
     var data0 = as_data(param, keys)
     var points_update = function(selection, scale) {
@@ -397,7 +397,9 @@ var Device = function(selection, width, height, id, par = {  }) {
         return selected.remove()
     }
     var export_ = function() {
-        env.selection = env.selection.attr("id")
+        if (env.selection.attr) {
+            env.selection = env.selection.attr("id")
+        }
         return env
     }
     var import_ = function(setting) {
@@ -824,6 +826,9 @@ var plot2 = function(max_num_commands = 0) {
     self.remove = function(selector, id) {
         return self.device.remove(selector, id)
     }
+    self.clear = function() {
+        return self.remove()
+    }
     self.record = function(data) {
         if ((self.max_num_commands == 0) || (data.type == "fn_export")) {
             return self.plot_commands
@@ -861,13 +866,13 @@ var plot2 = function(max_num_commands = 0) {
         return self
     }
     self.export = function() {
-        var setting = end_string(JSON.stringify({ "plot_commands": self.plot_commands, "device": self.device.export(), "list_of_device": self.list_of_device.map(function(dot_x) { return dot_x.export() }), "max_num_commands": self.max_num_commands }))
+        var setting = end_string(JSON.stringify({ "plot_commands": self.plot_commands, "device": self.device.export(), "max_num_commands": self.max_num_commands }))
         write(setting, "animate.json")
         return true
     }
     // private variables and methods
     let private = {}
-    private.dispatchers = Array(Decoder("fn_init_svg", message => self.new_device(message)), Decoder("fn_axis", message => self.axis(message)), Decoder("fn_bars", message => self.bars(message)), Decoder("fn_points", message => self.points(message)), Decoder("fn_lines", message => self.lines(message)), Decoder("fn_image", message => self.image(message)), Decoder("fn_text", message => self.text(message)), Decoder("fn_export", message => self.export()), Decoder("fn_set", message => self.set_active_device(message.device_id)), Decoder("fn_remove", message => self.remove(message.selector, message.id)), Decoder("fn_delete", message => self.delete_device(message.id)), Decoder("fn_plot", message => self.plot(message)), Decoder("fn_par", message => self.set_par(message)), Decoder("fn_max_stacksize", message => self.set_max_num_commands(message.n)))
+    private.dispatchers = Array(Decoder("fn_init_svg", message => self.new_device(message)), Decoder("fn_axis", message => self.axis(message)), Decoder("fn_bars", message => self.bars(message)), Decoder("fn_points", message => self.points(message)), Decoder("fn_lines", message => self.lines(message)), Decoder("fn_image", message => self.image(message)), Decoder("fn_text", message => self.text(message)), Decoder("fn_import", message => self.import(message.setting)), Decoder("fn_export", message => self.export()), Decoder("fn_set", message => self.set_active_device(message.device_id)), Decoder("fn_remove", message => self.remove(message.selector, message.id)), Decoder("fn_clear", message => self.clear()), Decoder("fn_delete", message => self.delete_device(message.id)), Decoder("fn_plot", message => self.plot(message)), Decoder("fn_par", message => self.set_par(message)), Decoder("fn_max_stacksize", message => self.set_max_num_commands(message.n)))
     if (self.initialize) {
         self.initialize(max_num_commands)
     }

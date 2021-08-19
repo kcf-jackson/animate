@@ -5,3 +5,5 @@
 ^docs$
 ^pkgdown$
 ^makefile$
+^readme.md$
+^readme.Rmd$
