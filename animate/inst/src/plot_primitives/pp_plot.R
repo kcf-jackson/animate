@@ -22,12 +22,14 @@ plot <- function(param, device) {
 
   # Axes ----
   # x-axis
-  Object::assign(param, list(data = param$x, lim = param$xlim, side = 1, id = "x-axis"))
-  axis(param, device)
+  axis_param <- Object::assign(
+    list(), param, list(data = param$x, lim = param$xlim, side = 1, id = "x-axis"))
+  axis(axis_param , device)
 
   # y-axis
-  Object::assign(param, list(data = param$y, lim = param$ylim, side = 2, id = "y-axis"))
-  axis(param, device)
+  axis_param <- Object::assign(
+    list(), param, list(data = param$y, lim = param$ylim, side = 2, id = "y-axis"))
+  axis(axis_param, device)
 
   # Labels ----
   cw <- device$width
@@ -35,22 +37,22 @@ plot <- function(param, device) {
   base_param <- list(xlim = c(0, 1), xrange = c(0, cw),
                      ylim = c(0, 1), yrange = c(0, ch),
                      attr = list("text-anchor" = "middle"),
-                     style = list("font-family" = "Georgia"))
+                     style = list("font-family" = "Arial, Helvetica, sans-serif"))
   if (param$main) {
     text_param <- Object::assign(
-      list(x = 0.5, 
-           y = 0.5 * device$top(), 
-           text = param$main, 
-           id = "main-title"), 
+      list(x = 0.5,
+           y = 0.5 * device$top(),
+           text = param$main,
+           id = "main-title"),
       base_param
     )
     text(text_param, device)
   }
   if (param$xlab) {
     xlab_param <- Object::assign(
-      list(x = 0.5, 
-           y = 1 - 0.0625 * device$bottom(), 
-           text = param$xlab, 
+      list(x = 0.5,
+           y = 1 - 0.0625 * device$bottom(),
+           text = param$xlab,
            id = "x-label"),
       base_param
     )
@@ -58,7 +60,7 @@ plot <- function(param, device) {
   }
   if (param$ylab) {
     ylab_param <- Object::assign(
-      list(x = 0.5 * device$left(), 
+      list(x = 0.5 * device$left(),
            y = 0.5,
            text = param$ylab,
            id = "y-label",
@@ -72,10 +74,10 @@ plot <- function(param, device) {
 
 # labels <- function(position, label, id) {
 #   lab_param <- list(text = label, xlim = c(0, 1), ylim = c(0, 1), attr = list("text-anchor" = "middle"))
-#   if (position == "left")        { opt <- list(x = 0.5 * device$left(), y = 0.5, id = "y-label", transform = "rotate(-90)") } 
-#   else if (position == "right")  { opt <- list(x = device$right() + 0.5 * (1 - device$right()), y = 0.5, id = "y-label"} 
-#   else if (position == "top")    { opt <- list(x = 0.5, y = 0.5 * device$top(), id = "x-label") } 
-#   else if (position == "bottom") { opt <- list(x = 0.5, y = 1 - 0.0625 * device$bottom(), id = "x-label") } 
+#   if (position == "left")        { opt <- list(x = 0.5 * device$left(), y = 0.5, id = "y-label", transform = "rotate(-90)") }
+#   else if (position == "right")  { opt <- list(x = device$right() + 0.5 * (1 - device$right()), y = 0.5, id = "y-label"}
+#   else if (position == "top")    { opt <- list(x = 0.5, y = 0.5 * device$top(), id = "x-label") }
+#   else if (position == "bottom") { opt <- list(x = 0.5, y = 1 - 0.0625 * device$bottom(), id = "x-label") }
 #   else { stop("Wrong input for the first argument 'position'.") }
 #   Object::assign(lab_param, opt)
 # }
