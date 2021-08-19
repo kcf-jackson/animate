@@ -8,8 +8,11 @@
 points = function(param, device) {
   param %<>% set_default(
     list(id = generate_id("point", length_of_data(param$x, param$y)),
-         shape = "circle", size = 30, fill = "black",
-         stroke = "black", `stroke-width` = 0)
+         shape = "circle",
+         size = device$par$size || 30,
+         fill = "black",
+         stroke = "black",
+         `stroke-width` = 0)
   )
   keys <- c("x", "y", "id", "shape", "size", "fill", "stroke", "stroke-width")
   data0 <- as_data(param, keys)
