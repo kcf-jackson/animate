@@ -430,9 +430,18 @@ Import an animated plot
 \subsection{Method \code{export()}}{
 Export an animated plot
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{animate$export()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{animate$export(path = "./animate.json", handler = "browser")}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{path}}{A character string; the file path to export to.}
+
+\item{\code{handler}}{'r' or 'browser'; the program to handle the export operation.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

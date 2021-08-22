@@ -47,6 +47,15 @@ animate <- R6::R6Class(
           message("Device is ready.")
           do.call(self$svg, args)
         }
+        if (msg$type == "export") {
+          message("Exporting file to: ", msg$path)
+          jsonlite::write_json(
+            jsonlite::fromJSON(msg$data, simplifyVector = FALSE),
+            msg$path,
+            auto_unbox = TRUE,
+            null = "null"
+          )
+        }
       }
 
       # Start WebSocket connection
@@ -264,8 +273,11 @@ animate <- R6::R6Class(
 
     #' @description
     #' Export an animated plot
-    export = function() {
-      self$send(Message("fn_export", list(skip_log = TRUE)))
+    #' @param path A character string; the file path to export to.
+    #' @param handler 'r' or 'browser'; the program to handle the export operation.
+    export = function(path = "./animate.json", handler = "browser") {
+      self$send(Message("fn_export", list(path = path, filename = basename(path),
+                                          handler = handler, skip_log = TRUE)))
     }
   ),
   # Private fields and methods -------------------------------------------------
