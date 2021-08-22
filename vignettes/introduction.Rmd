@@ -1,0 +1,439 @@
+---
+title: "An introduction to the R package 'animate'"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{An introduction to 'animate'}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## 1. Introduction
+
+The R package 'animate' implements a web-based graphics device that models on the base R syntax and is powered by [d3.js](https://d3js.org/). The device is developed using the [sketch](https://github.com/kcf-jackson/sketch) package and targets real-time 
+animated visualisations. The key use cases in mind are agent-based modelling and 
+dynamical system, and it may also find applications in sports analytics, board 
+game analysis and basic animated charting.
+
+
+## 2. Installation and basic usage
+
+### a. Installation
+
+```{r}
+remotes::install_github("kcf-jackson/animate")
+```
+
+### b. Initialising and using the device
+
+To use the device, load the package and call `animate$new` with the `width` and `height` arguments (in pixel values) to initialise the device. It may take some time for the device to start; making function calls before the start-up process completes would result in a warning.
+
+#### Usage 1
+```{r}
+library(animate)
+device <- animate$new(width = 600, height = 400)  # takes ~0.5s
+
+device$plot(1:10, 1:10)
+device$points(1:10, 10 * runif(10), bg = "red")
+device$lines(1:100, sin(1:100 / 10 * pi / 2))
+device$clear()
+
+device$off()  # switch off the device when you are done
+```
+
+#### Usage 2
+
+Sometimes it can be convenient to attach the device so that the functions of the device can be called directly.
+
+```{r}
+library(animate)
+device <- animate$new(600, 400)
+attach(device)  # overrides the 'base' primitives
+
+plot(1:10, 1:10)
+points(1:10, 10 * runif(10), bg = "red")
+lines(1:100, sin(1:100 / 10 * pi / 2))
+clear()
+
+off()
+detach(device)  # restore the 'base' primitives
+```
+
+
+#### Remarks
+
+- Only one device is supported per R session. If a device fails to initialise, it is usually because there is another device currently occupying the session.
+- In case one forgets to assign the device to a variable and so does not have the handle to call the `off` function, simply restarting R will close the connection.
+
+
+
+
+### c. Creating animated plots
+
+The __most important__ idea of this package is that __every object to be animated on the screen must have an ID__. These IDs are used to decide which objects need to be modified to create the animation effect.
+
+#### Setup
+
+We first set up the device for the remaining of this section.
+
+```{r}
+device <- animate$new(600, 400)
+attach(device)
+```
+
+
+#### Basic plotting
+
+A basic plot can be made with the usual syntax `plot(x, y)` and the additional argument `id`. `id` expects a character vector, and its length should match the number of data points.
+
+To animate the points, we provide a new set of coordinates while using the same `id`. The package would know it should update the points rather than plotting new ones. As an option, setting the argument `transition = TRUE` creates a transition effect from the old coordinates to the new coordinates.
+
+```{r}
+x <- 1:10
+y <- 1:10
+id <- new_id(x)   # Give each point an ID: c("ID-1", "ID-2", ..., "ID-10")
+plot(x, y, id = id)
+
+new_y <- 10:1
+plot(x, new_y, id = id, transition = TRUE)  # Use transition
+```
+
+Click to see the transition; click again to reset.
+
+```{r, eval = T, echo = F}
+animate::insert_animate("source/basic_plot.json")
+```
+
+#### Transition with multiple attributes
+
+The transition effect can handle multiple attributes at the same time, and the `transition` argument supports other options.
+
+```{r}
+clear()  # Clear the canvas
+x <- 1:10
+y <- 10 * runif(10)
+id <- new_id(y, prefix = "points")   # Give each point an ID
+plot(x, y, id = id, bg = "red")
+
+new_y <- 10 * runif(10)
+points(x, new_y, id = id, bg = "lightgreen", cex = 1:10 * 30, transition = list(duration = 2000))
+```
+
+Click to see the transition; click again to reset.
+
+```{r, eval = T, echo = F}
+animate::insert_animate("source/basic_points.json")
+```
+
+
+#### Animating without transition
+
+Some applications require plotting a sequence of key frames rapidly. This can be done easily with a loop. There should be pauses between iterations, otherwise the animation will happen so quickly that only the last key frame can be seen.
+
+```{r}
+clear()  # Clear the canvas
+x <- 1:100
+y <- sin(x / 5 * pi / 2)
+id <- "line-1"   # a line needs only 1 ID (as the entire line is considered as one unit)
+plot(x, y, id = id, type = 'l')
+
+for (n in 101:200) {
+  new_x <- 1:n
+  new_y <- sin(new_x / 5 * pi / 2)
+  plot(new_x, new_y, id = id, type = 'l')
+  Sys.sleep(0.02)   # about 50 frames per second
+}
+```
+
+Click to see the animation.
+
+```{r, eval = T, echo = F}
+animate::insert_animate("source/basic_lines.json.gz", animate::click_to_loop())
+```
+
+When you are done. Don't forget to switch-off and detach the device with `off(); detach(device)`.
+
+
+### d. Remarks
+
+The package currently supports the following primitives in addition to the `plot` function: `points`, `lines`, `bars`, `text`, `image` and `axis`. While they are all modelled on the base R syntax, there are some differences. 
+This is because static plots and animated plots are inherently different, so different assumptions are used to manage the device and its graphics setting.
+
+In the `base` package, a `plot` needs to be made before any other primitives can be used. `animate` decouples that link, and each primitive uses their own scale computed based on the data provided and can be used independently. This feature is needed because `base` plot mostly works under the setting that the scale of the plot is held constant, while for animated plot, the scale may be changing frequently. In case one wants to keep the scale (and axes) constant in `animate`, the `xlim` and `ylim` arguments can be used - either directly in the function call or as the default parameters of the device set using the `par` function. 
+
+The primitive functions support the commonly-used graphical parameters like `cex`, `lwd`, `bg`, etc. To use options that are beyond the base R interface, e.g. the `transition` argument, or options that are part of the R interface but have not been implemented, one can use the `attr`, `style` and `transition` arguments. For instance, for the `text` function, the font family can be specified using `attr = list("font-family" = "monospace")`.
+
+For the `lines` function, the entire line is considered as one unit despite containing multiple points, and so only one ID is needed.
+
+
+
+## 3. Three full examples
+
+### Lorenz system
+
+$$\begin{aligned}
+\dfrac{dx}{dt} = \sigma (y - x), \quad
+\dfrac{dy}{dt} = x (\rho - z) - y, \quad
+\dfrac{dz}{dt} = xy - \beta z
+\end{aligned}$$
+
+#### Creating the simulaton function
+
+```{r}
+# Define the simulation system
+Lorenz_sim <- function(sigma = 10, beta = 8/3, rho = 28, x = 1, y = 1, z = 1, dt = 0.015) {
+  # Auxiliary variables
+  dx <- dy <- dz <- 0
+  xs <- x
+  ys <- y
+  zs <- z
+  env <- environment() # a neat way to capture all the variables
+  
+  # Update the variables using the ODE within 'env'
+  step <- function(n = 1) {
+    for (i in 1:n) {
+      evalq(envir = env, {
+          dx <- sigma * (y - x) * dt
+          dy <- (x * (rho - z) - y) * dt
+          dz <- (x * y - beta * z) * dt
+          x <- x + dx
+          y <- y + dy
+          z <- z + dz  
+          xs <- c(xs, x)
+          ys <- c(ys, y)
+          zs <- c(zs, z) 
+      })
+    }
+  }
+  
+  env
+}
+```
+
+#### Running and visualising the simulation system
+
+```{r}
+# device <- animate$new(600, 400)
+# attach(device)
+world <- Lorenz_sim()
+for (i in 1:2000) {
+  plot(world$x, world$y, id = "ID-1", xlim = c(-30, 30), ylim = c(-30, 40))
+  lines(world$xs, world$ys, id = "lines-1", xlim = c(-30, 30), ylim = c(-30, 40))
+  world$step()
+  Sys.sleep(0.025)
+}
+# Switch to xz-plane
+plot(world$x, world$z, id = "ID-1", xlim = c(-30, 30), ylim = range(world$zs), transition = TRUE)
+lines(world$xs, world$zs, id = "lines-1", xlim = c(-30, 30), ylim = range(world$zs), transition = TRUE)
+
+# off()
+# detach(device)
+```
+
+Click to begin the visualisation
+
+```{r, echo = F, eval = T}
+animate::insert_animate("source/Lorenz_system.json.gz", animate::click_to_loop())
+```
+
+
+
+
+### A particle system
+
+$$\begin{aligned}
+\dfrac{dx_i}{dt} = u_i, \quad
+\dfrac{dy_i}{dt} = v_i, \quad 
+i = 1, 2, ..., n
+\end{aligned}$$
+
+#### Creating the simulaton function
+
+```{r}
+particle_sim <- function(num_particles = 50) {
+  # Particles move within the unit box
+  x <- runif(num_particles)
+  y <- runif(num_particles)
+  vx <- rnorm(num_particles) * 0.01
+  vy <- rnorm(num_particles) * 0.01
+  id <- new_id(x)
+  color <- sample(c("black", "red"), num_particles, replace = TRUE, prob = c(0.5, 0.5))
+  
+  env <- environment()
+  step <- function(n = 1) {
+    for (i in 1:n) {
+      evalq(envir = env, {
+          # The particles turn around when they hit the boundary of the box
+          x_turn <- x + vx > 1 | x + vx < 0
+          vx[x_turn] <- vx[x_turn] * -1
+          
+          y_turn <- y + vy > 1 | y + vy < 0
+          vy[y_turn] <- vy[y_turn] * -1
+          
+          x <- x + vx
+          y <- y + vy  
+      })
+    }
+  }
+  
+  env
+}
+```
+
+#### Running and visualising the simulation system
+
+```{r}
+# device <- animate$new(500, 500)
+# attach(device)
+world <- particle_sim(num_particles = 50)
+for (i in 1:1000) {
+  points(world$x, world$y, id = world$id, bg = world$color, xlim = c(0, 1), ylim = c(0, 1))
+  world$step()
+  Sys.sleep(0.02)
+}
+# off()
+# detach(device)
+```
+
+Click to begin the visualisation
+
+```{r, echo = F, eval = T}
+animate::insert_animate("source/particle_system.json.gz", animate::click_to_loop(wait = 20))
+```
+
+
+
+### A grid model: 2-dimensional discrete random walk
+
+#### Creating the simulaton function
+
+```{r}
+random_walk_sim <- function(grid_size = 20, num_walkers = 10) {
+  .side <- seq(0, 1, length.out = grid_size)
+  grid <- expand.grid(.side, .side)
+  id <- paste("ID", 1:grid_size^2, sep = "-")
+  
+  .index_to_coord <- function(n) c(ceiling(n / grid_size), (n-1) %% grid_size + 1)
+  .coord_to_index <- function(x) (x[1] - 1) * grid_size + x[2]
+  .step <- function(coord) {
+    k <- sample(list(c(-1,0), c(1,0), c(0,-1), c(0,1)), 1)[[1]]
+    (coord + k - 1) %% grid_size + 1
+  }
+  
+  .walkers_index <- sample(grid_size^2, num_walkers)
+  .walkers_coord <- Map(.index_to_coord, .walkers_index)
+  .walkers_color <- sample(c("red", "green", "blue", "black", "orange"), num_walkers, replace = TRUE)
+  color <- rep("lightgrey", grid_size^2)
+  color[.walkers_index] <- .walkers_color
+  
+  env <- environment()
+  step <- function() {
+    evalq(envir = env, expr = {
+      # Update each walker's coordinate and change the color state
+      .walkers_coord <- Map(.step, .walkers_coord)
+      .walkers_index <- unlist(Map(.coord_to_index, .walkers_coord))
+      color <- rep("lightgrey", grid_size^2)
+      color[.walkers_index] <- .walkers_color    
+    })
+  }
+  
+  env
+}
+```
+
+#### Running and visualising the simulation system
+
+```{r}
+# device <- animate$new(600, 600)
+# attach(device)
+set.seed(123)
+world <- random_walk_sim(grid_size = 15, num_walkers = 8)
+for (i in 1:100) {
+  coord <- world$grid
+  points(coord[,1], coord[,2], id = world$id, bg = world$color, pch = "square", cex = 950, col = "black")
+  world$step()
+  Sys.sleep(0.3)
+}
+# off()
+# detach(device)
+```
+
+
+Click to begin the visualisation
+
+```{r, echo = F, eval = T}
+animate::insert_animate("source/random_walk_2d.json.gz", animate::click_to_loop(wait = 300))
+```
+
+
+## 4. Usage with RMarkdown Document and Shiny
+
+
+### RMarkdown Document
+
+To include the visualisation in an RMarkdown Document, 
+
+- first export the visualisation to a JSON file using the `device$export` function,
+- then use `animate::insert_animate` to insert the visualisation in a code chunk.
+
+The function supports several playback options, including the `loop`, `click_to_loop` and `click_to_play` options. Customisation is possible, but it would require some JavaScript knowledge. Interested readers may want to look into the source code of the functions above before deciding to pursue that option. 
+
+
+### Shiny
+
+To use the animate plot in a Shiny app,
+
+- at the root of the shiny app folder, run `setup_animate('./www')` to copy the necessary asset files to the 'www' folder,
+- call `load_animate` in the `ui` to include the asset files, and
+- then use the device function in the `server` as usual inside `shiny::observeEvent`.
+
+Here is a full example:
+
+```{r}
+# At the root of the shiny app folder, run `setup_animate('./www')` to copy the
+# necessary files to the 'www' folder
+library(shiny)
+library(animate)
+
+ui <- fluidPage(
+  load_animate(),  # Include the asset files
+  actionButton("buttonPlot", "Plot"),
+  actionButton("buttonPoints", "Points"),
+  actionButton("buttonLines", "Lines")
+)
+
+server <- function(input, output, session) {
+  device <- animate$new(600, 400, session = session)
+  id <- new_id(1:10)
+
+  observeEvent(input$buttonPlot, {     # Example 1
+    device$plot(1:10, 1:10, id = id)
+  })
+
+  observeEvent(input$buttonPoints, {   # Example 2
+    device$points(1:10, runif(10, 1, 10), id = id, transition = TRUE)
+  })
+
+  observeEvent(input$buttonLines, {    # Example 3
+    x <- seq(1, 10, 0.1)
+    y <- sin(x)
+    id <- "line_1"
+    device$lines(x, y, id = id)
+    for (n in 11:100) {
+      x <- seq(1, n, 0.1)
+      y <- sin(x)
+      device$lines(x, y, id = id)
+      Sys.sleep(0.05)
+    }
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
