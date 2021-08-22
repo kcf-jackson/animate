@@ -1,6 +1,10 @@
 #! config(rules = animate_rules(), deparsers = dp("basic", "auto"))
 #' Add lines to a plot
 lines = function(param, device) {
+  # Safeguard against lines with only one point
+  if (is_scalar(param$x)) param$x <- as_array(param$x)
+  if (is_scalar(param$y)) param$y <- as_array(param$y)
+
   param %<>% set_default(
     list(id = generate_id("lines"),
          fill = "none",
