@@ -32,31 +32,6 @@ build <- function(stack_size = 0, debug = FALSE, keep = FALSE) {
 }
 
 
-#' Build detach mode
-build_detach <- function(file) {
-  if (basename(getwd()) != "animate") {
-    stop("You seem to be in the wrong folder to call this function.")
-  }
-  curwd <- getwd()
-  on.exit(setwd(curwd))
-  setwd("./inst")
-
-  lines <- paste0("#! load_data('", file, "')")
-  object_name <- paste0(tools::file_path_sans_ext(basename(file)), "_json")
-  lines <- append(lines, paste0("JS_device$import(", object_name,")"))
-  lines <- append(lines, "JS_device$loop()")
-
-  dir0 <- tempdir()
-  temp <- file.path(dir0, "detach.R")
-  write(lines, temp)
-
-  temp2 <- file.path(dir0, "detach.js")
-  compile_r(temp, temp2, rules = basic_rules())
-
-  file.copy(temp2, "dist/detach.js")
-}
-
-
 #' Build shiny
 build_shiny <- function(shiny_helper_file) {
   message("Writing to ./inst/dist/shiny.js")
