@@ -116,8 +116,13 @@ compile_data <- function(input, output = tempfile(), ...) {
 to_json <- function(input) {
   fname <- basename(input)
   sym <- filename_to_variable(fname)
-  json <- paste(readLines(input), collapse = "\n")
-  sprintf("const %s = JSON.parse(%s)", sym, sQuote(json, "'"))
+  if (tolower(tools::file_ext(fname)) == "gz") {
+    json <- jsonlite::toJSON(readBin(input, "int", n = 1e6, size = 1, signed = FALSE))
+    sprintf("const %s = JSON.parse(pako.inflate(%s, {to: 'string'}))", sym, json)
+  } else {
+    json <- paste(readLines(input), collapse = "\n")
+    sprintf("const %s = JSON.parse(%s)", sym, sQuote(json, "'"))
+  }
 }
 
 filename_to_variable <- function(x) {
