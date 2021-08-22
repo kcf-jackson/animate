@@ -57,10 +57,9 @@ Device <- function(selection, width, height, id, par = list()) {
 
   export_ <- function() {
     # Replace the reference object by its ID
-    if (env$selection$attr) {
-      env$selection <- env$selection$attr("id")
-    }
-    env
+    new_env <- Object::assign(list(), env)
+    new_env$selection <- new_env$selection$attr("id")
+    new_env
   }
 
   import_ <- function(setting) {

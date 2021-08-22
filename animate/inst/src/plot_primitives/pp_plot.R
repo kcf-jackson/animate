@@ -17,8 +17,8 @@ plot <- function(param, device) {
   }
 
   # Plot data points
-  if (param$type == "p") { points(param, device) }
-  if (param$type == "l") { lines(param, device) }
+  if (param$type == "p") { points(Object::assign(list(), param), device) }
+  if (param$type == "l") { lines(Object::assign(list(), param), device) }
 
   # Axes ----
   # x-axis
