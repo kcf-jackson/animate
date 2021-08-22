@@ -158,7 +158,7 @@ plot2 <- R6Class(
     },
 
     #' Export the plot setting
-    export = function() {
+    export = function(param) {
       setting <- list(
         plot_commands = self$plot_commands,
         device = self$device$export(),
@@ -167,7 +167,16 @@ plot2 <- R6Class(
       ) %>%
         JSON::stringify() %>%
         end_string()
-      write(setting, "animate.json")
+
+      if (param$handler == "r") {
+        if (ws) {
+          ws$send(JSON::stringify(
+            list(type = "export", path = param$path, data = setting)
+          ))
+        }
+      } else {
+        write(setting, param$filename)
+      }
       TRUE
     }
   ),
@@ -182,7 +191,7 @@ plot2 <- R6Class(
       Decoder("fn_image", message %=>% self$image(message)),
       Decoder("fn_text", message %=>% self$text(message)),
       Decoder("fn_import", message %=>% self$import(message$setting)),
-      Decoder("fn_export", message %=>% self$export()),
+      Decoder("fn_export", message %=>% self$export(message)),
       Decoder("fn_set", message %=>% self$set_active_device(message$device_id)),
       Decoder("fn_remove", message %=>% self$remove(message$selector, message$id)),
       Decoder("fn_clear", message %=>% self$clear()),
