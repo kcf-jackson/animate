@@ -17,12 +17,12 @@ is that it has a narrower focus (i.e. it does fewer things), and with that trade
 it is possible to eliminate completely the need of knowing JavaScript to create
 animated visualisations.
 
-See below for three demos extracted from a [presentation](./man/slides/SVI_presentation.html) I gave in June at my institute, and see the [vignettes]() for a thorough introduction to the package.
+See below for three demos extracted from a [presentation*](https://rawcdn.githack.com/kcf-jackson/animate/0f3e8211f063e832b3b83288b4834329d491f4da/man/slides/SVI_presentation.html) I gave in June at my institute, and see the [vignettes](https://kcf-jackson.github.io/animate/articles/introduction.html) for a thorough introduction to the package.
+(* The source can be found at `./man/slides/`)
 
-
-1. [Lorenz system]("https://www.youtube.com/embed/KuDXRLiFKso")
-2. [Predator-Prey process]("https://www.youtube.com/embed/YPS1lkn-XT4")
-3. [Schelling's model of segregation]("https://www.youtube.com/embed/pmmOAh3-6iA")
+1. [Lorenz system](https://www.youtube.com/embed/KuDXRLiFKso)
+2. [Predator-Prey process](https://www.youtube.com/embed/YPS1lkn-XT4)
+3. [Schelling's model of segregation](https://www.youtube.com/embed/pmmOAh3-6iA)
 
 
 
