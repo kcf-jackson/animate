@@ -1,5 +1,5 @@
 ---
-title: "An introduction to the R package 'animate'"
+title: "An introduction to 'animate'"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{An introduction to 'animate'}
