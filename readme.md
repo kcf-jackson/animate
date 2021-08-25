@@ -17,22 +17,13 @@ is that it has a narrower focus (i.e. it does fewer things), and with that trade
 it is possible to eliminate completely the need of knowing JavaScript to create
 animated visualisations.
 
-See below for three demos extracted from a [presentation](../man/slides/SVI_presentation.html) I gave in June at my institute, and see the [vignettes]() for a thorough introduction to the package.
+See below for three demos extracted from a [presentation](./man/slides/SVI_presentation.html) I gave in June at my institute, and see the [vignettes]() for a thorough introduction to the package.
 
 
-#### Lorenz system
+1. [Lorenz system]("https://www.youtube.com/embed/KuDXRLiFKso")
+2. [Predator-Prey process]("https://www.youtube.com/embed/YPS1lkn-XT4")
+3. [Schelling's model of segregation]("https://www.youtube.com/embed/pmmOAh3-6iA")
 
-<iframe width="800" height="450" src="https://www.youtube.com/embed/KuDXRLiFKso" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1"></iframe>
-
-
-#### Predator-Prey process
-
-<iframe width="800" height="450" src="https://www.youtube.com/embed/YPS1lkn-XT4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1"></iframe>
-
-
-#### Schelling's model of segregation
-
-<iframe width="800" height="450" src="https://www.youtube-nocookie.com/embed/pmmOAh3-6iA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1"></iframe>
 
 
 ## Acknowledgement
