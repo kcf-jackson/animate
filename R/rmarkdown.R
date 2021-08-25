@@ -5,9 +5,12 @@
 #' Two basic options `click_to_play()` and `click_to_loop()` have been implemented
 #' for general usage.
 #' @param style Optional style for the iframe that hosts the visualisation.
+#' @param use_cdn TRUE / FALSE; if TRUE, serve the assets from a CDN, otherwise
+#' embed the assets into the HTML.
 #'
 #' @export
-insert_animate <- function(file, options = click_to_play(), style) {
+insert_animate <- function(file, options = click_to_play(), style,
+                           use_cdn = TRUE) {
   dir0 <- tempdir()
   asset <- function(x) system.file(x, package = "animate")
   script <- function(x) as.character(to_shiny_tag(x))
@@ -22,6 +25,11 @@ insert_animate <- function(file, options = click_to_play(), style) {
   }
     # args$style <- style
   # }
+  asset_script <- if (use_cdn) {
+    script("https://cdn.jsdelivr.net/gh/kcf-jackson/animate/inst/dist/animate.js")
+  } else {
+    script(asset("dist/animate.js"))
+  }
 
   # Create data script
   data_str <- read_file(compile_data(file))
@@ -38,7 +46,7 @@ insert_animate <- function(file, options = click_to_play(), style) {
   # Create html app
   html_str <- paste(
     "<!DOCTYPE html><html><head></head><body>",
-    script(asset("dist/animate.js")),
+    asset_script,
     sprintf("<script>%s</script>", data_str),
     sprintf("<script>%s</script>", init_str),
     "</body></html>",
