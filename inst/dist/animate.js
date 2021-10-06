@@ -211,8 +211,8 @@ var bars = function(param, device) {
     param = set_default(param, { "id": generate_id("rect", length_of_data(param.x, param.y, param.w, param.h)), "fill": "black", "stroke": "black", "stroke-width": 0, "stroke-dasharray": "none" })
     var keys = Array("x", "y", "w", "h", "id", "fill", "stroke", "stroke-width", "stroke-dasharray")
     var data0 = as_data(param, keys)
-    param.xlim = param.xlim || device.xlim || d3_extent(param.x.concat(add(param.x, param.w)))
-    param.ylim = param.ylim || device.ylim || d3_extent(param.y.concat(add(param.y, param.h)))
+    param.xlim = param.xlim || device.par.xlim || d3_extent(param.x.concat(add(param.x, param.w)))
+    param.ylim = param.ylim || device.par.ylim || d3_extent(param.y.concat(add(param.y, param.h)))
     var barplot_update = function(selection, scale) {
         return selection.attr("id", d => d.id).attr("x", d => scale.x(d.x)).attr("y", d => scale.y(d.y + d.h)).attr("width", d => scale.x(d.w) - scale.x(0)).attr("height", d => scale.y(0) - scale.y(d.h)).style("fill", d => d.fill).style("stroke-dasharray", d => d["stroke-dasharray"]).style("stroke-width", d => d["stroke-width"]).style("stroke", d => d.stroke)
     }
@@ -235,12 +235,14 @@ var d3_enter_update_exit = function(param, device, data0, tag, className, d3_upd
 
 
 var image = function(param, device) {
-    param = set_default(param, { "x": 0, "y": 1, "id": generate_id("image", length_of_data(param.x, param.y)), "transform": "", "xlim": d3_extent(param.x), "ylim": d3_extent(param.y) })
+    param = set_default(param, { "x": 0, "y": 1, "id": generate_id("image", length_of_data(param.x, param.y)), "transform": "" })
     var keys = Array("x", "y", "href", "width", "height", "id")
     var data0 = as_data(param, keys)
+    param.xlim = param.xlim || device.par.xlim || d3_extent(Array(param.x, add(param.x, param.width)))
+    param.ylim = param.ylim || device.par.ylim || d3_extent(Array(param.y, add(param.y, param.height)))
     var image_update = function(transform) {
         return function(selection, scale) {
-            return selection.attr("id", d => d.id).attr("transform", d => translate(scale.x(d.x), scale.y(d.y)) + transform).attr("href", d => d.href).attr("width", d => d.width).attr("height", d => d.height)
+            return selection.attr("id", d => d.id).attr("transform", d => translate(scale.x(d.x), scale.y(d.y + d.height)) + transform).attr("href", d => d.href).attr("width", d => scale.x(d.width) - scale.x(0)).attr("height", d => scale.y(0) - scale.y(d.height))
         }
     }
     return d3_enter_update_exit(param, device, data0, "image", "images", image_update(param.transform))

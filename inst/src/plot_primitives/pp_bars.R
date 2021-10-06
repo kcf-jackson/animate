@@ -9,8 +9,8 @@ bars = function(param, device) {
   keys <- c("x", "y", "w", "h", "id", "fill", "stroke", "stroke-width", "stroke-dasharray")
   data0 <- as_data(param, keys)
 
-  param$xlim <- param$xlim || device$xlim || d3_extent(param$x$concat(add(param$x, param$w)))
-  param$ylim <- param$ylim || device$ylim || d3_extent(param$y$concat(add(param$y, param$h)))
+  param$xlim <- param$xlim || device$par$xlim || d3_extent(param$x$concat(add(param$x, param$w)))
+  param$ylim <- param$ylim || device$par$ylim || d3_extent(param$y$concat(add(param$y, param$h)))
 
   barplot_update <- function(selection, scale) {
     selection$
@@ -29,8 +29,8 @@ bars = function(param, device) {
                        barplot_update)
 }
 
-# Note 1: Suppose we map [0,1,2] to [50,100,150], note that 1 is map to 100, 
-# but the length of 1 should map to 50. This is done by mapping [0, 1] to 
+# Note 1: Suppose we map [0,1,2] to [50,100,150], note that 1 is map to 100,
+# but the length of 1 should map to 50. This is done by mapping [0, 1] to
 # [50, 100], then take the difference.
 #
 # Note 2: The direction of the subtraction is reversed because the y-scale is

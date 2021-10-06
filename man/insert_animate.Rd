@@ -4,7 +4,7 @@
 \alias{insert_animate}
 \title{Insert an animated plot into an R Markdown document}
 \usage{
-insert_animate(file, options = click_to_play(), style)
+insert_animate(file, options = click_to_play(), style, use_cdn = TRUE)
 }
 \arguments{
 \item{file}{The exported plot.}
@@ -14,6 +14,9 @@ Two basic options \code{click_to_play()} and \code{click_to_loop()} have been im
 for general usage.}
 
 \item{style}{Optional style for the iframe that hosts the visualisation.}
+
+\item{use_cdn}{TRUE / FALSE; if TRUE, serve the assets from a CDN, otherwise
+embed the assets into the HTML.}
 }
 \description{
 Insert an animated plot into an R Markdown document
