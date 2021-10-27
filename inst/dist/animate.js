@@ -279,9 +279,9 @@ var plot = function(param, device) {
     if (param.type == "l") {
         lines(Object.assign({  }, param), device)
     }
-    var axis_param = Object.assign({  }, param, { "data": param.x, "lim": param.xlim, "side": 1, "id": "x-axis" })
+    var axis_param = Object.assign({  }, param, { "data": param.x, "lim": param.xlim || device.par.xlim || d3_extent(param.x), "side": 1, "id": "x-axis" })
     axis(axis_param, device)
-    var axis_param = Object.assign({  }, param, { "data": param.y, "lim": param.ylim, "side": 2, "id": "y-axis" })
+    var axis_param = Object.assign({  }, param, { "data": param.y, "lim": param.ylim || device.par.ylim || d3_extent(param.y), "side": 2, "id": "y-axis" })
     axis(axis_param, device)
     var cw = device.width
     var ch = device.height

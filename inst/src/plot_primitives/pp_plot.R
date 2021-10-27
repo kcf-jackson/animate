@@ -23,12 +23,16 @@ plot <- function(param, device) {
   # Axes ----
   # x-axis
   axis_param <- Object::assign(
-    list(), param, list(data = param$x, lim = param$xlim, side = 1, id = "x-axis"))
+    list(), param, list(data = param$x,
+                        lim = param$xlim || device$par$xlim || d3_extent(param$x),
+                        side = 1, id = "x-axis"))
   axis(axis_param , device)
 
   # y-axis
   axis_param <- Object::assign(
-    list(), param, list(data = param$y, lim = param$ylim, side = 2, id = "y-axis"))
+    list(), param, list(data = param$y,
+                        lim = param$ylim || device$par$ylim || d3_extent(param$y),
+                        side = 2, id = "y-axis"))
   axis(axis_param, device)
 
   # Labels ----
