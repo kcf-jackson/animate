@@ -21,6 +21,7 @@ build(-1, FALSE)
 # Build the library (for usage with shiny)
 build_library("inst/src/plot.R")
 build_shiny("inst/src/addons/shiny.R")
+build_virtual_device("inst/src/addons/virtual_device.R")
 
 # Build the app for detach mode
 

@@ -39,6 +39,13 @@ build_shiny <- function(shiny_helper_file) {
 }
 
 
+#' Build inline rmarkdown
+build_virtual_device <- function(file) {
+  message("Writing to ./inst/dist/virtual_device.js")
+  compile_r(file, "./inst/dist/virtual_device.js")
+}
+
+
 #' Build a library
 #'
 #' @param main_file A character string; the file path to the app file.
