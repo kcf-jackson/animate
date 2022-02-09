@@ -1,6 +1,6 @@
 Package: animate
 Title: A Web-based Graphics Device For Animated Visualisations
-Version: 0.3.1
+Version: 0.3.2
 Authors@R: 
     person(given = "Chun Fung",
            family = "Kwok",
@@ -12,14 +12,16 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Imports: 
     R6,
     httpuv,
     base64enc,
-    jsonlite
+    jsonlite,
+    glue
 Suggests:
     rmarkdown,
     knitr,
-    shiny
+    shiny,
+    htmltools
 VignetteBuilder: knitr

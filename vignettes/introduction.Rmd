@@ -378,10 +378,32 @@ animate::insert_animate("source/random_walk_2d.json.gz", animate::click_to_loop(
 
 ### RMarkdown Document
 
-To include the visualisation in an RMarkdown Document, 
+#### Inline usage
 
-- first export the visualisation to a JSON file using the `device$export` function,
-- then use `animate::insert_animate` to insert the visualisation in a code chunk.
+In the code chunk of an R Markdown document, 
+
+- Call `animate$new` with the `virtual = TRUE` flag,
+- then at the end of the code chunk, call `rmd_animate(device)`.
+
+Here is an example:
+
+```{r, echo = T, eval = T}
+library(animate)
+device <- animate$new(500, 500, virtual = TRUE)
+id <- new_id(1:10)
+s <- 1:10 * 2 * pi / 10
+s2 <- sample(s)
+device$par(xlim = c(-2.5, 2.5), ylim = c(-2.5, 2.5))
+device$plot(2*sin(s), 2*cos(s), id = id)
+device$points(sin(s2), cos(s2), id = id, transition = list(duration = 2000))
+rmd_animate(device, click_to_play(start = 3))  # begin the plot at the third frame
+```
+
+
+
+#### Import from a file
+
+To include an exported visualisation (from `device$export`) in an R Markdown Document, simply use `animate::insert_animate` to insert the visualisation in a code chunk.
 
 The function supports several playback options, including the `loop`, `click_to_loop` and `click_to_play` options. Customisation is possible, but it would require some JavaScript knowledge. Interested readers may want to look into the source code of the functions above before deciding to pursue that option. 
 
@@ -390,23 +412,20 @@ The function supports several playback options, including the `loop`, `click_to_
 
 To use the animate plot in a Shiny app,
 
-- at the root of the shiny app folder, run `setup_animate('./www')` to copy the necessary asset files to the 'www' folder,
-- call `load_animate` in the `ui` to include the asset files, and
-- then use the device function in the `server` as usual inside `shiny::observeEvent`.
+- use `animateOutput` in the `ui`,
+- then use the device function in the `server` directly inside any of the `shiny::observeEvent`.
 
 Here is a full example:
 
 ```{r}
-# At the root of the shiny app folder, run `setup_animate('./www')` to copy the
-# necessary files to the 'www' folder
 library(shiny)
 library(animate)
 
 ui <- fluidPage(
-  load_animate(),  # Include the asset files
   actionButton("buttonPlot", "Plot"),
   actionButton("buttonPoints", "Points"),
-  actionButton("buttonLines", "Lines")
+  actionButton("buttonLines", "Lines"),
+  animateOutput()
 )
 
 server <- function(input, output, session) {
