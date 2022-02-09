@@ -1,3 +1,30 @@
+#' In-line rendering of an animated plot in an R Markdown document
+#'
+#' @param device The \link{animate} object.
+#' @param ... Optional parameters to pass to \link{insert_animate}.
+#'
+#' @note This function should only be used in a code chunk of an R Markdown document.
+#'
+#' @export
+rmd_animate <- function(device, ...) {
+  if (!device$virtual_meta$virtual) {
+    stop("Device is not virtual. Virtual device should be used for inline RMarkdown usage. Did you forget to set 'virtural = TRUE' in your `animate$new` function call?")
+  }
+  json_file <- tempfile(pattern = "test", fileext = ".json")
+  json_obj <- glue::glue('{
+    "plot_commands": <device$virtual_session$get()>,
+    "device": {
+      "selection": "", "id": "", "par": {},
+      "height": <device$virtual_meta$height>,
+      "width": <device$virtual_meta$width>
+    },
+    "max_num_commands": -1
+  }', .open = "<", .close = ">")
+  write(json_obj, json_file)
+  insert_animate(json_file, ...)
+}
+
+
 #' Insert an animated plot into an R Markdown document
 #'
 #' @param file The exported plot.
@@ -129,7 +156,7 @@ to_json <- function(input) {
     sprintf("const %s = JSON.parse(pako.inflate(%s, {to: 'string'}))", sym, json)
   } else {
     json <- paste(readLines(input), collapse = "\n")
-    sprintf("const %s = JSON.parse(%s)", sym, sQuote(json, "'"))
+    glue::glue("const {sym} = {json}")
   }
 }
 

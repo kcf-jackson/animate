@@ -18,6 +18,10 @@ A web-based graphics device
 \item{\code{shiny}}{Whether the device is used with shiny.}
 
 \item{\code{session}}{A shiny session.}
+
+\item{\code{virtual_meta}}{A list of device metadata.}
+
+\item{\code{virtual_session}}{A virtual session simulated with V8.}
 }
 \if{html}{\out{</div>}}
 }
