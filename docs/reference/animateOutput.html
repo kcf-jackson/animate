@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Insert an animated plot into an R Markdown document — insert_animate • animate</title>
+<title>Create an animate output (container) element — animateOutput • animate</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Insert an animated plot into an R Markdown document — insert_animate" />
-<meta property="og:description" content="Insert an animated plot into an R Markdown document" />
+<meta property="og:title" content="Create an animate output (container) element — animateOutput" />
+<meta property="og:description" content="Create an animate output (container) element" />
 
 
 
@@ -115,41 +115,47 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Insert an animated plot into an R Markdown document</h1>
+    <h1>Create an animate output (container) element</h1>
     
-    <div class="hidden name"><code>insert_animate.Rd</code></div>
+    <div class="hidden name"><code>animateOutput.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Insert an animated plot into an R Markdown document</p>
+    <p>Create an animate output (container) element</p>
     </div>
 
-    <pre class="usage"><span class='fu'>insert_animate</span><span class='op'>(</span><span class='va'>file</span>, options <span class='op'>=</span> <span class='fu'><a href='click_to_play.html'>click_to_play</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>style</span>, use_cdn <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>animateOutput</span><span class='op'>(</span>
+  outputId <span class='op'>=</span> <span class='st'>"animateOutput"</span>,
+  width <span class='op'>=</span> <span class='st'>"100%"</span>,
+  height <span class='op'>=</span> <span class='st'>"400px"</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>file</th>
-      <td><p>The exported plot.</p></td>
+      <th>outputId</th>
+      <td><p>output variable to read the plot/image from.</p></td>
     </tr>
     <tr>
-      <th>options</th>
-      <td><p>A character string; the JavaScript to customise the playback options.
-Two basic options <code><a href='click_to_play.html'>click_to_play()</a></code> and <code><a href='click_to_loop.html'>click_to_loop()</a></code> have been implemented
-for general usage.</p></td>
+      <th>width</th>
+      <td><p>Width of the plot area. Must be a valid CSS unit (like "100%", "400px", "auto").</p></td>
     </tr>
     <tr>
-      <th>style</th>
-      <td><p>Optional style for the iframe that hosts the visualisation.</p></td>
+      <th>height</th>
+      <td><p>Height of the plot area. Must be a valid CSS unit (like "100%", "400px", "auto").</p></td>
     </tr>
     <tr>
-      <th>use_cdn</th>
-      <td><p>TRUE / FALSE; if TRUE, serve the assets from a CDN, otherwise
-embed the assets into the HTML.</p></td>
+      <th>...</th>
+      <td><p>Optional CSS styling for the container of the plot.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>(Advanced usage) A "stack_limit" parameter can be included in the optional parameters
+to control how many directives the device should keep track of.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

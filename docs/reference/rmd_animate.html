@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Insert an animated plot into an R Markdown document — insert_animate • animate</title>
+<title>In-line rendering of an animated plot in an R Markdown document — rmd_animate • animate</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Insert an animated plot into an R Markdown document — insert_animate" />
-<meta property="og:description" content="Insert an animated plot into an R Markdown document" />
+<meta property="og:title" content="In-line rendering of an animated plot in an R Markdown document — rmd_animate" />
+<meta property="og:description" content="In-line rendering of an animated plot in an R Markdown document" />
 
 
 
@@ -115,41 +115,33 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Insert an animated plot into an R Markdown document</h1>
+    <h1>In-line rendering of an animated plot in an R Markdown document</h1>
     
-    <div class="hidden name"><code>insert_animate.Rd</code></div>
+    <div class="hidden name"><code>rmd_animate.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Insert an animated plot into an R Markdown document</p>
+    <p>In-line rendering of an animated plot in an R Markdown document</p>
     </div>
 
-    <pre class="usage"><span class='fu'>insert_animate</span><span class='op'>(</span><span class='va'>file</span>, options <span class='op'>=</span> <span class='fu'><a href='click_to_play.html'>click_to_play</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>style</span>, use_cdn <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>rmd_animate</span><span class='op'>(</span><span class='va'>device</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>file</th>
-      <td><p>The exported plot.</p></td>
+      <th>device</th>
+      <td><p>The <a href='animate.html'>animate</a> object.</p></td>
     </tr>
     <tr>
-      <th>options</th>
-      <td><p>A character string; the JavaScript to customise the playback options.
-Two basic options <code><a href='click_to_play.html'>click_to_play()</a></code> and <code><a href='click_to_loop.html'>click_to_loop()</a></code> have been implemented
-for general usage.</p></td>
-    </tr>
-    <tr>
-      <th>style</th>
-      <td><p>Optional style for the iframe that hosts the visualisation.</p></td>
-    </tr>
-    <tr>
-      <th>use_cdn</th>
-      <td><p>TRUE / FALSE; if TRUE, serve the assets from a CDN, otherwise
-embed the assets into the HTML.</p></td>
+      <th>...</th>
+      <td><p>Optional parameters to pass to <a href='insert_animate.html'>insert_animate</a>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>This function should only be used in a code chunk of an R Markdown document.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
