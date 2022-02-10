@@ -2,6 +2,19 @@
 
 _(Developer Preview: The API is maturing and feedback is welcome!)_
 
+
+
+### News
+
+09/02/2022: Update R Markdown document and Shiny integration.
+
+- Support using `animate` directly in a code chunk of an R Markdown document.
+- Replace `load_animate()` and `setup_animate()` by `animateOutput(...)` to be consistent with the standard Shiny usage.
+
+
+
+### Introduction
+
 The R package 'animate' implements a web-based graphics device that models on the base R syntax and is powered by [d3.js](https://d3js.org/). The device is developed using the [sketch](https://github.com/kcf-jackson/sketch) package and targets real-time 
 animated visualisations. The key use cases in mind are agent-based modelling and 
 dynamical system, and it may also find applications in sports analytics, board 

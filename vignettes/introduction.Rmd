@@ -390,12 +390,19 @@ Here is an example:
 ```{r, echo = T, eval = T}
 library(animate)
 device <- animate$new(500, 500, virtual = TRUE)
+attach(device)
+
+# Data
 id <- new_id(1:10)
 s <- 1:10 * 2 * pi / 10
 s2 <- sample(s)
-device$par(xlim = c(-2.5, 2.5), ylim = c(-2.5, 2.5))
-device$plot(2*sin(s), 2*cos(s), id = id)
-device$points(sin(s2), cos(s2), id = id, transition = list(duration = 2000))
+
+# Plot
+par(xlim = c(-2.5, 2.5), ylim = c(-2.5, 2.5))
+plot(2*sin(s), 2*cos(s), id = id)
+points(sin(s2), cos(s2), id = id, transition = list(duration = 2000))
+
+# Render in-line in an R Markdown document
 rmd_animate(device, click_to_play(start = 3))  # begin the plot at the third frame
 ```
 
