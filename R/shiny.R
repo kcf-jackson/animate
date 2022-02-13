@@ -12,7 +12,7 @@
 animateOutput <- function(outputId = "animateOutput", width = "100%", height = "400px", ...) {
   # advanced usage
   args <- list(...)
-  if (!args$stack_limit) {
+  if (is.null(args$stack_limit)) {
     stack_limit <- -1
   } else {
     stack_limit <- args$stack_limit
