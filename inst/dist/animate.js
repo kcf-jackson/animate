@@ -739,6 +739,9 @@ var controller = function(p) {
     self.watch = function(selector, event, callback) {
         return select_dom(selector).addEventListener(event, callback)
     }
+    self.unwatch = function(selector, event, callback) {
+        return select_dom(selector).removeEventListener(event, callback)
+    }
     // private variables and methods
     let private = {}
     
@@ -746,7 +749,7 @@ var controller = function(p) {
         self.initialize(p)
     }
 }
-var make_animation = function(f, wait, callback) {
+var make_animation = function(f, wait) {
     var then = performance.now()
     var main = function() {
         var timer = requestAnimationFrame(main)
@@ -754,7 +757,7 @@ var make_animation = function(f, wait, callback) {
         var elapsed = now - then
         if (elapsed > wait) {
             then = now - (elapsed % wait)
-            f(timer, callback)
+            f(timer)
         }
         return timer
     }

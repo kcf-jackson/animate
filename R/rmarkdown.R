@@ -1,3 +1,30 @@
+#' In-line rendering of an animated plot in an R Markdown document
+#'
+#' @param device The \link{animate} object.
+#' @param ... Optional parameters to pass to \link{insert_animate}.
+#'
+#' @note This function should only be used in a code chunk of an R Markdown document.
+#'
+#' @export
+rmd_animate <- function(device, ...) {
+  if (!device$virtual_meta$virtual) {
+    stop("Device is not virtual. Virtual device should be used for inline RMarkdown usage. Did you forget to set 'virtural = TRUE' in your `animate$new` function call?")
+  }
+  json_file <- tempfile(pattern = "test", fileext = ".json")
+  json_obj <- glue::glue('{
+    "plot_commands": <device$virtual_session$get()>,
+    "device": {
+      "selection": "", "id": "", "par": {},
+      "height": <device$virtual_meta$height>,
+      "width": <device$virtual_meta$width>
+    },
+    "max_num_commands": -1
+  }', .open = "<", .close = ">")
+  write(json_obj, json_file)
+  insert_animate(json_file, ...)
+}
+
+
 #' Insert an animated plot into an R Markdown document
 #'
 #' @param file The exported plot.
@@ -89,10 +116,13 @@ click_to_play <- function(selector = "#SVG_1", start = 2) {
 click_to_loop <- function(selector = "#SVG_1", start = 2, wait = 20) {
   sprintf(
     'ctrl = new controller(JS_device);
-    ctrl.play_until(%s, 1, () => {
-      ctrl.watch("%s", "click", function() { ctrl.play_until(0, %s) });
+    ctrl.play_until(%s, 1, function() {
+      ctrl.watch("%s", "click", function callback() {
+        ctrl.unwatch("%s", "click", callback);
+        ctrl.play_until(0, %s, () => ctrl.watch("%s", "click", callback));
+      });
     })',
-    start, selector, wait
+    start, selector, selector, wait, selector
   )
 }
 
@@ -129,7 +159,7 @@ to_json <- function(input) {
     sprintf("const %s = JSON.parse(pako.inflate(%s, {to: 'string'}))", sym, json)
   } else {
     json <- paste(readLines(input), collapse = "\n")
-    sprintf("const %s = JSON.parse(%s)", sym, sQuote(json, "'"))
+    glue::glue("const {sym} = {json}")
   }
 }
 

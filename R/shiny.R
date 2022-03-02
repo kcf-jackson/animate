@@ -1,31 +1,40 @@
-#' Load the assets of an animate plot into a Shiny app
+#' Create an animate output (container) element
 #'
-#' @param n The number of commands the plot stack can hold. Use -1 for unlimited
-#' number of commands.
+#' @param outputId output variable to read the plot/image from.
+#' @param width Width of the plot area. Must be a valid CSS unit (like "100%", "400px", "auto").
+#' @param height Height of the plot area. Must be a valid CSS unit (like "100%", "400px", "auto").
+#' @param ... Optional CSS styling for the container of the plot.
 #'
-#' @note This function should be called inside the `ui` function of a Shiny app.
-#' Note that this function will work only if the 'www' folder of the Shiny app
-#' contains the relevant JavaScript files. These files can be created using the
-#' function `setup_animate`.
+#' @note (Advanced usage) A "stack_limit" parameter can be included in the optional parameters
+#' to control how many directives the device should keep track of.
 #'
 #' @export
-load_animate <- function(n = 0) {
-  tags <- shiny::tags
-  tags$head(
-    tags$script(src = "animate.js"),
-    tags$script(src = "shiny.js"),
-    tags$script(paste0("JS_device = new plot2(", n, ")"))
+animateOutput <- function(outputId = "animateOutput", width = "100%", height = "400px", ...) {
+  # advanced usage
+  args <- list(...)
+  if (is.null(args$stack_limit)) {
+    stack_limit <- -1
+  } else {
+    stack_limit <- args$stack_limit
+    args$stack_limit <- NULL
+  }
+
+  style <- htmltools::css(width = width, height = height, ...)
+  htmltools::tagList(
+    animateDependencies(),
+    do.call(htmltools::div, list(id = outputId, style = style, class = "shiny-animate-output")),
+    shiny::tags$script(paste0("JS_device = new plot2(", stack_limit, ")"))
   )
 }
 
 
-#' Copy the necessary JavaScript assets to the 'www' folder of a Shiny app
-#'
-#' @param path The path to the 'www' folder
-#'
-#' @export
-setup_animate <- function(path) {
-  asset <- function(x) system.file(x, package = "animate")
-  file.copy(asset("dist/animate.js"), path)
-  file.copy(asset("dist/shiny.js"), path)
+#' The HTML dependency of an 'animate' plot
+animateDependencies <- function() {
+  htmltools::htmlDependency(
+    name = "animate-assets",
+    version = "0.3.1",
+    package = "animate",
+    src = "dist",
+    script = c("animate.js", "shiny.js")
+  )
 }

@@ -20,9 +20,18 @@ remap_args <- function(k, v) {
   JS_UNDEFINED
 }
 
+virtual_device <- function() {
+  result <- Array()
+  list(
+    send = function(data) {
+      data <- JSON::parse(JSON::stringify(data), remap_args)
+      result$push(data)
+    },
+    get = function() {
+      return(result)
+    }
+  )
+}
 
-Shiny::addCustomMessageHandler("animate", function(data) {
-  data <- JSON::parse(JSON::stringify(data), remap_args)
-  JS_device$record(data)
-  JS_device$dispatch(data)
-})
+# Usage
+# x <- virtual_device()

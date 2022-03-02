@@ -111,6 +111,14 @@ controller <- R6Class(
     #' @param callback A function; the callback function.
     watch = function(selector, event, callback) {
       select_dom(selector)$addEventListener(event, callback)
+    },
+
+    #' @description Remove an event listener.
+    #' @param selector A character string; the query selector.
+    #' @param event A character string; a HTML DOM event.
+    #' @param callback A function; the callback function.
+    unwatch = function(selector, event, callback) {
+      select_dom(selector)$removeEventListener(event, callback)
     }
   ),
   private = list()
@@ -138,7 +146,7 @@ controller <- R6Class(
 #' res <- timer_1()
 #'
 #' @export
-make_animation <- function(f, wait, callback) {
+make_animation <- function(f, wait) {
   then <- performance$now()
   main <- function() {
     timer <- requestAnimationFrame(main)
@@ -147,7 +155,7 @@ make_animation <- function(f, wait, callback) {
     if (elapsed > wait) {
       then <<- now - (elapsed %% wait)
       # main animation loop
-      f(timer, callback)
+      f(timer)
     }
     return(timer)
   }

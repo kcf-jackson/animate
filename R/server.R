@@ -19,6 +19,12 @@ animate <- R6::R6Class(
     #' @field session A shiny session.
     session = NULL,
 
+    #' @field virtual_meta A list of device metadata.
+    virtual_meta = list(virtual = FALSE, width = "", height = ""),
+
+    #' @field virtual_session A virtual session simulated with V8.
+    virtual_session = NULL,
+
     # WebSocket ----------------------------------------------------------------
     #' @description
     #' Constructor of the device
@@ -27,14 +33,39 @@ animate <- R6::R6Class(
     #' @param id A character string; the id assigned to the device.
     #' @param ... Additional arguments.
     initialize = function(width, height, id = "SVG_1", ...) {
-      if (private$is_shiny(...)) {
-        self$shiny <- TRUE
-        args <- list(...)
+      if (private$is_virtual(...)) {
+        self$virtual_meta <- list(virtual = TRUE, width = width, height = height)
 
+        ct <- V8::v8()
+        ct$source(system.file("dist/virtual_device.js", package = "animate"))
+        ct$assign("p", V8::JS("virtual_device()"))
+
+        self$virtual_session <- list(
+          send = function(x) {
+            ct$assign("data", x)
+            ct$assign("result", V8::JS("p.send(data)"))
+          },
+          get = function() {
+            ct$assign("result", V8::JS("p.get()"))
+            ct$get(V8::JS("JSON.stringify(result)"))
+          }
+        )
+
+        args <- list(...)
+        args$virtual <- NULL
+        js_args <- append(list(width = width, height = height, id = id), args)
+        return(do.call(self$svg, js_args))
+      }
+
+      if (private$is_shiny(...)) {
+        args <- list(...)
+        self$shiny <- TRUE
         self$session <- args$session
-        self$session$sendCustomMessage("animate", message)
 
         args$session <- NULL
+        if (is.null(args$root)) {
+          args$root <- "#animateOutput"
+        }
         js_args <- append(list(width = width, height = height, id = id), args)
         return(do.call(self$svg, js_args))
       }
@@ -75,6 +106,7 @@ animate <- R6::R6Class(
     #' Switch off the device; this function closes the WebSocket connection
     off = function() {
       if (self$shiny) return(NULL)
+      if (self$virtual_meta$virtual) return(NULL)
 
       self$ready_state <- 0
       self$connection$stopServer()
@@ -85,6 +117,7 @@ animate <- R6::R6Class(
     #' @param message The message to send to the device.
     send = function(message) {
       if (self$shiny) return(private$shiny_send(message))
+      if (self$virtual_meta$virtual) return(private$virtual_send(message))
 
       if (self$ready_state == 0) {
         message("Device is not yet available.")
@@ -288,6 +321,12 @@ animate <- R6::R6Class(
     is_shiny = function(...) {
       args <- list(...)
       "session" %in% names(args)
+    },
+    virtual_send = function(message) {
+      self$virtual_session$send(message)
+    },
+    is_virtual = function(...) {
+      isTRUE(list(...)$virtual)
     }
   )
 )

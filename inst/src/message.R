@@ -25,6 +25,6 @@ remap_args <- function(k, v) {
   else if (k == "ljoin")  { this["stroke-linejoin"] <- v }
   else if (k == "lmitre") { this["stroke-miterlimit"] <- v }
   else if (k == "labels") { this["text"] <- v }
-  else return(v)
+  else { return(v) }
   JS_UNDEFINED
 }

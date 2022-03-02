@@ -24,8 +24,12 @@ var remap_args = function(k, v) {
     }
     return undefined
 }
-Shiny.addCustomMessageHandler("animate", function(data) {
-    var data = JSON.parse(JSON.stringify(data), remap_args)
-    JS_device.record(data)
-    return JS_device.dispatch(data)
-})
+var virtual_device = function() {
+    var result = Array()
+    return { "send": function(data) {
+        var data = JSON.parse(JSON.stringify(data), remap_args)
+        return result.push(data)
+    }, "get": function() {
+        return result
+    } }
+}
