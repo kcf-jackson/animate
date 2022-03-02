@@ -116,10 +116,13 @@ click_to_play <- function(selector = "#SVG_1", start = 2) {
 click_to_loop <- function(selector = "#SVG_1", start = 2, wait = 20) {
   sprintf(
     'ctrl = new controller(JS_device);
-    ctrl.play_until(%s, 1, () => {
-      ctrl.watch("%s", "click", function() { ctrl.play_until(0, %s) });
+    ctrl.play_until(%s, 1, function() {
+      ctrl.watch("%s", "click", function callback() {
+        ctrl.unwatch("%s", "click", callback);
+        ctrl.play_until(0, %s, () => ctrl.watch("%s", "click", callback));
+      });
     })',
-    start, selector, wait
+    start, selector, selector, wait, selector
   )
 }
 
