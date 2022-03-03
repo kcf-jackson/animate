@@ -8,7 +8,7 @@ navbar:
   - text: Articles
     menu:
     - text: An introduction to ‘animate’
-      href: articles/Introduction.html
+      href: articles/introduction.html
     - text: Rose in Mathematics
       href: articles/mathematical_rose.html
     - text: Hilbert space-filling curve
