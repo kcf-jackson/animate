@@ -1,0 +1,332 @@
+---
+title: "Hilbert Curve"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Hilbert Curve}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  message = FALSE,
+  comment = "#>"
+)
+```
+
+In this article, we will create the Hilbert Curve:
+
+
+```{r, message = F, echo = F}
+library(animate)
+device <- animate$new(600, 600, virtual = TRUE,
+                      attr = list(style = "border:1px solid lightgray"))
+attach(device)
+set_max_stacksize(0)
+clear()
+#-------------------------------------------------------------------------
+
+shift_x <- function(m0, k) { m0[,1] <- m0[,1] + k; return(m0); }
+shift_y <- function(m0, k) { m0[,2] <- m0[,2] + k; return(m0); }
+flip_45 <-  function(m0) {
+    x_ref_origin <- m0[, 1] - min(m0[, 1])
+    y_ref_origin <- m0[, 2] - min(m0[, 2])
+    new_x <- min(m0[, 1]) + y_ref_origin
+    new_y <- min(m0[, 2]) + x_ref_origin
+    cbind(new_x, new_y)
+}
+flip_n45 <-  function(m0) {
+    x_ref_origin <- m0[, 1] - min(m0[, 1])
+    y_ref_origin <- m0[, 2] - min(m0[, 2])
+    new_x <- min(m0[, 1]) - y_ref_origin + diff(range(m0[,2]))
+    new_y <- min(m0[, 2]) - x_ref_origin + diff(range(m0[,1]))
+    cbind(new_x, new_y)
+}
+
+hilbert <- function(n) {
+    if (n == 1) {
+        return(cbind(c(0.25, 0.25, 0.75, 0.75),
+                     c(0.25, 0.75, 0.75, 0.25)))
+    }
+    if (n >= 2) {
+        m1 <- hilbert(n-1) * 0.5
+        k <- 0.5
+        return(rbind(
+            flip_45(m1),
+            shift_y(m1, k),
+            shift_x(shift_y(m1, k), k),
+            flip_n45(shift_x(m1, k))
+        ))
+    }
+}
+
+mat <- hilbert(4)
+par(xlim = range(mat[,1]), ylim = range(mat[,2]))
+for (i in 1:nrow(mat)) {
+    pts <- mat[i, ]
+    points(pts[1], pts[2], cex = 50)
+    if (i != 1) {
+        last <- mat[i-1, ]
+        lines(c(pts[1], last[1]),
+              c(pts[2], last[2]))
+    }
+    # Sys.sleep(0.01)
+}
+rmd_animate(device, loop(1))
+```
+
+
+
+
+---
+
+## 0. Setup
+
+We will use the following function to aid the development. This function helps us set up the device and call the appropriate function to render and embed the animated plot into the R Markdown Document. (You may need to install the additional dependency of `pryr`.)
+
+```{r, attr.source='.numberLines'}
+animate_it <- function(..., options = click_to_loop()) {
+  # Setup
+  require(animate)   # 'require' is designed for use inside functions
+  device <- animate$new(
+    600, 600, virtual = TRUE,
+    attr = list(style = "border:1px solid lightgray")
+  )
+  attach(device)
+  clear()
+  
+  # Main code
+  pryr::f(...)()
+  
+  # Embed animated plot in R Markdown Document
+  rmd_animate(device, options)
+}
+```
+
+#### Notes
+
+- `virtual = TRUE` on line 5 and `rmd_animate(...)` on line 14 are only needed when the animation is developed in-line within the RMD file.
+
+
+
+
+
+
+---
+
+## 1. Hilbert curve, first order
+
+The first order of Hilbert curve has only 4 points: (0.25,0.25), (0.25,0.75), (0.75, 0.75), (0.75, 0.25).
+
+```{r}
+hilbert <- function(n) {
+    if (n == 1) {
+        return(cbind(c(0.25, 0.25, 0.75, 0.75),
+                     c(0.25, 0.75, 0.75, 0.25)))
+    }
+}
+```
+
+We will loop over the 4 points, draw them on the screen and connect each point to the previous point with a line.
+
+```{r, message = F}
+mat <- hilbert(1)
+
+# Plotting the Hilbert curve
+animate_it({
+  # Set a fixed range
+  par(xlim = c(0,1), ylim = c(0,1))
+  
+  # Loop over the data points
+  for (i in 1:nrow(mat)) {
+      pts <- mat[i, ]
+      
+      # Draw the point
+      points(pts[1], pts[2], cex = 50)
+      
+      # Connect to the previous point with a line
+      if (i != 1) {
+          last <- mat[i-1, ]
+          lines(c(pts[1], last[1]), c(pts[2], last[2]))
+      }
+  }
+})  # Click on the canvas to run the animation
+```
+
+Note that the code for plotting will stay the same for the rest of this article! I would suggest to wrap that into a function that takes the `mat` variable as an argument. It should look something like:
+
+```{r}
+draw_hilbert <- function(mat) {
+  animate_it({
+    # copy the multiple lines of code from above
+  })
+}
+```
+
+```{r, echo = F}
+draw_hilbert <- function(mat) {
+  animate_it({
+    par(xlim = range(mat[,1]), ylim = range(mat[,2]))
+    for (i in 1:nrow(mat)) {
+        pts <- mat[i, ]
+        points(pts[1], pts[2], cex = 50)
+        if (i != 1) {
+            last <- mat[i-1, ]
+            lines(c(pts[1], last[1]), c(pts[2], last[2]))
+        }
+    }
+  })  
+}
+```
+
+
+
+
+---
+
+## 2. Hilbert curve, second order
+
+### First step
+
+As we go one order up, we will take the original Hilbert curve, copy it 4 times and lay it out at the 4 corners. In terms of (Cartesian) coordinates, 
+
+- we scale the original coordinates by half to get the bottom-left corner piece;
+- we shift the bottom-left corner piece to the top by half of the screen size to get the top-left corner;
+- we shift the bottom-left corner piece to the right by half of the screen size to get the bottom-right corner;
+- we shift the bottom-left corner piece to the top and right by half of the screen size to get the top-right corner;
+
+
+Let's define two helper functions.
+
+```{r}
+shift_x <- function(m0, k) { m0[,1] <- m0[,1] + k; return(m0); }
+shift_y <- function(m0, k) { m0[,2] <- m0[,2] + k; return(m0); }
+```
+
+
+Then we modify the Hilbert curve implementation.
+
+```{r, attr.source='.numberLines'}
+hilbert <- function(n) {
+    if (n == 1) {
+        return(cbind(c(0.25, 0.25, 0.75, 0.75),
+                     c(0.25, 0.75, 0.75, 0.25)))
+    }
+    if (n >= 2) {
+        k <- 0.5
+        bottom_left <- hilbert(n-1) * 0.5
+        top_left <- shift_y(bottom_left, k)
+        top_right <- shift_x(top_left, k)
+        bottom_right <- shift_x(bottom_left, k)
+        return(rbind(bottom_left, top_left, top_right, bottom_right))
+    }
+}
+
+mat <- hilbert(2)
+draw_hilbert(mat)
+```
+
+
+
+
+
+### Second step
+
+We notice that there are some crossover of lines, and they need to be fixed. There are several ways to do it. We will simply flip the bottom-left piece along the 45 degree line and the bottom-right piece by the -45 degree line.
+
+
+To do this, we need two more helper functions.
+
+```{r}
+flip_45 <-  function(m0) {
+    x_ref_origin <- m0[, 1] - min(m0[, 1])
+    y_ref_origin <- m0[, 2] - min(m0[, 2])
+    new_x <- min(m0[, 1]) + y_ref_origin
+    new_y <- min(m0[, 2]) + x_ref_origin
+    cbind(new_x, new_y)
+}
+
+flip_n45 <-  function(m0) {
+    x_ref_origin <- m0[, 1] - min(m0[, 1])
+    y_ref_origin <- m0[, 2] - min(m0[, 2])
+    new_x <- min(m0[, 1]) - y_ref_origin + diff(range(m0[,2]))
+    new_y <- min(m0[, 2]) - x_ref_origin + diff(range(m0[,1]))
+    cbind(new_x, new_y)
+}
+```
+
+And we modify line 12 of the Hilbert curve implementation.
+
+```{r, attr.source='.numberLines'}
+hilbert <- function(n) {
+    if (n == 1) {
+        return(cbind(c(0.25, 0.25, 0.75, 0.75),
+                     c(0.25, 0.75, 0.75, 0.25)))
+    }
+    if (n >= 2) {
+        k <- 0.5
+        bottom_left <- hilbert(n-1) * 0.5
+        top_left <- shift_y(bottom_left, k)
+        top_right <- shift_x(top_left, k)
+        bottom_right <- shift_x(bottom_left, k)
+        return(rbind(flip_45(bottom_left), top_left, top_right, flip_n45(bottom_right)))
+    }
+}
+
+mat <- hilbert(2)
+draw_hilbert(mat)
+```
+
+
+
+
+
+
+---
+
+## 3. Hilbert curve, higher order
+
+By defining the base case (n = 1) and the recursive relation that reduces a higher order case into the lower order ones, we actually have all the cases for the natural number by "induction".
+
+Here are the curves for the third order and the fourth order!
+
+```{r, echo = T}
+mat <- hilbert(3)
+draw_hilbert(mat)
+```
+
+```{r, echo = T}
+mat <- hilbert(4)
+draw_hilbert(mat)
+```
+
+
+
+
+
+---
+
+## 4. [Advanced] Transiting from one order to another order
+
+Taking advantage of the `transition` argument, which can transit a set of points to another set of points (of the same size), we can transit from one Hilbert curve to another of higher order. To do this, we repeat the points in the lower order curve to match the number of points in the higher order curve. The full example is as follows:
+
+```{r}
+rep_mat <- function(mat, n) {
+  matrix(rep(mat, each = n), nrow = nrow(mat) * n)
+}
+
+animate_it({
+  par(xlim = c(0,1), ylim = c(0,1))
+  
+  max_order <- 6
+  pts <- rep_mat(hilbert(1), 4^(max_order - 1))
+  lines(pts[,1], pts[,2], id = "line-1")
+  
+  for (i in 2:max_order) {
+    pts <- rep_mat(hilbert(i), 4^(max_order - i))
+    lines(pts[,1], pts[,2], id = "line-1", transition = list(duration = 2000))
+  }
+}, options = click_to_play(start = 4))
+```
+

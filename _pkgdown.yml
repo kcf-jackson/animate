@@ -1,0 +1,22 @@
+navbar:
+  type: default
+  left:
+  - text: Intro
+    href: index.html
+  - text: Reference
+    href: reference/index.html
+  - text: Articles
+    menu:
+    - text: An introduction to ‘animate’
+      href: articles/Introduction.html
+    - text: Rose in Mathematics
+      href: articles/mathematical_rose.html
+    - text: Hilbert space-filling curve
+      href: articles/hilbert_curve.html
+    - text: Maze generation
+      href: articles/maze_generation.html
+    - text: Q & A / Troubleshooting / Tips
+      href: articles/troubleshooting.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/kcf-jackson/animate

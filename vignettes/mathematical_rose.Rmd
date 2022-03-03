@@ -1,0 +1,214 @@
+---
+title: "Rose in Mathematics"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rose in Mathematics}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+In this article, we will make a mathematical rose like this:
+
+```{r, echo = F, message=F}
+rose <- function(theta, a = 1, k = 3) {
+    # `a` controls the size, and `k` controls the shape of the rose
+    list(x = a * cos(k * theta) * cos(theta),
+         y = a * cos(k * theta) * sin(theta))
+}
+p <- 2
+q <- 7
+k <- p / q
+is_odd <- function(x) x %% 2 == 1
+period <- ifelse(is_odd(p) && is_odd(q), pi * q, 2 * pi * q)
+time <- seq(from = 0, to = period, length.out = 400)  # 400 time steps
+pts <- rose(time, a = 1, k = k)
+
+library(animate)
+border_with_round_corners <- "border:1px solid lightgray; border-radius:5px;"
+device <- animate$new(600, 600, virtual = TRUE, attr = list(style = border_with_round_corners))
+attach(device)
+set_max_stacksize(0)
+par(xlim = extendrange(pts$x), ylim = extendrange(pts$y))
+for (step in seq_along(time)) {
+    lines(pts$x[1:step], pts$y[1:step], id = "line-1")
+    points(pts$x[step], pts$y[step], id = "point-1")
+}
+rmd_animate(device, loop(1))
+```
+
+
+
+
+---
+
+## 1. Implement the `rose` function
+
+The mathematical function that draws the rose is: 
+$$(x,y) = \left(a \cos(kt) \cos(t), a \cos(kt) \sin(t)\right)$$
+where $a$ and $k$ are the parameters controlling the size and the shape of the rose respectively.
+
+```{r, exercise=TRUE}
+rose <- function(theta, a = 1, k = 3) {
+    # `a` controls the size, and `k` controls the shape of the rose
+    list(x = a * cos(k * theta) * cos(theta), y = a * cos(k * theta) * sin(theta))
+}
+```
+
+The parameter $k$ is specified with $k = p/q$, where $p$ and $q$ should be coprime, e.g. 1/3, 2/7, not 2/6, 3/6. If $p$ and $q$ are not coprime, then the rose will be drawn more than once.
+```{r}
+p <- 2
+q <- 7
+k <- p / q
+```
+
+
+Some calculation is needed to work out the number of time steps required to get to the end of the drawing of the rose. Assuming $p$ and $q$ are coprime, then the period is $\pi q$ if both $p$ and $q$ are odd, and $2 \pi q$ otherwise.
+
+```{r, exercise=TRUE}
+is_odd <- function(x) x %% 2 == 1
+period <- ifelse(is_odd(p) && is_odd(q), pi * q, 2 * pi * q)
+```
+
+
+Now we compute the points on the rose with the parameters `a` and `k` for time=0 to time=`period`.
+
+```{r}
+time <- seq(from = 0, to = period, length.out = 400)  # 400 time steps
+pts <- rose(time, a = 1, k = k)
+```
+
+
+
+
+---
+
+## 2. Plot the Rose
+
+### Set up the device
+
+```{r, exercise=TRUE, message=FALSE, warning=FALSE, attr.source='.numberLines'}
+library(animate)
+border_with_round_corners <- "border:1px solid lightgray; border-radius:5px;"
+device <- animate$new(600, 600, virtual = TRUE, attr = list(style = border_with_round_corners))
+attach(device)
+```
+
+#### Notes
+
+- line 1: `library(animate)` loads the `animate` library.
+
+- line 2: We define a style to add a border around the plot so that we know it is there even when nothing has been drawn. The style is specified using CSS; if you haven't used it before, don't worry too much about that, the package website maintains a list of the most used ones for you to copy and paste to your code.
+
+- line 3: `animate$new(600, 600, ...)` sets the canvas size to be 600 by 600 (width by height). 
+
+- line 3: An additional flag `virtual = TRUE` is needed only for in-line RMD usage, i.e. you are animating the plot directly in the code chunk rather than importing it from a file.
+
+- line 4: `attach(device)` lets us use the functions in `device` directly rather than typing `device$some_function` every time. To detach from the device, use `detach(device)` afterwards. 
+
+
+
+### Making the plot
+
+```{r, eval = F, attr.source='.numberLines'}
+set_max_stacksize(0)
+par(xlim = extendrange(pts$x), ylim = extendrange(pts$y))
+for (step in seq_along(time)) {
+    lines(pts$x[1:step], pts$y[1:step], id = "line-1")
+    points(pts$x[step], pts$y[step], id = "point-1")
+}
+rmd_animate(device, click_to_loop(start = 3, wait = 10))
+```
+
+#### Notes 
+
+- line 1: `set_max_stacksize(0)` sets the internal memory of the device to 0, so that it does not use any memory. 
+- line 2: `par(xlim = ..., ylim = ...)` sets the ranges of the x-axis and the y-axis to be fixed at the specified values.
+- line 3-6: `lines(...)` and `points(...)` draw lines and points on the screen. The argument `id` needs to be provided so that the graphics elements are updated, rather than redrawn, on the screen.
+- line 7: this line is needed only for in-line RMD usage. It executes the animation using the virtual device and embeds the output in the RMD file.
+
+
+```{r, eval = T, echo = F}
+set_max_stacksize(0)
+par(xlim = extendrange(pts$x), ylim = extendrange(pts$y))
+for (step in seq_along(time)) {
+    lines(pts$x[1:step], pts$y[1:step], id = "line-1")
+    points(pts$x[step], pts$y[step], id = "point-1")
+}
+rmd_animate(device, click_to_loop(start = 3, wait = 10))
+```
+
+
+### Clean up 
+
+If you are making the plot in the R console (not in RMD), you may want to `clear` the plot, switch `off` and detach the device when you are done.
+
+```{r, eval=FALSE}
+clear()
+off()
+detach(device)
+```
+
+
+
+
+---
+
+## 3. [Advanced] Coordinating multiple plots
+
+Continuing from above, we will draw a 4 x 4 grid of roses. First, we generate the roses using the previous code but looping through a range of $p$ and $q$ values.
+
+```{r}
+ps <- 1:4
+qs <- c(5, 7, 11, 13)
+roses <- list()
+for (p in ps) {
+  for (q in qs) {
+    period <- ifelse(is_odd(p) && is_odd(q), pi * q, 2 * pi * q)
+    time <- seq(from = 0, to = period, length.out = 400)
+    roses[[length(roses) + 1]] <- rose(time, a = 1, k = p / q)
+  }
+}
+```
+
+
+Next, we create 15 additional plot areas using the `svg` function. Then when we want to make a plot at a specific area, we simply call `set(PLOT_AREA_ID)` just before the drawing commands. As the generated plot is quite large in size, we will do this directly in the R console.
+
+```{r, message = F, eval = F, echo = T}
+library(animate)
+device <- animate$new(150, 150)
+attach(device)
+set_max_stacksize(0)
+
+
+# Create 15 additional plot areas. The id of the first plot area is by default "SVG_1";
+# we follow the convention and name the rest as "SVG_i", where i = 2, ..., 16.
+for (i in 2:16) {
+  svg(150, 150, id = paste0("SVG_", i))
+}
+
+
+# Loop over the plot area and draw the corresponding rose.
+for (step in 1:400) {
+  for (i in 1:16) {
+    set(paste0("SVG_", i))  # Make plot area named "SVG_i" active
+    pts <- roses[[i]]
+    par(xlim = extendrange(pts$x), ylim = extendrange(pts$y))
+    lines(pts$x[1:step], pts$y[1:step], id = "line-1")
+    points(pts$x[step], pts$y[step], id = "point-1")
+  }
+}
+```
+
+
+<div>
+<iframe width="600" height="600" id = "yt_embedded" src="https://www.youtube.com/embed/0hnEF11depo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<script>document.querySelector("#yt_embedded").src = "https://www.youtube.com/embed/0hnEF11depo";</script>

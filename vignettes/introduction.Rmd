@@ -387,7 +387,7 @@ In the code chunk of an R Markdown document,
 
 Here is an example:
 
-```{r, echo = T, eval = T}
+```{r, echo = T, eval = T, message = F}
 library(animate)
 device <- animate$new(500, 500, virtual = TRUE)
 attach(device)
