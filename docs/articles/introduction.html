@@ -31,17 +31,14 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">animate</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
+  <a href="../index.html">Intro</a>
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
@@ -54,12 +51,31 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/introduction.html">An introduction to 'animate'</a>
+      <a href="../articles/Introduction.html">An introduction to ‘animate’</a>
+    </li>
+    <li>
+      <a href="../articles/mathematical_rose.html">Rose in Mathematics</a>
+    </li>
+    <li>
+      <a href="../articles/hilbert_curve.html">Hilbert space-filling curve</a>
+    </li>
+    <li>
+      <a href="../articles/maze_generation.html">Maze generation</a>
+    </li>
+    <li>
+      <a href="../articles/troubleshooting.html">Q &amp; A / Troubleshooting / Tips</a>
     </li>
   </ul>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/kcf-jackson/animate">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -85,7 +101,12 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>1. Introduction</h2>
-<p>The R package ‘animate’ implements a web-based graphics device that models on the base R syntax and is powered by <a href="https://d3js.org/">d3.js</a>. The device is developed using the <a href="https://github.com/kcf-jackson/sketch">sketch</a> package and targets real-time animated visualisations. The key use cases in mind are agent-based modelling and dynamical system, and it may also find applications in sports analytics, board game analysis and basic animated charting.</p>
+<p>The R package ‘animate’ implements a web-based graphics device that
+models on the base R syntax and is powered by <a href="https://d3js.org/">d3.js</a>. The device is developed using the <a href="https://github.com/kcf-jackson/sketch">sketch</a> package and
+targets real-time animated visualisations. The key use cases in mind are
+agent-based modelling and dynamical system, and it may also find
+applications in sports analytics, board game analysis and basic animated
+charting.</p>
 </div>
 <div id="installation-and-basic-usage" class="section level2">
 <h2 class="hasAnchor">
@@ -99,7 +120,11 @@
 <div id="b--initialising-and-using-the-device" class="section level3">
 <h3 class="hasAnchor">
 <a href="#b--initialising-and-using-the-device" class="anchor"></a>b. Initialising and using the device</h3>
-<p>To use the device, load the package and call <code>animate$new</code> with the <code>width</code> and <code>height</code> arguments (in pixel values) to initialise the device. It may take some time for the device to start; making function calls before the start-up process completes would result in a warning.</p>
+<p>To use the device, load the package and call <code>animate$new</code>
+with the <code>width</code> and <code>height</code> arguments (in pixel
+values) to initialise the device. It may take some time for the device
+to start; making function calls before the start-up process completes
+would result in a warning.</p>
 <div id="usage-1" class="section level4">
 <h4 class="hasAnchor">
 <a href="#usage-1" class="anchor"></a>Usage 1</h4>
@@ -117,7 +142,8 @@
 <div id="usage-2" class="section level4">
 <h4 class="hasAnchor">
 <a href="#usage-2" class="anchor"></a>Usage 2</h4>
-<p>Sometimes it can be convenient to attach the device so that the functions of the device can be called directly.</p>
+<p>Sometimes it can be convenient to attach the device so that the
+functions of the device can be called directly.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">animate</span><span class="op">)</span>
 <span class="va">device</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/animate.html">animate</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="fl">600</span>, <span class="fl">400</span><span class="op">)</span>
@@ -135,15 +161,22 @@
 <h4 class="hasAnchor">
 <a href="#remarks" class="anchor"></a>Remarks</h4>
 <ul>
-<li>Only one device is supported per R session. If a device fails to initialise, it is usually because there is another device currently occupying the session.</li>
-<li>In case one forgets to assign the device to a variable and so does not have the handle to call the <code>off</code> function, simply restarting R will close the connection.</li>
+<li>Only one device is supported per R session. If a device fails to
+initialise, it is usually because there is another device currently
+occupying the session.</li>
+<li>In case one forgets to assign the device to a variable and so does
+not have the handle to call the <code>off</code> function, simply
+restarting R will close the connection.</li>
 </ul>
 </div>
 </div>
 <div id="c--creating-animated-plots" class="section level3">
 <h3 class="hasAnchor">
 <a href="#c--creating-animated-plots" class="anchor"></a>c. Creating animated plots</h3>
-<p>The <strong>most important</strong> idea of this package is that <strong>every object to be animated on the screen must have an ID</strong>. These IDs are used to decide which objects need to be modified to create the animation effect.</p>
+<p>The <strong>most important</strong> idea of this package is that
+<strong>every object to be animated on the screen must have an
+ID</strong>. These IDs are used to decide which objects need to be
+modified to create the animation effect.</p>
 <div id="setup" class="section level4">
 <h4 class="hasAnchor">
 <a href="#setup" class="anchor"></a>Setup</h4>
@@ -155,8 +188,15 @@
 <div id="basic-plotting" class="section level4">
 <h4 class="hasAnchor">
 <a href="#basic-plotting" class="anchor"></a>Basic plotting</h4>
-<p>A basic plot can be made with the usual syntax <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot(x, y)</a></code> and the additional argument <code>id</code>. <code>id</code> expects a character vector, and its length should match the number of data points.</p>
-<p>To animate the points, we provide a new set of coordinates while using the same <code>id</code>. The package would know it should update the points rather than plotting new ones. As an option, setting the argument <code>transition = TRUE</code> creates a transition effect from the old coordinates to the new coordinates.</p>
+<p>A basic plot can be made with the usual syntax
+<code><a href="https://rdrr.io/r/graphics/plot.default.html">plot(x, y)</a></code> and the additional argument <code>id</code>.
+<code>id</code> expects a character vector, and its length should match
+the number of data points.</p>
+<p>To animate the points, we provide a new set of coordinates while
+using the same <code>id</code>. The package would know it should update
+the points rather than plotting new ones. As an option, setting the
+argument <code>transition = TRUE</code> creates a transition effect from
+the old coordinates to the new coordinates.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>
 <span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>
@@ -186,7 +226,9 @@ ctrl = new controller(JS_device);
 <div id="transition-with-multiple-attributes" class="section level4">
 <h4 class="hasAnchor">
 <a href="#transition-with-multiple-attributes" class="anchor"></a>Transition with multiple attributes</h4>
-<p>The transition effect can handle multiple attributes at the same time, and the <code>transition</code> argument supports other options.</p>
+<p>The transition effect can handle multiple attributes at the same
+time, and the <code>transition</code> argument supports other
+options.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">clear</span><span class="op">(</span><span class="op">)</span>  <span class="co"># Clear the canvas</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>
@@ -217,7 +259,10 @@ ctrl = new controller(JS_device);
 <div id="animating-without-transition" class="section level4">
 <h4 class="hasAnchor">
 <a href="#animating-without-transition" class="anchor"></a>Animating without transition</h4>
-<p>Some applications require plotting a sequence of key frames rapidly. This can be done easily with a loop. There should be pauses between iterations, otherwise the animation will happen so quickly that only the last key frame can be seen.</p>
+<p>Some applications require plotting a sequence of key frames rapidly.
+This can be done easily with a loop. There should be pauses between
+iterations, otherwise the animation will happen so quickly that only the
+last key frame can be seen.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">clear</span><span class="op">(</span><span class="op">)</span>  <span class="co"># Clear the canvas</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>
@@ -238,20 +283,50 @@ ctrl = new controller(JS_device);
 &lt;script&gt;JS_device = new plot2(-1);
 JS_device.import(basic_lines_json_gz);
 ctrl = new controller(JS_device);
-    ctrl.play_until(2, 1, () =&gt; {
-      ctrl.watch(&quot;#SVG_1&quot;, &quot;click&quot;, function() { ctrl.play_until(0, 20) });
+    ctrl.play_until(2, 1, function() {
+      ctrl.watch(&quot;#SVG_1&quot;, &quot;click&quot;, function callback() {
+        ctrl.unwatch(&quot;#SVG_1&quot;, &quot;click&quot;, callback);
+        ctrl.play_until(0, 20, () =&gt; ctrl.watch(&quot;#SVG_1&quot;, &quot;click&quot;, callback));
+      });
     })&lt;/script&gt;
 &lt;/body&gt;&lt;/html&gt;" style="border: none;width: 650px;height: 450px;"></iframe></p>
-<p>When you are done. Don’t forget to switch-off and detach the device with <code>off(); detach(device)</code>.</p>
+<p>When you are done. Don’t forget to switch-off and detach the device
+with <code>off(); detach(device)</code>.</p>
 </div>
 </div>
 <div id="d--remarks" class="section level3">
 <h3 class="hasAnchor">
 <a href="#d--remarks" class="anchor"></a>d. Remarks</h3>
-<p>The package currently supports the following primitives in addition to the <code>plot</code> function: <code>points</code>, <code>lines</code>, <code>bars</code>, <code>text</code>, <code>image</code> and <code>axis</code>. While they are all modelled on the base R syntax, there are some differences. This is because static plots and animated plots are inherently different, so different assumptions are used to manage the device and its graphics setting.</p>
-<p>In the <code>base</code> package, a <code>plot</code> needs to be made before any other primitives can be used. <code>animate</code> decouples that link, and each primitive uses their own scale computed based on the data provided and can be used independently. This feature is needed because <code>base</code> plot mostly works under the setting that the scale of the plot is held constant, while for animated plot, the scale may be changing frequently. In case one wants to keep the scale (and axes) constant in <code>animate</code>, the <code>xlim</code> and <code>ylim</code> arguments can be used - either directly in the function call or as the default parameters of the device set using the <code>par</code> function.</p>
-<p>The primitive functions support the commonly-used graphical parameters like <code>cex</code>, <code>lwd</code>, <code>bg</code>, etc. To use options that are beyond the base R interface, e.g. the <code>transition</code> argument, or options that are part of the R interface but have not been implemented, one can use the <code>attr</code>, <code>style</code> and <code>transition</code> arguments. For instance, for the <code>text</code> function, the font family can be specified using <code>attr = list("font-family" = "monospace")</code>.</p>
-<p>For the <code>lines</code> function, the entire line is considered as one unit despite containing multiple points, and so only one ID is needed.</p>
+<p>The package currently supports the following primitives in addition
+to the <code>plot</code> function: <code>points</code>,
+<code>lines</code>, <code>bars</code>, <code>text</code>,
+<code>image</code> and <code>axis</code>. While they are all modelled on
+the base R syntax, there are some differences. This is because static
+plots and animated plots are inherently different, so different
+assumptions are used to manage the device and its graphics setting.</p>
+<p>In the <code>base</code> package, a <code>plot</code> needs to be
+made before any other primitives can be used. <code>animate</code>
+decouples that link, and each primitive uses their own scale computed
+based on the data provided and can be used independently. This feature
+is needed because <code>base</code> plot mostly works under the setting
+that the scale of the plot is held constant, while for animated plot,
+the scale may be changing frequently. In case one wants to keep the
+scale (and axes) constant in <code>animate</code>, the <code>xlim</code>
+and <code>ylim</code> arguments can be used - either directly in the
+function call or as the default parameters of the device set using the
+<code>par</code> function.</p>
+<p>The primitive functions support the commonly-used graphical
+parameters like <code>cex</code>, <code>lwd</code>, <code>bg</code>,
+etc. To use options that are beyond the base R interface, e.g. the
+<code>transition</code> argument, or options that are part of the R
+interface but have not been implemented, one can use the
+<code>attr</code>, <code>style</code> and <code>transition</code>
+arguments. For instance, for the <code>text</code> function, the font
+family can be specified using
+<code>attr = list("font-family" = "monospace")</code>.</p>
+<p>For the <code>lines</code> function, the entire line is considered as
+one unit despite containing multiple points, and so only one ID is
+needed.</p>
 </div>
 </div>
 <div id="three-full-examples" class="section level2">
@@ -324,8 +399,11 @@ ctrl = new controller(JS_device);
 &lt;script&gt;JS_device = new plot2(-1);
 JS_device.import(Lorenz_system_json_gz);
 ctrl = new controller(JS_device);
-    ctrl.play_until(2, 1, () =&gt; {
-      ctrl.watch(&quot;#SVG_1&quot;, &quot;click&quot;, function() { ctrl.play_until(0, 20) });
+    ctrl.play_until(2, 1, function() {
+      ctrl.watch(&quot;#SVG_1&quot;, &quot;click&quot;, function callback() {
+        ctrl.unwatch(&quot;#SVG_1&quot;, &quot;click&quot;, callback);
+        ctrl.play_until(0, 20, () =&gt; ctrl.watch(&quot;#SVG_1&quot;, &quot;click&quot;, callback));
+      });
     })&lt;/script&gt;
 &lt;/body&gt;&lt;/html&gt;" style="border: none;width: 650px;height: 450px;"></iframe></p>
 </div>
@@ -335,7 +413,7 @@ ctrl = new controller(JS_device);
 <a href="#a-particle-system" class="anchor"></a>A particle system</h3>
 <p><span class="math display">\[\begin{aligned}
 \dfrac{dx_i}{dt} = u_i, \quad
-\dfrac{dy_i}{dt} = v_i, \quad 
+\dfrac{dy_i}{dt} = v_i, \quad
 i = 1, 2, ..., n
 \end{aligned}\]</span></p>
 <div id="creating-the-simulaton-function-1" class="section level4">
@@ -392,8 +470,11 @@ i = 1, 2, ..., n
 &lt;script&gt;JS_device = new plot2(-1);
 JS_device.import(particle_system_json_gz);
 ctrl = new controller(JS_device);
-    ctrl.play_until(2, 1, () =&gt; {
-      ctrl.watch(&quot;#SVG_1&quot;, &quot;click&quot;, function() { ctrl.play_until(0, 20) });
+    ctrl.play_until(2, 1, function() {
+      ctrl.watch(&quot;#SVG_1&quot;, &quot;click&quot;, function callback() {
+        ctrl.unwatch(&quot;#SVG_1&quot;, &quot;click&quot;, callback);
+        ctrl.play_until(0, 20, () =&gt; ctrl.watch(&quot;#SVG_1&quot;, &quot;click&quot;, callback));
+      });
     })&lt;/script&gt;
 &lt;/body&gt;&lt;/html&gt;" style="border: none;width: 550px;height: 550px;"></iframe></p>
 </div>
@@ -460,8 +541,11 @@ ctrl = new controller(JS_device);
 &lt;script&gt;JS_device = new plot2(-1);
 JS_device.import(random_walk_2d_json_gz);
 ctrl = new controller(JS_device);
-    ctrl.play_until(2, 1, () =&gt; {
-      ctrl.watch(&quot;#SVG_1&quot;, &quot;click&quot;, function() { ctrl.play_until(0, 300) });
+    ctrl.play_until(2, 1, function() {
+      ctrl.watch(&quot;#SVG_1&quot;, &quot;click&quot;, function callback() {
+        ctrl.unwatch(&quot;#SVG_1&quot;, &quot;click&quot;, callback);
+        ctrl.play_until(0, 300, () =&gt; ctrl.watch(&quot;#SVG_1&quot;, &quot;click&quot;, callback));
+      });
     })&lt;/script&gt;
 &lt;/body&gt;&lt;/html&gt;" style="border: none;width: 650px;height: 650px;"></iframe></p>
 </div>
@@ -478,26 +562,16 @@ ctrl = new controller(JS_device);
 <a href="#inline-usage" class="anchor"></a>Inline usage</h4>
 <p>In the code chunk of an R Markdown document,</p>
 <ul>
-<li>Call <code>animate$new</code> with the <code>virtual = TRUE</code> flag,</li>
-<li>then at the end of the code chunk, call <code><a href="../reference/rmd_animate.html">rmd_animate(device)</a></code>.</li>
+<li>Call <code>animate$new</code> with the <code>virtual = TRUE</code>
+flag,</li>
+<li>then at the end of the code chunk, call
+<code><a href="../reference/rmd_animate.html">rmd_animate(device)</a></code>.</li>
 </ul>
 <p>Here is an example:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">animate</span><span class="op">)</span>
 <span class="va">device</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/animate.html">animate</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="fl">500</span>, <span class="fl">500</span>, virtual <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/attach.html">attach</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span>
-<span class="co">#&gt; The following objects are masked from package:graphics:</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     abline, axis, image, lines, par, plot, points, text</span>
-<span class="co">#&gt; The following object is masked from package:grDevices:</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     svg</span>
-<span class="co">#&gt; The following object is masked from package:methods:</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     initialize</span>
-<span class="co">#&gt; The following objects are masked from package:base:</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     plot, remove</span>
 
 <span class="co"># Data</span>
 <span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_id.html">new_id</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>
@@ -513,8 +587,8 @@ ctrl = new controller(JS_device);
 <span class="fu"><a href="../reference/rmd_animate.html">rmd_animate</a></span><span class="op">(</span><span class="va">device</span>, <span class="fu"><a href="../reference/click_to_play.html">click_to_play</a></span><span class="op">(</span>start <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>  <span class="co"># begin the plot at the third frame</span></code></pre></div>
 <p><iframe srcdoc='&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;
 &lt;script src="https://cdn.jsdelivr.net/gh/kcf-jackson/animate/inst/dist/animate.js"&gt;&lt;/script&gt;
-&lt;script&gt;const testf0f04b5d3311_json = {
-  "plot_commands": [{"type":"fn_init_svg","message":{"width":500,"height":500,"id":"SVG_1"}},{"type":"fn_par","message":{"xlim":[-2.5,2.5],"ylim":[-2.5,2.5]}},{"type":"fn_plot","message":{"x":[1.1756,1.9021,1.9021,1.1756,2.4492e-16,-1.1756,-1.9021,-1.9021,-1.1756,-4.8984e-16],"y":[1.618,0.618,-0.618,-1.618,-2,-1.618,-0.618,0.618,1.618,2],"type":"p","id":["ID-1","ID-2","ID-3","ID-4","ID-5","ID-6","ID-7","ID-8","ID-9","ID-10"]}},{"type":"fn_points","message":{"x":[0.5878,1.2246e-16,-0.9511,-0.5878,-2.4492e-16,-0.9511,0.9511,-0.5878,0.5878,0.9511],"y":[0.809,-1,-0.309,-0.809,1,0.309,-0.309,0.809,-0.809,0.309],"id":["ID-1","ID-2","ID-3","ID-4","ID-5","ID-6","ID-7","ID-8","ID-9","ID-10"],"transition":{"duration":2000}}}],
+&lt;script&gt;const test7e0831397400_json = {
+  "plot_commands": [{"type":"fn_init_svg","message":{"width":500,"height":500,"id":"SVG_1"}},{"type":"fn_par","message":{"xlim":[-2.5,2.5],"ylim":[-2.5,2.5]}},{"type":"fn_plot","message":{"x":[1.1756,1.9021,1.9021,1.1756,2.4492e-16,-1.1756,-1.9021,-1.9021,-1.1756,-4.8984e-16],"y":[1.618,0.618,-0.618,-1.618,-2,-1.618,-0.618,0.618,1.618,2],"type":"p","id":["ID-1","ID-2","ID-3","ID-4","ID-5","ID-6","ID-7","ID-8","ID-9","ID-10"]}},{"type":"fn_points","message":{"x":[-0.5878,0.5878,1.2246e-16,-2.4492e-16,-0.5878,0.5878,-0.9511,0.9511,0.9511,-0.9511],"y":[0.809,-0.809,-1,1,-0.809,0.809,0.309,0.309,-0.309,-0.309],"id":["ID-1","ID-2","ID-3","ID-4","ID-5","ID-6","ID-7","ID-8","ID-9","ID-10"],"transition":{"duration":2000}}}],
   "device": {
     "selection": "", "id": "", "par": {},
     "height": 500,
@@ -523,7 +597,7 @@ ctrl = new controller(JS_device);
   "max_num_commands": -1
 }&lt;/script&gt;
 &lt;script&gt;JS_device = new plot2(-1);
-JS_device.import(testf0f04b5d3311_json);
+JS_device.import(test7e0831397400_json);
 ctrl = new controller(JS_device);
     ctrl.play_until(3, 1, () =&gt; {
       ctrl.watch("#SVG_1", "click", function() {
@@ -539,8 +613,16 @@ ctrl = new controller(JS_device);
 <div id="import-from-a-file" class="section level4">
 <h4 class="hasAnchor">
 <a href="#import-from-a-file" class="anchor"></a>Import from a file</h4>
-<p>To include an exported visualisation (from <code>device$export</code>) in an R Markdown Document, simply use <code><a href="../reference/insert_animate.html">animate::insert_animate</a></code> to insert the visualisation in a code chunk.</p>
-<p>The function supports several playback options, including the <code>loop</code>, <code>click_to_loop</code> and <code>click_to_play</code> options. Customisation is possible, but it would require some JavaScript knowledge. Interested readers may want to look into the source code of the functions above before deciding to pursue that option.</p>
+<p>To include an exported visualisation (from
+<code>device$export</code>) in an R Markdown Document, simply use
+<code><a href="../reference/insert_animate.html">animate::insert_animate</a></code> to insert the visualisation in a
+code chunk.</p>
+<p>The function supports several playback options, including the
+<code>loop</code>, <code>click_to_loop</code> and
+<code>click_to_play</code> options. Customisation is possible, but it
+would require some JavaScript knowledge. Interested readers may want to
+look into the source code of the functions above before deciding to
+pursue that option.</p>
 </div>
 </div>
 <div id="shiny" class="section level3">
@@ -549,7 +631,8 @@ ctrl = new controller(JS_device);
 <p>To use the animate plot in a Shiny app,</p>
 <ul>
 <li>use <code>animateOutput</code> in the <code>ui</code>,</li>
-<li>then use the device function in the <code>server</code> directly inside any of the <code><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html">shiny::observeEvent</a></code>.</li>
+<li>then use the device function in the <code>server</code> directly
+inside any of the <code><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html">shiny::observeEvent</a></code>.</li>
 </ul>
 <p>Here is a full example:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">

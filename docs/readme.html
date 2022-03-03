@@ -71,17 +71,14 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">animate</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
+  <a href="index.html">Intro</a>
 </li>
 <li>
   <a href="reference/index.html">Reference</a>
@@ -94,13 +91,30 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="articles/introduction.html">An introduction to 'animate'</a>
+      <a href="articles/Introduction.html">An introduction to ‘animate’</a>
+    </li>
+    <li>
+      <a href="articles/mathematical_rose.html">Rose in Mathematics</a>
+    </li>
+    <li>
+      <a href="articles/hilbert_curve.html">Hilbert space-filling curve</a>
+    </li>
+    <li>
+      <a href="articles/maze_generation.html">Maze generation</a>
+    </li>
+    <li>
+      <a href="articles/troubleshooting.html">Q &amp; A / Troubleshooting / Tips</a>
     </li>
   </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/kcf-jackson/animate">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -120,22 +134,64 @@
 
 <div id="r-package-animate-a-web-based-graphics-device-for-animated-visualisation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#r-package-animate-a-web-based-graphics-device-for-animated-visualisation" class="anchor"></a>R package ‘animate’: A web-based graphics device for animated visualisation</h2>
-<p><em>(Developer Preview: The API is maturing and feedback is welcome!)</em></p>
-<p>The R package ‘animate’ implements a web-based graphics device that models on the base R syntax and is powered by <a href="https://d3js.org/">d3.js</a>. The device is developed using the <a href="https://github.com/kcf-jackson/sketch">sketch</a> package and targets real-time animated visualisations. The key use cases in mind are agent-based modelling and dynamical system, and it may also find applications in sports analytics, board game analysis and basic animated charting.</p>
-<p>The package is relatively lightweight containing just above 1000 lines of code and depends on the packages <code>R6</code>, <code>httpuv</code>, <code>base64enc</code>, <code>jsonlite</code> (and <code>rmarkdown</code>, <code>shiny</code> and <code>knitr</code> if you need the corresponding integration). Note that while the animated visualisation requires R to generate, it is standalone once it is generated, so sharing can be done easily.</p>
-<p>The difference of this package with <a href="https://github.com/kcf-jackson/sketch">sketch</a> is that it has a narrower focus (i.e. it does fewer things), and with that trade-off, it is possible to eliminate completely the need of knowing JavaScript to create animated visualisations.</p>
-<p>See below for three demos extracted from a <a href="https://rawcdn.githack.com/kcf-jackson/animate/0f3e8211f063e832b3b83288b4834329d491f4da/man/slides/SVI_presentation.html">presentation*</a> I gave in June at my institute, and see the <a href="https://kcf-jackson.github.io/animate/articles/introduction.html">vignettes</a> for a thorough introduction to the package. (* The source can be found at <code>./man/slides/</code>)</p>
+<a href="#r-package-animate-a-web-based-graphics-device-for-animated-visualisation" class="anchor"></a>R package ‘animate’: A web-based graphics device for animated
+visualisation</h2>
+<p><em>(Developer Preview: The API is maturing and feedback is
+welcome!)</em></p>
+<div id="news" class="section level3">
+<h3 class="hasAnchor">
+<a href="#news" class="anchor"></a>News</h3>
+<p>02/03/2022: Fix an issue related to clicking during animation.</p>
+<p>09/02/2022: Update R Markdown document and Shiny integration.</p>
+<ul>
+<li>Support using <code>animate</code> directly in a code chunk of an R
+Markdown document.</li>
+<li>Replace <code>load_animate()</code> and <code>setup_animate()</code>
+by <code><a href="reference/animateOutput.html">animateOutput(...)</a></code> to be consistent with the standard
+Shiny usage.</li>
+</ul>
+</div>
+<div id="introduction" class="section level3">
+<h3 class="hasAnchor">
+<a href="#introduction" class="anchor"></a>Introduction</h3>
+<p>The R package ‘animate’ implements a web-based graphics device that
+models on the base R syntax and is powered by <a href="https://d3js.org/">d3.js</a>. The device is developed using the <a href="https://github.com/kcf-jackson/sketch">sketch</a> package and
+targets real-time animated visualisations. The key use cases in mind are
+agent-based modelling and dynamical system, and it may also find
+applications in sports analytics, board game analysis and basic animated
+charting.</p>
+<p>The package is relatively lightweight containing just above 1000
+lines of code and depends on the packages <code>R6</code>,
+<code>httpuv</code>, <code>base64enc</code>, <code>jsonlite</code> (and
+<code>rmarkdown</code>, <code>shiny</code> and <code>knitr</code> if you
+need the corresponding integration). Note that while the animated
+visualisation requires R to generate, it is standalone once it is
+generated, so sharing can be done easily.</p>
+<p>The difference of this package with <a href="https://github.com/kcf-jackson/sketch">sketch</a> is that it has a
+narrower focus (i.e. it does fewer things), and with that trade-off, it
+is possible to eliminate completely the need of knowing JavaScript to
+create animated visualisations.</p>
+<p>See below for three demos extracted from a <a href="https://rawcdn.githack.com/kcf-jackson/animate/0f3e8211f063e832b3b83288b4834329d491f4da/man/slides/SVI_presentation.html">presentation*</a>
+I gave in June at my institute, and see the <a href="https://kcf-jackson.github.io/animate/articles/introduction.html">vignettes</a>
+for a thorough introduction to the package. (* The source can be found
+at <code>./man/slides/</code>)</p>
 <ol>
-<li><a href="https://www.youtube.com/embed/KuDXRLiFKso">Lorenz system</a></li>
-<li><a href="https://www.youtube.com/embed/YPS1lkn-XT4">Predator-Prey process</a></li>
-<li><a href="https://www.youtube.com/embed/pmmOAh3-6iA">Schelling’s model of segregation</a></li>
+<li><a href="https://www.youtube.com/embed/KuDXRLiFKso">Lorenz
+system</a></li>
+<li><a href="https://www.youtube.com/embed/YPS1lkn-XT4">Predator-Prey
+process</a></li>
+<li><a href="https://www.youtube.com/embed/pmmOAh3-6iA">Schelling’s
+model of segregation</a></li>
 </ol>
+</div>
 </div>
 <div id="acknowledgement" class="section level2">
 <h2 class="hasAnchor">
 <a href="#acknowledgement" class="anchor"></a>Acknowledgement</h2>
-<p>This work is supported by my position at the <a href="https://www.svi.edu.au/research_themes/bioinformatics_and_cellular_genomics/">Bioinformatics and Cellular Genomics lab (BioCellGen)</a> at the St. Vincent’s Institute of Medical Research (SVI) under the supervision of <a href="https://www.svi.edu.au/research_themes/research_staff/dr_davis_mccarthy">Davis McCarthy</a>.</p>
+<p>This work is supported by my position at the <a href="https://www.svi.edu.au/research_themes/bioinformatics_and_cellular_genomics/">Bioinformatics
+and Cellular Genomics lab (BioCellGen)</a> at the St. Vincent’s
+Institute of Medical Research (SVI) under the supervision of <a href="https://www.svi.edu.au/research_themes/research_staff/dr_davis_mccarthy">Davis
+McCarthy</a>.</p>
 </div>
 
 
