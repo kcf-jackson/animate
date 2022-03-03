@@ -1,0 +1,476 @@
+---
+title: "Maze generation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Maze generation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Let's make a maze!
+
+```{r, echo = F, message = F}
+animate_it <- function(..., options = click_to_loop()) {
+  # Setup
+  require(animate)   # 'require' is designed for use inside functions
+  device <- animate$new(680, 340, virtual = TRUE, 
+                        attr = list(style = "border:1px solid lightgray"))
+  attach(device)
+  clear()
+  
+  # Main code
+  pryr::f(...)()
+  
+  # Embed animated plot in R Markdown Document
+  rmd_animate(device, options)
+}
+
+
+cell <- function(id, i, j, walls = rep(1, 4), visited = FALSE) {
+  list(id = id, x = i, y = j, walls = walls, visited = visited)
+}
+
+cell_color <- \(x) ifelse(x, "green", "white")
+
+draw_cells <- function(x, y, id, color) {
+  bars(x = x, y = y, w = 1, h = 1, id = id, bg = color)
+}
+
+
+wall_color <- \(x) ifelse(x, "black", "green")
+`%+%` <- paste0
+
+draw_walls <- function(x, y, id, walls) {
+    cw1 <- sapply(walls[[1]], wall_color)
+    cw2 <- sapply(walls[[2]], wall_color)
+    cw3 <- sapply(walls[[3]], wall_color)
+    cw4 <- sapply(walls[[4]], wall_color)
+    bars(  x, y+1, 1.1, 0.1, bg = cw1, id = "top-" %+% id) 
+    bars(x+1,   y, 0.1, 1.1, bg = cw2, id = "right-" %+% id) 
+    bars(  x,   y, 1.1, 0.1, bg = cw3, id = "bottom-" %+% id) 
+    bars(  x,   y, 0.1, 1.1, bg = cw4, id = "left-" %+% id) 
+}
+
+
+visualise_maze <- function(cells, active_cell_id) {
+  # Collect the data from the cells for plotting
+  cx  <- sapply(cells, \(cell) cell$x)
+  cy  <- sapply(cells, \(cell) cell$y)
+  cid <- sapply(cells, \(cell) cell$id)
+  cbg <- sapply(cells, \(cell) cell_color(cell$visited))
+  cwalls <- lapply(1:4, \(wid) sapply(cells, \(cell) cell$walls[wid]))
+                   
+  cbg[which(cid == active_cell_id)] <- "blue"  # modified
+  
+  # Plot the cells
+  draw_cells(cx, cy, cid, cbg)
+  draw_walls(cx, cy, cid, cwalls)
+}
+
+Stack <- function() {
+  env <- new.env()
+  env$storage <- list()
+  
+  push <- function(x) {
+    len <- length(env$storage)
+    env$storage[[len + 1]] <- x  # add an item at the end
+  }
+  
+  pop <- function() {
+    len <- length(env$storage)
+    last_item <- env$storage[[len]]   # retrieve the last item
+    env$storage <- env$storage[-len]  # remove it from the sequence
+    last_item                         # return the last item
+  }
+  
+  peek <- function() {
+    len <- length(env$storage)
+    if (len == 0) NULL else env$storage[[len]]
+  }
+  
+  is_empty <- function() {
+    length(env$storage) == 0
+  }
+  
+  list(push = push, pop = pop, peek = peek, is_empty = is_empty)
+}
+
+
+get_neighbors_id <- function(id, n, m) {
+    # Set the value to be NA if the (x,y) coordinates go beyond the grid size
+    clip <- function(coord) {
+        x <- coord[1]
+        y <- coord[2]
+        c(ifelse(x > 0 && x <= m, x, NA),
+          ifelse(y > 0 && y <= n, y, NA))
+    }
+    
+    # Given an id, retrieve the (x,y) coordinates
+    id_to_xy <- function(id) {
+        c(x = 1 + (id - 1) %% m, y = 1 + (id - 1) %/% m)
+    }
+    
+    # Convert the (x,y) coordinates to an id
+    # - Return NA if any of the coordinates contains NA, indicating that the cell is outside of the grid.
+    xy_to_id <- function(coord) {
+        if (any(is.na(coord))) NA else (coord[2] - 1) * m + coord[1]
+    }
+    
+    xy <- id_to_xy(id)
+    c(top    = xy_to_id(clip(xy + c(0, 1))),
+      right  = xy_to_id(clip(xy + c(1, 0))),
+      bottom = xy_to_id(clip(xy + c(0, -1))),
+      left   = xy_to_id(clip(xy + c(-1, 0))))
+}
+
+
+generate_maze <- function(n = 5, m = 10) {
+    mat0 <- expand.grid(1:m, 1:n)
+    cells <- lapply(1:nrow(mat0), \(i) cell(i, mat0[i, 1], mat0[i, 2]))
+    cells[[1]]$visited <- TRUE
+
+    # New implementation
+    stack <- Stack()
+    stack$push(cells[[1]])
+    while (!stack$is_empty()) {
+        # Plot the current cell
+        current_cell <- stack$pop()
+        visualise_maze(cells, current_cell$id)
+        # Sys.sleep(0.1)  # needed if developing in the R console
+
+        # Given the current cell, find the neighbours that have not been visited
+        cid <- current_cell$id
+        ids <- get_neighbors_id(cid, n, m)
+        not_visited <- ids |>
+            sapply(\(ind) if (is.na(ind)) NA else !cells[[ind]]$visited) |>
+            which()
+        
+        # If there is at least one unvisited neighbour
+        if (length(not_visited) >= 1) {
+            # Push the current cell to the stack
+            stack$push(current_cell)
+          
+            # Choose one of the unvisited neighbours
+            pos <- ifelse(length(not_visited) == 1,
+                          not_visited,
+                          sample(not_visited, 1))
+            chosen_id <- ids[pos]
+
+            # Remove the walls between the current cell and the chosen cell.
+            # Note that there are two walls to be removed, one is to exit
+            # the current cell, the other is to enter the chosen cell.
+            cells[[cid]]$walls[pos] <- 0
+            
+            rev_pos <- which(get_neighbors_id(chosen_id, n, m) == cid)
+            cells[[chosen_id]]$walls[rev_pos] <- 0
+
+            # Mark the chosen cell as visited and push it to the stack
+            cells[[chosen_id]]$visited <- TRUE
+            stack$push(cells[[chosen_id]])
+        }
+    }
+    invisible(cells)
+}
+
+
+animate_it({
+    n <- 10
+    m <- 20
+    par(xlim = c(1, m+1), ylim = c(1, n+1))
+    generate_maze(n, m)
+}, options = loop(1))
+```
+
+
+
+
+
+---
+
+## 0. Setup
+
+We will use the following function to aid the development. This function helps us set up the device and call the appropriate function to render and embed the animated plot into the R Markdown Document. (You may need to install the additional dependency of `pryr`.)
+
+```{r, attr.source='.numberLines'}
+animate_it <- function(..., options = click_to_loop()) {
+  # Setup
+  require(animate)   # 'require' is designed for use inside functions
+  device <- animate$new(680, 340, virtual = TRUE, 
+                        attr = list(style = "border:1px solid lightgray"))
+  attach(device)
+  clear()
+  
+  # Main code
+  pryr::f(...)()
+  
+  # Embed animated plot in R Markdown Document
+  rmd_animate(device, options)
+}
+```
+
+#### Notes
+
+- `virtual = TRUE` on line 5 and `rmd_animate(...)` on line 14 are only needed when the animation is developed in-line within the RMD file.
+
+
+
+
+---
+
+## 1. Make a cell and draw it
+
+We will first define a cell. A cell has an `id`, the (`x`,`y`) coordinates, 4 walls (present or not) and an indicator to show if this cell has been visited before.
+
+We paint the cell in green if the cell has been visited before and in white otherwise.
+
+```{r, message = F}
+cell <- function(id, i, j, walls = rep(1, 4), visited = FALSE) {
+  list(id = id, x = i, y = j, walls = walls, visited = visited)
+}
+
+cell_color <- \(x) ifelse(x, "green", "white")
+
+draw_cells <- function(x, y, id, color) {
+  bars(x = x, y = y, w = 1, h = 1, id = id, bg = color)
+}
+
+animate_it({
+  par(xlim = c(0, 20), ylim = c(0, 10))
+  cell_1 <- cell("cell-1", 1, 1, visited = TRUE)
+  draw_cells(cell_1$x, cell_1$y, cell_1$id, cell_color(cell_1$visited))
+})
+```
+
+
+#### Add walls
+
+Now we add the walls around the cells. The wall is painted in black if it is present and in green otherwise. We will design the function `draw_walls` in such a way that it can handle multiple cells.
+
+```{r, message = F}
+# Continue from above 
+wall_color <- \(x) ifelse(x, "black", "green")
+`%+%` <- paste0
+
+draw_walls <- function(x, y, id, walls) {
+    cw1 <- sapply(walls[[1]], wall_color)
+    cw2 <- sapply(walls[[2]], wall_color)
+    cw3 <- sapply(walls[[3]], wall_color)
+    cw4 <- sapply(walls[[4]], wall_color)
+    bars(  x, y+1, 1.1, 0.1, bg = cw1, id = "top-" %+% id) 
+    bars(x+1,   y, 0.1, 1.1, bg = cw2, id = "right-" %+% id) 
+    bars(  x,   y, 1.1, 0.1, bg = cw3, id = "bottom-" %+% id) 
+    bars(  x,   y, 0.1, 1.1, bg = cw4, id = "left-" %+% id) 
+}
+
+animate_it({
+  par(xlim = c(0, 20), ylim = c(0, 10))
+  cell_1 <- cell("cell-1", 1, 1, visited = FALSE)
+  draw_cells(cell_1$x, cell_1$y, cell_1$id, cell_color(cell_1$visited))
+  draw_walls(cell_1$x, cell_1$y, cell_1$id, cell_1$walls)
+})
+```
+
+---
+
+
+
+## 2. Make a grid of cells
+
+To make a grid of cells, we first generate a set of (x,y) coordinates, then initialise some cells using them. After the cells are initialised, we collect the relevant data and plot them on the screen using the `draw_cells` and `draw_walls` defined previously.
+
+Note that in the `visualise_maze` below, we will include an optional argument `active_cell_id` to indicate where the active cell is. The active cell will be painted in blue, and this will be useful in the later sections.
+
+```{r, message = F}
+generate_maze <- function(m, n) {
+  mat0 <- expand.grid(1:m, 1:n)
+  cells <- lapply(1:nrow(mat0), \(i) cell(i, mat0[i, 1], mat0[i, 2]))
+  cells[[1]]$visited <- TRUE
+  visualise_maze(cells)
+}
+
+visualise_maze <- function(cells, active_cell_id) {
+  # Collect the data from the cells for plotting
+  cx  <- sapply(cells, \(cell) cell$x)
+  cy  <- sapply(cells, \(cell) cell$y)
+  cid <- sapply(cells, \(cell) cell$id)
+  cbg <- sapply(cells, \(cell) cell_color(cell$visited))
+  cwalls <- lapply(1:4, \(wid) sapply(cells, \(cell) cell$walls[wid]))
+                   
+  if (!missing(active_cell_id)) {
+    cbg[which(cid == active_cell_id)] <- "blue"  
+  }
+  
+  # Plot the cells
+  draw_cells(cx, cy, cid, cbg)
+  draw_walls(cx, cy, cid, cwalls)
+}
+
+animate_it({
+  par(xlim = c(1, 21), ylim = c(1, 11))
+  generate_maze(20, 10)
+})
+```
+
+
+
+
+---
+
+## 3. Make a maze!
+
+We will use the randomized depth-first search algorithm [here](https://en.wikipedia.org/wiki/Maze_generation_algorithm) to generate the maze. The idea is to walk the grid randomly, and when encountered a dead-end, backtrack to the last (multi-way) intersection for the alternative path and continue until every cell in the grid has been visited.
+
+### a. Make a stack
+
+We will need the `Stack` data structure. A stack is a sequence of storages that follows the first-in-first-out protocol. It has two major operations, `push` and `pop`. `push` adds an element to the sequence, and `pop` removes the last added element from the sequence. We also add a `peek` operation to inspect the last element of the sequence without removing it from the storage and a `is_empty` operation to check if the stack is empty.
+
+```{r}
+Stack <- function() {
+  env <- new.env()
+  env$storage <- list()
+  
+  push <- function(x) {
+    len <- length(env$storage)
+    env$storage[[len + 1]] <- x  # add an item at the end
+  }
+  
+  pop <- function() {
+    len <- length(env$storage)
+    last_item <- env$storage[[len]]   # retrieve the last item
+    env$storage <- env$storage[-len]  # remove it from the sequence
+    last_item                         # return the last item
+  }
+  
+  peek <- function() {
+    len <- length(env$storage)
+    if (len == 0) NULL else env$storage[[len]]
+  }
+  
+  is_empty <- function() {
+    length(env$storage) == 0
+  }
+  
+  list(push = push, pop = pop, peek = peek, is_empty = is_empty)
+}
+
+# Example
+my_stack <- Stack()
+my_stack$peek()
+my_stack$is_empty()
+
+my_stack$push(15)
+my_stack$push(32)
+my_stack$peek()
+
+my_stack$pop()
+my_stack$peek()
+my_stack$is_empty()
+```
+
+
+### b. Search through the maze
+
+To search through the maze, we begin at a particular cell, then randomly choose a neighbour cell that has not been visited and move to that cell. To do that, we will need a function `get_neighbors_id` that takes the id of the current cell and returns a list of its neighbour cells. (From there, we can check if each of the neighbours have been visited.)
+
+Given the id of the cell, we retrieve its (x,y) coordinates, then simply add (-1,0), (1, 0), (0, -1), (0, 1) to get the four neighbour cells. Clipping may be needed when the cell is at the boundary of the grid, outside of which there is no cell. 
+
+```{r}
+get_neighbors_id <- function(id, n, m) {
+    # Set the value to be NA if the (x,y) coordinates go beyond the grid size
+    clip <- function(coord) {
+        x <- coord[1]
+        y <- coord[2]
+        c(ifelse(x > 0 && x <= m, x, NA),
+          ifelse(y > 0 && y <= n, y, NA))
+    }
+    
+    # Given an id, retrieve the (x,y) coordinates
+    id_to_xy <- function(id) {
+        c(x = 1 + (id - 1) %% m, y = 1 + (id - 1) %/% m)
+    }
+    
+    # Convert the (x,y) coordinates to an id
+    # - Return NA if any of the coordinates contains NA, indicating that the cell is outside of the grid.
+    xy_to_id <- function(coord) {
+        if (any(is.na(coord))) NA else (coord[2] - 1) * m + coord[1]
+    }
+    
+    xy <- id_to_xy(id)
+    c(top    = xy_to_id(clip(xy + c(0, 1))),
+      right  = xy_to_id(clip(xy + c(1, 0))),
+      bottom = xy_to_id(clip(xy + c(0, -1))),
+      left   = xy_to_id(clip(xy + c(-1, 0))))
+}
+```
+
+
+Now, we implement the search algorithm in the `generate_maze` function.
+
+```{r}
+generate_maze <- function(n = 5, m = 10) {
+    mat0 <- expand.grid(1:m, 1:n)
+    cells <- lapply(1:nrow(mat0), \(i) cell(i, mat0[i, 1], mat0[i, 2]))
+    cells[[1]]$visited <- TRUE
+
+    # New implementation
+    stack <- Stack()
+    stack$push(cells[[1]])
+    while (!stack$is_empty()) {
+        # Plot the current cell
+        current_cell <- stack$pop()
+        visualise_maze(cells, active_cell_id = current_cell$id)
+        # Sys.sleep(0.1)  # needed if developing in the R console
+
+        # Given the current cell, find the neighbours that have not been visited
+        cid <- current_cell$id
+        ids <- get_neighbors_id(cid, n, m)
+        not_visited <- ids |>
+            sapply(\(ind) if (is.na(ind)) NA else !cells[[ind]]$visited) |>
+            which()
+        
+        # If there is at least one unvisited neighbour
+        if (length(not_visited) >= 1) {
+            # Push the current cell to the stack
+            stack$push(current_cell)
+          
+            # Choose one of the unvisited neighbours
+            pos <- ifelse(length(not_visited) == 1,
+                          not_visited,
+                          sample(not_visited, 1))
+            chosen_id <- ids[pos]
+
+            # Remove the walls between the current cell and the chosen cell.
+            # Note that there are two walls to be removed, one is to exit
+            # the current cell, the other is to enter the chosen cell.
+            cells[[cid]]$walls[pos] <- 0
+            
+            rev_pos <- which(get_neighbors_id(chosen_id, n, m) == cid)
+            cells[[chosen_id]]$walls[rev_pos] <- 0
+
+            # Mark the chosen cell as visited and push it to the stack
+            cells[[chosen_id]]$visited <- TRUE
+            stack$push(cells[[chosen_id]])
+        }
+    }
+    invisible(cells)
+}
+```
+
+
+Finally, let's run the maze!
+
+```{r, message = F}
+animate_it({
+    n <- 10
+    m <- 20
+    par(xlim = c(1, m+1), ylim = c(1, n+1))
+    generate_maze(n, m)
+}, options = click_to_loop(wait = 10))
+```

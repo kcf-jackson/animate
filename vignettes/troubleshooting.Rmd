@@ -1,0 +1,150 @@
+---
+title: "Q & A / Troubleshooting / Tips"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Q & A}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, echo = F, eval = T}
+`%+%` <- paste0
+random_color <- \() {
+  # colors <- c("lightblue", "orange", "lightpink")
+  colors <- c("lightblue")
+  "background:" %+% sample(colors, 1)
+}
+tag_style <- \() "padding:3px 6px; border-radius:4px;" %+% random_color()
+div_style <- "margin: 10px 0px 20px 0px;"
+
+
+tags <- \(...) {
+  dots <- match.call(expand.dots = FALSE)$...
+  dots |>
+    lapply(\(x) htmltools::tags$span("#" %+% x, style = tag_style())) |>
+    htmltools::tags$div(style = div_style)
+}
+```
+
+<style>
+</style>
+
+
+
+
+
+**Q**. How do I use a static scale or a fixed range for an axis?
+
+`r tags(static, scale, axis)`
+
+**A**. 
+
+- Use `par(xlim = ..., ylim = ...)` to set a fixed range for the x-axis and y-axis.
+- Use `par(xlim = NULL, ylim = NULL)` to clear the setting.
+
+
+
+<!-- --- -->
+
+<!-- **Q**. Why does `animate` use dynamic scale? -->
+
+<!-- `r tags(scale)` -->
+
+<!-- **A**. During development, both static scale and dynamic scale have been considered. Here is the comparison of the two scales in the case of a static plot and in the case of a dynamic plot. (Dynamic plot refers to that ) -->
+
+
+
+---
+
+**Q**. How to style the frame in which the plot is made?
+
+`r tags(CSS, style, frame)`
+
+**A**. The syntax to use is:
+```{r, eval = F}
+device <- animate$new(width, height, attr = list(style = MY_STYLE))
+```
+where MY_STYLE can be:
+
+- Border: `MY_STYLE <- "border:1px solid black;"`
+- Border with rounded corners: `MY_STYLE <- "border:1px solid lightgray; border-radius:5px;"`
+
+
+
+
+---
+
+**Q**. I heard there is a trick for developing animated plot in a code chunk of an R Markdown Document?
+
+`r tags(trick, 'inline', 'R Markdown Document', 'RMD', 'code chunk', workflow)`
+
+**A**. Yes, the function below is a handy trick to set up the device and render the output in a code chunk.
+
+```{r, eval = F}
+animate_it <- function(..., width = 600, height = 600, options = click_to_play()) {
+  # Setup
+  require(animate)     # 'require' is designed for use inside functions
+  device <- animate$new(width, height, virtual = TRUE, 
+                        attr = list(style = "border:1px solid lightgray"))
+  attach(device)       # Make methods of the device available in the namespace
+  pryr::f(...)()       # Main code
+  rmd_animate(device, options = options)  # Embed animated plot in R Markdown Document
+}
+
+# Usage
+animate_it({
+  id <- new_id(1:10)
+  plot(1:10, runif(10, 0, 1), id = id)
+  plot(1:10, runif(10, 0, 1), id = id, transition = TRUE)
+})
+```
+
+---
+
+
+**Q**. Are there any tips to improve the workflow developing in the R console?
+
+`r tags(trick, 'R console', workflow)`
+
+**A**. Yes, I sometimes use the following for development in the R console.
+
+```{r, eval = F}
+setup <- function(width = 600, height = 600) {
+  require(animate)
+  device <- animate$new(width, height, attr = list(style = "border:1px solid lightgray"))
+  attach(device)
+}
+
+cleanup <- function() {
+  clear()
+  off()
+  detach(device)
+}
+
+
+# Usage 
+setup()
+id <- new_id(1:10)
+plot(1:10, runif(10, 0, 1), id = id)
+plot(1:10, runif(10, 0, 1), id = id, transition = TRUE)
+cleanup()
+```
+
+
+---
+
+**Q**. What does `set_max_stacksize` do? Why does the device need memory?
+
+`r tags(memory, 'advanced usage')`
+
+**A**. `set_max_stacksize` sets the cap of the internal memory of the device. Memory is needed when one wants to make an animated plot and then export it to a file. This is by default switched on, since the memory usage is generally low, and it makes more sense to have a plot ready to be exported when it is complete.
+
+---
+
