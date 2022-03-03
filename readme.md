@@ -6,6 +6,8 @@ _(Developer Preview: The API is maturing and feedback is welcome!)_
 
 ### News
 
+02/03/2022: Fix an issue related to clicking during animation.
+
 09/02/2022: Update R Markdown document and Shiny integration.
 
 - Support using `animate` directly in a code chunk of an R Markdown document.

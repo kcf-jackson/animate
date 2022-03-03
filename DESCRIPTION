@@ -1,6 +1,6 @@
 Package: animate
 Title: A Web-based Graphics Device For Animated Visualisations
-Version: 0.3.2
+Version: 0.3.3
 Authors@R: 
     person(given = "Chun Fung",
            family = "Kwok",
@@ -23,5 +23,6 @@ Suggests:
     rmarkdown,
     knitr,
     shiny,
-    htmltools
+    htmltools,
+    pryr
 VignetteBuilder: knitr

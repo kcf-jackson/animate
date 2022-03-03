@@ -141,7 +141,9 @@ animate <- R6::R6Class(
     #' Initialise a SVG element
     #' @param width Width of the canvas in pixels.
     #' @param height Height of the canvas in pixels.
-    #' @param ... Additional graphical parameters.
+    #' @param ... Additional parameters. Some commonly used parameters are `id`
+    #' and `root`. `id` assigns an id to the SVG element for future reference;
+    #' `root` specifies the DOM element to insert the SVG element into.
     # @param root Character; a selector path to the container of the canvas.
     # @param id Character; the id of the SVG element
     svg = function(width = 800, height = 600, ...) {

@@ -135,7 +135,9 @@ Initialise a SVG element
 
 \item{\code{height}}{Height of the canvas in pixels.}
 
-\item{\code{...}}{Additional graphical parameters.}
+\item{\code{...}}{Additional parameters. Some commonly used parameters are \code{id}
+and \code{root}. \code{id} assigns an id to the SVG element for future reference;
+\code{root} specifies the DOM element to insert the SVG element into.}
 }
 \if{html}{\out{</div>}}
 }
