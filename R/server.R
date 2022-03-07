@@ -313,6 +313,36 @@ animate <- R6::R6Class(
     export = function(path = "./animate.json", handler = "browser") {
       self$send(Message("fn_export", list(path = path, filename = basename(path),
                                           handler = handler, skip_log = TRUE)))
+    },
+
+    #' @description
+    #' Record an animated plot as a MP4 video
+    #'
+    #' @details
+    #' This function will prompt you to select a screen / window / tab to
+    #' record. Once started, the recording can be stopped by using the stop button
+    #' at the notification box, or clicking anywhere on the page near the device.
+    #' Always confirm that the screen recording notification box is gone.
+    #' The captured video will be downloaded right after the recording stops.
+    #'
+    #' This uses web browsers' Media Streams API to record the screen
+    #' and return the captured frames as a video. The entire process runs locally.
+    #' The source file that provides this functionality can be found at
+    #' `system.file("addons/screen_record.js", package = "animate")`.
+    #'
+    #' This function is disabled for Shiny and R Markdown Document.
+    #'
+    #' This function does not work in the RStudio viewer. Please use the
+    #' "show in new window" button to launch the page with a web browser.
+    #'
+    #' See browser compatibility at: \url{https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API#browser_compatibility}
+    #'
+    #' See Media Streams API reference at: \url{https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API}
+    record = function() {
+      ans <- readline("Confirm that you want to record your screen [y/n]:")
+      if (tolower(trimws(ans)) == "y") {
+        self$send(Message("fn_export_video", list()))
+      }
     }
   ),
   # Private fields and methods -------------------------------------------------

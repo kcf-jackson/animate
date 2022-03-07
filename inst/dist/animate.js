@@ -887,9 +887,15 @@ var plot2 = function(max_num_commands = 0) {
         }
         return true
     }
+    self.export_video = function() {
+        if (startRecording) {
+            startRecording()
+        }
+        return true
+    }
     // private variables and methods
     let private = {}
-    private.dispatchers = Array(Decoder("fn_init_svg", message => self.new_device(message)), Decoder("fn_axis", message => self.axis(message)), Decoder("fn_bars", message => self.bars(message)), Decoder("fn_points", message => self.points(message)), Decoder("fn_lines", message => self.lines(message)), Decoder("fn_image", message => self.image(message)), Decoder("fn_text", message => self.text(message)), Decoder("fn_import", message => self.import(message.setting)), Decoder("fn_export", message => self.export(message)), Decoder("fn_set", message => self.set_active_device(message.device_id)), Decoder("fn_remove", message => self.remove(message.selector, message.id)), Decoder("fn_clear", message => self.clear()), Decoder("fn_delete", message => self.delete_device(message.id)), Decoder("fn_plot", message => self.plot(message)), Decoder("fn_par", message => self.set_par(message)), Decoder("fn_max_stacksize", message => self.set_max_num_commands(message.n)))
+    private.dispatchers = Array(Decoder("fn_init_svg", message => self.new_device(message)), Decoder("fn_axis", message => self.axis(message)), Decoder("fn_bars", message => self.bars(message)), Decoder("fn_points", message => self.points(message)), Decoder("fn_lines", message => self.lines(message)), Decoder("fn_image", message => self.image(message)), Decoder("fn_text", message => self.text(message)), Decoder("fn_import", message => self.import(message.setting)), Decoder("fn_export", message => self.export(message)), Decoder("fn_set", message => self.set_active_device(message.device_id)), Decoder("fn_remove", message => self.remove(message.selector, message.id)), Decoder("fn_clear", message => self.clear()), Decoder("fn_delete", message => self.delete_device(message.id)), Decoder("fn_plot", message => self.plot(message)), Decoder("fn_par", message => self.set_par(message)), Decoder("fn_max_stacksize", message => self.set_max_num_commands(message.n)), Decoder("fn_export_video", message => self.export_video()), )
     if (self.initialize) {
         self.initialize(max_num_commands)
     }

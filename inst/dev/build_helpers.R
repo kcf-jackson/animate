@@ -11,6 +11,7 @@ build <- function(stack_size = 0, debug = FALSE, keep = FALSE) {
   lines <- readLines("plot.R")
   lines <- append(lines, "#! load_library('websocket')", 4)
   lines <- append(lines, "#! load_script('message.R')", 5)
+  lines <- append(lines, "#! load_script('../addons/screen_record.js')", 6)
   lines <- append(lines, glue::glue("JS_device <- plot2$new({stack_size})"))
 
   message("Writing to ", file.path("./inst/src", "dist.R"))

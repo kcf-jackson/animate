@@ -178,6 +178,14 @@ plot2 <- R6Class(
         write(setting, param$filename)
       }
       TRUE
+    },
+
+    #' Record the animated plot and export as a video
+    export_video = function() {
+      if (startRecording) {
+        startRecording()
+      }
+      TRUE
     }
   ),
   # Private fields and methods =================================================
@@ -198,7 +206,8 @@ plot2 <- R6Class(
       Decoder("fn_delete", message %=>% self$delete_device(message$id)),
       Decoder("fn_plot", message %=>% self$plot(message)),
       Decoder("fn_par", message %=>% self$set_par(message)),
-      Decoder("fn_max_stacksize", message %=>% self$set_max_num_commands(message$n))
+      Decoder("fn_max_stacksize", message %=>% self$set_max_num_commands(message$n)),
+      Decoder("fn_export_video", message %=>% self$export_video()),
     )
   )
 )

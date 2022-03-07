@@ -48,6 +48,7 @@ A web-based graphics device
 \item \href{#method-delete}{\code{animate$delete()}}
 \item \href{#method-import}{\code{animate$import()}}
 \item \href{#method-export}{\code{animate$export()}}
+\item \href{#method-record}{\code{animate$record()}}
 \item \href{#method-clone}{\code{animate$clone()}}
 }
 }
@@ -448,6 +449,38 @@ Export an animated plot
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-record"></a>}}
+\if{latex}{\out{\hypertarget{method-record}{}}}
+\subsection{Method \code{record()}}{
+Record an animated plot as a MP4 video
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$record()}\if{html}{\out{</div>}}
+}
+
+\subsection{Details}{
+This function will prompt you to select a screen / window / tab to
+record. Once started, the recording can be stopped by using the stop button
+at the notification box, or clicking anywhere on the page near the device.
+Always confirm that the screen recording notification box is gone.
+The captured video will be downloaded right after the recording stops.
+
+This uses web browsers' Media Streams API to record the screen
+and return the captured frames as a video. The entire process runs locally.
+The source file that provides this functionality can be found at
+\code{system.file("addons/screen_record.js", package = "animate")}.
+
+This function is disabled for Shiny and R Markdown Document.
+
+This function does not work in the RStudio viewer. Please use the
+"show in new window" button to launch the page with a web browser.
+
+See browser compatibility at: \url{https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API#browser_compatibility}
+
+See Media Streams API reference at: \url{https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
