@@ -123,3 +123,25 @@ cycle <- function(xs, n) {
   }
   res
 }
+
+
+#' Concatenate two Arrays / values
+concat <- function(x, y) {
+  if (isArray(x) && isArray(y)) {
+    return(x$concat(y))
+  }
+
+  if (is_scalar(x) && isArray(y)) {
+    return(as_array(x)$concat(y))
+  }
+
+  if (isArray(x) && is_scalar(y)) {
+    return(x$concat(as_array(y)))
+  }
+
+  if (is_scalar(x) && is_scalar(y)) {
+    return(Array(x, y))
+  }
+
+  return(JS_UNDEFINED)
+}
