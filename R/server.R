@@ -151,7 +151,7 @@ animate <- R6::R6Class(
     },
 
     #' @description
-    #' Add points to a plot
+    #' Add bars to a plot
     #' @param x The x coordinates of the bars.
     #' @param y The y coordinates of the bars.
     #' @param w The width of the bars.
@@ -159,6 +159,19 @@ animate <- R6::R6Class(
     #' @param ... Additional graphical parameters.
     bars = function(x, y, w, h, ...) {
       self$send(Message("fn_bars", list(x = x, y = y, w = w, h = h, ...)))
+    },
+
+    #' @description
+    #' Add HTML objects to a plot
+    #' @param x The x coordinates of the objects.
+    #' @param y The y coordinates of the objects.
+    #' @param w The width of the objects.
+    #' @param h The height of the objects.
+    #' @param content The content of the objects; the HTML string.
+    #' @param ... Additional graphical parameters.
+    objects = function(x, y, w, h, content, ...) {
+      self$send(Message("fn_objects", list(x = x, y = y, w = w, h = h,
+                                           content = content, ...)))
     },
 
     #' @description

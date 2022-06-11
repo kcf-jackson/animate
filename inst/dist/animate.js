@@ -211,8 +211,8 @@ var bars = function(param, device) {
     param = set_default(param, { "id": generate_id("rect", length_of_data(param.x, param.y, param.w, param.h)), "fill": "black", "stroke": "black", "stroke-width": 0, "stroke-dasharray": "none" })
     var keys = Array("x", "y", "w", "h", "id", "fill", "stroke", "stroke-width", "stroke-dasharray")
     var data0 = as_data(param, keys)
-    param.xlim = param.xlim || device.par.xlim || d3_extent(param.x.concat(add(param.x, param.w)))
-    param.ylim = param.ylim || device.par.ylim || d3_extent(param.y.concat(add(param.y, param.h)))
+    param.xlim = param.xlim || device.par.xlim || d3_extent(concat(param.x, add(param.x, param.w)))
+    param.ylim = param.ylim || device.par.ylim || d3_extent(concat(param.y, add(param.y, param.h)))
     var barplot_update = function(selection, scale) {
         return selection.attr("id", d => d.id).attr("x", d => scale.x(d.x)).attr("y", d => scale.y(d.y + d.h)).attr("width", d => scale.x(d.w) - scale.x(0)).attr("height", d => scale.y(0) - scale.y(d.h)).style("fill", d => d.fill).style("stroke-dasharray", d => d["stroke-dasharray"]).style("stroke-width", d => d["stroke-width"]).style("stroke", d => d.stroke)
     }
@@ -263,6 +263,20 @@ var lines = function(param, device) {
         }
     }
     return d3_enter_update_exit(param, device, data0, "path", "lines", lines_update(param.x, param.y))
+}
+
+
+
+var objects = function(param, device) {
+    param = set_default(param, { "id": generate_id("objects", length_of_data(param.x, param.y, param.w, param.h, param.content)) })
+    var keys = Array("x", "y", "w", "h", "id", "content")
+    var data0 = as_data(param, keys)
+    param.xlim = param.xlim || device.par.xlim || d3_extent(concat(param.x, add(param.x, param.w)))
+    param.ylim = param.ylim || device.par.ylim || d3_extent(concat(param.y, add(param.y, param.h)))
+    var foreignObject_update = function(selection, scale) {
+        return selection.attr("id", d => d.id).attr("x", d => scale.x(d.x)).attr("y", d => scale.y(d.y + d.h)).attr("width", d => scale.x(d.w) - scale.x(0)).attr("height", d => scale.y(0) - scale.y(d.h)).html(d => d.content)
+    }
+    return d3_enter_update_exit(param, device, data0, "foreignObject", "objects", foreignObject_update)
 }
 
 
@@ -624,6 +638,21 @@ var cycle = function(xs, n) {
     }
     return res
 }
+var concat = function(x, y) {
+    if (Array.isArray(x) && Array.isArray(y)) {
+        return x.concat(y)
+    }
+    if (is_scalar(x) && Array.isArray(y)) {
+        return as_array(x).concat(y)
+    }
+    if (Array.isArray(x) && is_scalar(y)) {
+        return x.concat(as_array(y))
+    }
+    if (is_scalar(x) && is_scalar(y)) {
+        return Array(x, y)
+    }
+    return undefined
+}
 
 
 
@@ -831,6 +860,9 @@ var plot2 = function(max_num_commands = 0) {
     self.bars = function(param) {
         return bars(param, self.device)
     }
+    self.objects = function(param) {
+        return objects(param, self.device)
+    }
     self.set_par = function(param) {
         return self.device.set_par(param)
     }
@@ -895,7 +927,7 @@ var plot2 = function(max_num_commands = 0) {
     }
     // private variables and methods
     let private = {}
-    private.dispatchers = Array(Decoder("fn_init_svg", message => self.new_device(message)), Decoder("fn_axis", message => self.axis(message)), Decoder("fn_bars", message => self.bars(message)), Decoder("fn_points", message => self.points(message)), Decoder("fn_lines", message => self.lines(message)), Decoder("fn_image", message => self.image(message)), Decoder("fn_text", message => self.text(message)), Decoder("fn_import", message => self.import(message.setting)), Decoder("fn_export", message => self.export(message)), Decoder("fn_set", message => self.set_active_device(message.device_id)), Decoder("fn_remove", message => self.remove(message.selector, message.id)), Decoder("fn_clear", message => self.clear()), Decoder("fn_delete", message => self.delete_device(message.id)), Decoder("fn_plot", message => self.plot(message)), Decoder("fn_par", message => self.set_par(message)), Decoder("fn_max_stacksize", message => self.set_max_num_commands(message.n)), Decoder("fn_export_video", message => self.export_video()), )
+    private.dispatchers = Array(Decoder("fn_init_svg", message => self.new_device(message)), Decoder("fn_axis", message => self.axis(message)), Decoder("fn_bars", message => self.bars(message)), Decoder("fn_points", message => self.points(message)), Decoder("fn_lines", message => self.lines(message)), Decoder("fn_image", message => self.image(message)), Decoder("fn_text", message => self.text(message)), Decoder("fn_import", message => self.import(message.setting)), Decoder("fn_export", message => self.export(message)), Decoder("fn_set", message => self.set_active_device(message.device_id)), Decoder("fn_remove", message => self.remove(message.selector, message.id)), Decoder("fn_clear", message => self.clear()), Decoder("fn_delete", message => self.delete_device(message.id)), Decoder("fn_plot", message => self.plot(message)), Decoder("fn_par", message => self.set_par(message)), Decoder("fn_max_stacksize", message => self.set_max_num_commands(message.n)), Decoder("fn_export_video", message => self.export_video()), Decoder("fn_objects", message => self.objects(message)), )
     if (self.initialize) {
         self.initialize(max_num_commands)
     }

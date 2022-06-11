@@ -1,6 +1,6 @@
 Package: animate
 Title: A Web-based Graphics Device For Animated Visualisations
-Version: 0.3.4
+Version: 0.3.5
 Authors@R: 
     person(given = "Chun Fung",
            family = "Kwok",
@@ -9,6 +9,8 @@ Authors@R:
            comment = c(ORCID = "0000-0002-0716-3879"))
 Description: Implements a web-based graphics device for animated visualisations. 
 License: MIT + file LICENSE
+URL: https://kcf-jackson.github.io/animate/
+BugReports: https://github.com/kcf-jackson/animate/issues
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
