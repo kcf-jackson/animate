@@ -234,6 +234,14 @@ var d3_enter_update_exit = function(param, device, data0, tag, className, d3_upd
 
 
 
+var event = function(param, device) {
+    return d3.selectAll(param.selector).on(param.event, function(d) {
+        return ws.send(JSON.stringify({ "type": "user_event", "message": { "param": param, "data": d, "event": d3.event, "mouse": d3.mouse(this) } }))
+    })
+}
+
+
+
 var image = function(param, device) {
     param = set_default(param, { "x": 0, "y": 1, "id": generate_id("image", length_of_data(param.x, param.y)), "transform": "" })
     var keys = Array("x", "y", "href", "width", "height", "id")
@@ -863,6 +871,9 @@ var plot2 = function(max_num_commands = 0) {
     self.objects = function(param) {
         return objects(param, self.device)
     }
+    self.event = function(param) {
+        return event(param, self.device)
+    }
     self.set_par = function(param) {
         return self.device.set_par(param)
     }
@@ -927,7 +938,7 @@ var plot2 = function(max_num_commands = 0) {
     }
     // private variables and methods
     let private = {}
-    private.dispatchers = Array(Decoder("fn_init_svg", message => self.new_device(message)), Decoder("fn_axis", message => self.axis(message)), Decoder("fn_bars", message => self.bars(message)), Decoder("fn_points", message => self.points(message)), Decoder("fn_lines", message => self.lines(message)), Decoder("fn_image", message => self.image(message)), Decoder("fn_text", message => self.text(message)), Decoder("fn_import", message => self.import(message.setting)), Decoder("fn_export", message => self.export(message)), Decoder("fn_set", message => self.set_active_device(message.device_id)), Decoder("fn_remove", message => self.remove(message.selector, message.id)), Decoder("fn_clear", message => self.clear()), Decoder("fn_delete", message => self.delete_device(message.id)), Decoder("fn_plot", message => self.plot(message)), Decoder("fn_par", message => self.set_par(message)), Decoder("fn_max_stacksize", message => self.set_max_num_commands(message.n)), Decoder("fn_export_video", message => self.export_video()), Decoder("fn_objects", message => self.objects(message)), )
+    private.dispatchers = Array(Decoder("fn_init_svg", message => self.new_device(message)), Decoder("fn_axis", message => self.axis(message)), Decoder("fn_bars", message => self.bars(message)), Decoder("fn_points", message => self.points(message)), Decoder("fn_lines", message => self.lines(message)), Decoder("fn_image", message => self.image(message)), Decoder("fn_text", message => self.text(message)), Decoder("fn_import", message => self.import(message.setting)), Decoder("fn_export", message => self.export(message)), Decoder("fn_set", message => self.set_active_device(message.device_id)), Decoder("fn_remove", message => self.remove(message.selector, message.id)), Decoder("fn_clear", message => self.clear()), Decoder("fn_delete", message => self.delete_device(message.id)), Decoder("fn_plot", message => self.plot(message)), Decoder("fn_par", message => self.set_par(message)), Decoder("fn_max_stacksize", message => self.set_max_num_commands(message.n)), Decoder("fn_export_video", message => self.export_video()), Decoder("fn_objects", message => self.objects(message)), Decoder("fn_event", message => self.event(message)), )
     if (self.initialize) {
         self.initialize(max_num_commands)
     }

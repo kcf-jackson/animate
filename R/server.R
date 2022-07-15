@@ -25,6 +25,9 @@ animate <- R6::R6Class(
     #' @field virtual_session A virtual session simulated with V8.
     virtual_session = NULL,
 
+    #' @field event_handlers A named list of user-defined functions for handling events.
+    event_handlers = list(),
+
     # WebSocket ----------------------------------------------------------------
     #' @description
     #' Constructor of the device
@@ -77,6 +80,9 @@ animate <- R6::R6Class(
           self$ready_state <- 1
           message("Device is ready.")
           do.call(self$svg, args)
+        }
+        if (msg$type == "user_event") {
+          private$dispatch_event(msg$message)
         }
         if (msg$type == "export") {
           message("Exporting file to: ", msg$path)
@@ -265,6 +271,20 @@ animate <- R6::R6Class(
     },
 
     #' @description
+    #' Attach an interactive event to an element
+    #' @param selector A character string; a CSS selector.
+    #' @param event_type A character string; the event type. For example, "click", "mouseover",
+    #' "mouseout". See more options at \link{https://www.w3schools.com/jsref/dom_obj_event.asp}.
+    #' @param callback A function, to be called when the event is triggered.
+    event = function(selector, event_type, callback) {
+      event_name <- paste0(selector, ":", event_type)
+      self$event_handlers[[event_name]] <- callback
+      self$send(Message("fn_event", list(selector = selector,
+                                         event = event_type,
+                                         event_name = event_name)))
+    },
+
+    #' @description
     #' Set the active device to a SVG element
     #' @param device_id A character vector; ID of the device.
     set = function(device_id) {
@@ -285,7 +305,7 @@ animate <- R6::R6Class(
     #' @description
     #' Remove elements from the active SVG element
     #' @param id A character vector; the ID of the elements.
-    #' @param selector A character vector; the CSS selector.
+    #' @param selector A character vector; a CSS selector.
     remove = function(id = NULL, selector = "*") {
       self$send(Message("fn_remove", list(selector = selector, id = id)))
     },
@@ -372,6 +392,15 @@ animate <- R6::R6Class(
     },
     is_virtual = function(...) {
       isTRUE(list(...)$virtual)
+    },
+    dispatch_event = function(message) {
+      for (event_name in names(self$event_handlers)) {
+        if (event_name == message$param$event_name) {
+          event_fun <- self$event_handlers[[event_name]]
+          return(event_fun(message))
+        }
+      }
+      warning("No handler can handle the message:\n", message)
     }
   )
 )

@@ -93,6 +93,7 @@ plot2 <- R6Class(
     image  = function(param) { image(param, self$device)  },
     bars   = function(param) { bars(param, self$device)   },
     objects = function(param) { objects(param, self$device) },
+    event = function(param) { event(param, self$device) },
 
     #' Set a parameter of the active device
     set_par = function(param) { self$device$set_par(param) },
@@ -210,6 +211,7 @@ plot2 <- R6Class(
       Decoder("fn_max_stacksize", message %=>% self$set_max_num_commands(message$n)),
       Decoder("fn_export_video", message %=>% self$export_video()),
       Decoder("fn_objects", message %=>% self$objects(message)),
+      Decoder("fn_event", message %=>% self$event(message)),
     )
   )
 )
