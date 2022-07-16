@@ -281,7 +281,8 @@ animate <- R6::R6Class(
       self$event_handlers[[event_name]] <- callback
       self$send(Message("fn_event", list(selector = selector,
                                          event = event_type,
-                                         event_name = event_name)))
+                                         event_name = event_name,
+                                         shiny = self$shiny)))
     },
 
     #' @description
@@ -376,6 +377,10 @@ animate <- R6::R6Class(
       if (tolower(trimws(ans)) == "y") {
         self$send(Message("fn_export_video", list()))
       }
+    },
+
+    observeAnimateEvent = function(input) {
+      private$dispatch_event(input$message)
     }
   ),
   # Private fields and methods -------------------------------------------------
