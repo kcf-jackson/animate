@@ -73,7 +73,7 @@ A web-based graphics device" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">animate</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.6</span>
       </span>
     </div>
 
@@ -86,7 +86,7 @@ A web-based graphics device" />
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -131,7 +131,7 @@ A web-based graphics device" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>A web-based graphics device</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/kcf-jackson/animate/blob/master/R/server.R'><code>R/server.R</code></a></small>
     <div class="hidden name"><code>animate.Rd</code></div>
     </div>
 
@@ -157,6 +157,8 @@ A web-based graphics device" />
 
 <dt><code>virtual_session</code></dt><dd><p>A virtual session simulated with V8.</p></dd>
 
+<dt><code>event_handlers</code></dt><dd><p>A named list of user-defined functions for handling events.</p></dd>
+
 </dl><p></div></p>
     <h2 class="hasAnchor" id="methods"><a class="anchor" href="#methods"></a>Methods</h2>
 
@@ -170,6 +172,7 @@ A web-based graphics device" />
 <li><p><a href='#method-set_max_stacksize'><code>animate$set_max_stacksize()</code></a></p></li>
 <li><p><a href='#method-svg'><code>animate$svg()</code></a></p></li>
 <li><p><a href='#method-bars'><code>animate$bars()</code></a></p></li>
+<li><p><a href='#method-objects'><code>animate$objects()</code></a></p></li>
 <li><p><a href='#method-plot'><code>animate$plot()</code></a></p></li>
 <li><p><a href='#method-points'><code>animate$points()</code></a></p></li>
 <li><p><a href='#method-lines'><code>animate$lines()</code></a></p></li>
@@ -177,6 +180,7 @@ A web-based graphics device" />
 <li><p><a href='#method-axis'><code>animate$axis()</code></a></p></li>
 <li><p><a href='#method-text'><code>animate$text()</code></a></p></li>
 <li><p><a href='#method-image'><code>animate$image()</code></a></p></li>
+<li><p><a href='#method-event'><code>animate$event()</code></a></p></li>
 <li><p><a href='#method-set'><code>animate$set()</code></a></p></li>
 <li><p><a href='#method-par'><code>animate$par()</code></a></p></li>
 <li><p><a href='#method-remove'><code>animate$remove()</code></a></p></li>
@@ -184,6 +188,8 @@ A web-based graphics device" />
 <li><p><a href='#method-delete'><code>animate$delete()</code></a></p></li>
 <li><p><a href='#method-import'><code>animate$import()</code></a></p></li>
 <li><p><a href='#method-export'><code>animate$export()</code></a></p></li>
+<li><p><a href='#method-record'><code>animate$record()</code></a></p></li>
+<li><p><a href='#method-observeAnimateEvent'><code>animate$observeAnimateEvent()</code></a></p></li>
 <li><p><a href='#method-clone'><code>animate$clone()</code></a></p></li>
 </ul>
 <p><hr>
@@ -246,7 +252,7 @@ and <code>root</code>. <code>id</code> assigns an id to the SVG element for futu
 </dl><p></div></p>
 <p><hr>
 <a id="method-bars"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>bars()</code></h3>
-<p>Add points to a plot</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p>Add bars to a plot</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>animate</span><span class='op'>$</span><span class='fu'>bars</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>w</span>, <span class='va'>h</span>, <span class='va'>...</span><span class='op'>)</span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -258,6 +264,26 @@ and <code>root</code>. <code>id</code> assigns an id to the SVG element for futu
 <dt><code>w</code></dt><dd><p>The width of the bars.</p></dd>
 
 <dt><code>h</code></dt><dd><p>The height of the bars.</p></dd>
+
+<dt><code>...</code></dt><dd><p>Additional graphical parameters.</p></dd>
+
+</dl><p></div></p>
+<p><hr>
+<a id="method-objects"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='https://rdrr.io/r/base/ls.html'>objects()</a></code></h3>
+<p>Add HTML objects to a plot</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>animate</span><span class='op'>$</span><span class='fu'>objects</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, <span class='va'>w</span>, <span class='va'>h</span>, <span class='va'>content</span>, <span class='va'>...</span><span class='op'>)</span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>x</code></dt><dd><p>The x coordinates of the objects.</p></dd>
+
+<dt><code>y</code></dt><dd><p>The y coordinates of the objects.</p></dd>
+
+<dt><code>w</code></dt><dd><p>The width of the objects.</p></dd>
+
+<dt><code>h</code></dt><dd><p>The height of the objects.</p></dd>
+
+<dt><code>content</code></dt><dd><p>The content of the objects; the HTML string.</p></dd>
 
 <dt><code>...</code></dt><dd><p>Additional graphical parameters.</p></dd>
 
@@ -292,6 +318,16 @@ and <code>root</code>. <code>id</code> assigns an id to the SVG element for futu
 <dt><code>...</code></dt><dd><p>Additional graphical parameters.</p></dd>
 
 </dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Details</h4>
+<p>Options for the "pch" parameter: "circle", "plus", "diamond", "square",
+"star", "triangle", "wye", "triangle_down", "triangle_left", "triangle_right",
+"diamond_alt", "diamond_square", "pentagon", "hexagon", "hexagon_alt",
+"octagon", "octagon_alt", "cross".</p>
+<p>The unit of the "cex" parameter is squared pixels, corresponding to how
+much pixel space the symbol would cover. The convention comes from the
+d3 library, and the choice is (believed) to make plots visually consistent
+across the different symbols.</p>
+
 <p><hr>
 <a id="method-lines"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code><a href='https://rdrr.io/r/graphics/lines.html'>lines()</a></code></h3>
 <p>Add line segments / paths to a plot</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
@@ -373,6 +409,21 @@ and <code>root</code>. <code>id</code> assigns an id to the SVG element for futu
 
 </dl><p></div></p>
 <p><hr>
+<a id="method-event"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>event()</code></h3>
+<p>Attach an interactive event to an element</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>animate</span><span class='op'>$</span><span class='fu'>event</span><span class='op'>(</span><span class='va'>selector</span>, <span class='va'>event_type</span>, <span class='va'>callback</span><span class='op'>)</span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>selector</code></dt><dd><p>A character string; a CSS selector.</p></dd>
+
+<dt><code>event_type</code></dt><dd><p>A character string; the event type. For example, "click", "mouseover",
+"mouseout". See more options at <a href='https://www.w3schools.com/jsref/dom_obj_event.asp'>https://www.w3schools.com/jsref/dom_obj_event.asp</a>.</p></dd>
+
+<dt><code>callback</code></dt><dd><p>A function, to be called when the event is triggered.</p></dd>
+
+</dl><p></div></p>
+<p><hr>
 <a id="method-set"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>set()</code></h3>
 <p>Set the active device to a SVG element</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span class='va'>animate</span><span class='op'>$</span><span class='fu'>set</span><span class='op'>(</span><span class='va'>device_id</span><span class='op'>)</span></pre><p></div></p>
@@ -401,7 +452,7 @@ and <code>root</code>. <code>id</code> assigns an id to the SVG element for futu
 <p><div class="arguments"></p><dl>
 <dt><code>id</code></dt><dd><p>A character vector; the ID of the elements.</p></dd>
 
-<dt><code>selector</code></dt><dd><p>A character vector; the CSS selector.</p></dd>
+<dt><code>selector</code></dt><dd><p>A character vector; a CSS selector.</p></dd>
 
 </dl><p></div></p>
 <p><hr>
@@ -446,6 +497,37 @@ self$send(Message("fn_group", c(...)))
 <dt><code>path</code></dt><dd><p>A character string; the file path to export to.</p></dd>
 
 <dt><code>handler</code></dt><dd><p>'r' or 'browser'; the program to handle the export operation.</p></dd>
+
+</dl><p></div></p>
+<p><hr>
+<a id="method-record"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>record()</code></h3>
+<p>Record an animated plot as a MP4 video</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>animate</span><span class='op'>$</span><span class='fu'>record</span><span class='op'>(</span><span class='op'>)</span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Details</h4>
+<p>This function will prompt you to select a screen / window / tab to
+record. Once started, the recording can be stopped by using the stop button
+at the notification box, or clicking anywhere on the page near the device.
+Always confirm that the screen recording notification box is gone.
+The captured video will be downloaded right after the recording stops.</p>
+<p>This uses web browsers' Media Streams API to record the screen
+and return the captured frames as a video. The entire process runs locally.
+The source file that provides this functionality can be found at
+<code><a href='https://rdrr.io/r/base/system.file.html'>system.file("addons/screen_record.js", package = "animate")</a></code>.</p>
+<p>This function is disabled for Shiny and R Markdown Document.</p>
+<p>This function does not work in the RStudio viewer. Please use the
+"show in new window" button to launch the page with a web browser.</p>
+<p>See browser compatibility at: <a href='https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API#browser_compatibility'>https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API#browser_compatibility</a></p>
+<p>See Media Streams API reference at: <a href='https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API'>https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API</a></p>
+
+<p><hr>
+<a id="method-observeAnimateEvent"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>observeAnimateEvent()</code></h3>
+<p>Event handler</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span class='va'>animate</span><span class='op'>$</span><span class='fu'>observeAnimateEvent</span><span class='op'>(</span><span class='va'>input</span><span class='op'>)</span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>input</code></dt><dd><p>The input object in the <code>server</code> function of a Shiny app.</p></dd>
 
 </dl><p></div></p>
 <p><hr>

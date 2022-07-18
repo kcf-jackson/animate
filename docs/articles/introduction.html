@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">animate</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.6</span>
       </span>
     </div>
 
@@ -44,7 +44,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -85,13 +85,13 @@
 
       
 
-      </header><script src="introduction_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><script src="introduction_files/header-attrs-2.14/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>An introduction to ‘animate’</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/kcf-jackson/animate/blob/master/vignettes/introduction.Rmd"><code>vignettes/introduction.Rmd</code></a></small>
       <div class="hidden name"><code>introduction.Rmd</code></div>
 
     </div>
@@ -129,7 +129,7 @@ would result in a warning.</p>
 <h4 class="hasAnchor">
 <a href="#usage-1" class="anchor"></a>Usage 1</h4>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">animate</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://kcf-jackson.github.io/animate/">animate</a></span><span class="op">)</span>
 <span class="va">device</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/animate.html">animate</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>width <span class="op">=</span> <span class="fl">600</span>, height <span class="op">=</span> <span class="fl">400</span><span class="op">)</span>  <span class="co"># takes ~0.5s</span>
 
 <span class="va">device</span><span class="op">$</span><span class="fu">plot</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>
@@ -145,7 +145,7 @@ would result in a warning.</p>
 <p>Sometimes it can be convenient to attach the device so that the
 functions of the device can be called directly.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">animate</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://kcf-jackson.github.io/animate/">animate</a></span><span class="op">)</span>
 <span class="va">device</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/animate.html">animate</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="fl">600</span>, <span class="fl">400</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/attach.html">attach</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span>  <span class="co"># overrides the 'base' primitives</span>
 
@@ -569,7 +569,7 @@ flag,</li>
 </ul>
 <p>Here is an example:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">animate</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://kcf-jackson.github.io/animate/">animate</a></span><span class="op">)</span>
 <span class="va">device</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/animate.html">animate</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="fl">500</span>, <span class="fl">500</span>, virtual <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/attach.html">attach</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span>
 
@@ -587,8 +587,8 @@ flag,</li>
 <span class="fu"><a href="../reference/rmd_animate.html">rmd_animate</a></span><span class="op">(</span><span class="va">device</span>, <span class="fu"><a href="../reference/click_to_play.html">click_to_play</a></span><span class="op">(</span>start <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>  <span class="co"># begin the plot at the third frame</span></code></pre></div>
 <p><iframe srcdoc='&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;
 &lt;script src="https://cdn.jsdelivr.net/gh/kcf-jackson/animate/inst/dist/animate.js"&gt;&lt;/script&gt;
-&lt;script&gt;const test82bc44d95a4a_json = {
-  "plot_commands": [{"type":"fn_init_svg","message":{"width":500,"height":500,"id":"SVG_1"}},{"type":"fn_par","message":{"xlim":[-2.5,2.5],"ylim":[-2.5,2.5]}},{"type":"fn_plot","message":{"x":[1.1756,1.9021,1.9021,1.1756,2.4492e-16,-1.1756,-1.9021,-1.9021,-1.1756,-4.8984e-16],"y":[1.618,0.618,-0.618,-1.618,-2,-1.618,-0.618,0.618,1.618,2],"type":"p","id":["ID-1","ID-2","ID-3","ID-4","ID-5","ID-6","ID-7","ID-8","ID-9","ID-10"]}},{"type":"fn_points","message":{"x":[1.2246e-16,-0.9511,-0.5878,-0.5878,-2.4492e-16,0.9511,0.5878,-0.9511,0.9511,0.5878],"y":[-1,0.309,0.809,-0.809,1,-0.309,0.809,-0.309,0.309,-0.809],"id":["ID-1","ID-2","ID-3","ID-4","ID-5","ID-6","ID-7","ID-8","ID-9","ID-10"],"transition":{"duration":2000}}}],
+&lt;script&gt;const test8f5c64d355b_json = {
+  "plot_commands": [{"type":"fn_init_svg","message":{"width":500,"height":500,"id":"SVG_1"}},{"type":"fn_par","message":{"xlim":[-2.5,2.5],"ylim":[-2.5,2.5]}},{"type":"fn_plot","message":{"x":[1.1756,1.9021,1.9021,1.1756,2.4492e-16,-1.1756,-1.9021,-1.9021,-1.1756,-4.8984e-16],"y":[1.618,0.618,-0.618,-1.618,-2,-1.618,-0.618,0.618,1.618,2],"type":"p","id":["ID-1","ID-2","ID-3","ID-4","ID-5","ID-6","ID-7","ID-8","ID-9","ID-10"]}},{"type":"fn_points","message":{"x":[-2.4492e-16,0.5878,0.9511,-0.5878,0.9511,0.5878,1.2246e-16,-0.5878,-0.9511,-0.9511],"y":[1,-0.809,0.309,0.809,-0.309,0.809,-1,-0.809,0.309,-0.309],"id":["ID-1","ID-2","ID-3","ID-4","ID-5","ID-6","ID-7","ID-8","ID-9","ID-10"],"transition":{"duration":2000}}}],
   "device": {
     "selection": "", "id": "", "par": {},
     "height": 500,
@@ -597,7 +597,7 @@ flag,</li>
   "max_num_commands": -1
 }&lt;/script&gt;
 &lt;script&gt;JS_device = new plot2(-1);
-JS_device.import(test82bc44d95a4a_json);
+JS_device.import(test8f5c64d355b_json);
 ctrl = new controller(JS_device);
     ctrl.play_until(3, 1, () =&gt; {
       ctrl.watch("#SVG_1", "click", function() {
@@ -637,7 +637,7 @@ inside any of the <code><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html
 <p>Here is a full example:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.rstudio.com/">shiny</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">animate</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://kcf-jackson.github.io/animate/">animate</a></span><span class="op">)</span>
 
 <span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span>
   <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html">actionButton</a></span><span class="op">(</span><span class="st">"buttonPlot"</span>, <span class="st">"Plot"</span><span class="op">)</span>,

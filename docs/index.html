@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">animate</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.6</span>
       </span>
     </div>
 
@@ -44,7 +44,7 @@
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -94,9 +94,25 @@
 visualisation</h2>
 <p><em>(Developer Preview: The API is maturing and feedback is
 welcome!)</em></p>
+<p><a href="https://kcf-jackson.github.io/animate/">[Package
+website]</a> <a href="#news">[News]</a> <a href="#introduction">[Introduction]</a> <a href="#features">[Features]</a> <a href="#usage-and-examples">[Usage and
+Examples]</a> <a href="#gallery">[⭐Gallery]</a> <a href="#acknowledgement">[Acknowledgement]</a></p>
 <div id="news" class="section level3">
 <h3 class="hasAnchor">
 <a href="#news" class="anchor"></a>News</h3>
+<p>17/07/2022: Minor updates</p>
+<ul>
+<li>Add support to interactive events (experimental)</li>
+<li>Add Gallery to <code>readme.md</code>
+</li>
+</ul>
+<p>23/06/2022: <a href="man/useR2022_poster">Poster Presentation at
+UseR!2022 Conference</a></p>
+<p>12/06/2022: Minor updates</p>
+<ul>
+<li>Fix an issue related to single value input.</li>
+<li>Add support to HTML objects.</li>
+</ul>
 <p>02/03/2022: Fix an issue related to clicking during animation.</p>
 <p>09/02/2022: Update R Markdown document and Shiny integration.</p>
 <ul>
@@ -110,35 +126,176 @@ Shiny usage.</li>
 <div id="introduction" class="section level3">
 <h3 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h3>
-<p>The R package ‘animate’ implements a web-based graphics device that
-models on the base R syntax and is powered by <a href="https://d3js.org/">d3.js</a>. The device is developed using the <a href="https://github.com/kcf-jackson/sketch">sketch</a> package and
-targets real-time animated visualisations. The key use cases in mind are
-agent-based modelling and dynamical system, and it may also find
-applications in sports analytics, board game analysis and basic animated
-charting.</p>
-<p>The package is relatively lightweight containing just above 1000
-lines of code and depends on the packages <code>R6</code>,
-<code>httpuv</code>, <code>base64enc</code>, <code>jsonlite</code> (and
-<code>rmarkdown</code>, <code>shiny</code> and <code>knitr</code> if you
-need the corresponding integration). Note that while the animated
-visualisation requires R to generate, it is standalone once it is
-generated, so sharing can be done easily.</p>
-<p>The difference of this package with <a href="https://github.com/kcf-jackson/sketch">sketch</a> is that it has a
-narrower focus (i.e. it does fewer things), and with that trade-off, it
-is possible to eliminate completely the need of knowing JavaScript to
-create animated visualisations.</p>
-<p>See below for three demos extracted from a <a href="https://rawcdn.githack.com/kcf-jackson/animate/0f3e8211f063e832b3b83288b4834329d491f4da/man/slides/SVI_presentation.html">presentation*</a>
-I gave in June at my institute, and see the <a href="https://kcf-jackson.github.io/animate/articles/introduction.html">vignettes</a>
-for a thorough introduction to the package. (* The source can be found
-at <code>./man/slides/</code>)</p>
+<p>Animated visualisation is a powerful tool for capturing complex
+space-time dynamics. Yet animating visualisations in real time and
+beyond XY plots, as in the case of agent-based models for instance,
+remains challenging with the current R graphics system. The R package
+‘animate’ implements a new web-based graphics device to enable flexible
+real-time animated visualisation in R.</p>
+<p>Utilising the R-to-JavaScript transpilation provided by the <a href="https://github.com/kcf-jackson/sketch"><code>sketch</code></a>
+package, the device allows users to take full advantage of the <a href="https://d3js.org/"><code>d3</code></a> JavaScript library using
+the R base plot syntax. The base plot syntax is extended and adapted to
+support animation, including both frame-by-frame option and motion
+tweening options. There is little new to learn other than the
+differences between static and animated plots, and users can get
+productive quickly.</p>
+<p>The device integrates well with Shiny and R Markdown Documents,
+making it easy to create responsive and shareable applications online or
+as a standalone HTML document.</p>
+</div>
+<div id="features" class="section level3">
+<h3 class="hasAnchor">
+<a href="#features" class="anchor"></a>Features</h3>
 <ol>
-<li><a href="https://www.youtube.com/embed/KuDXRLiFKso">Lorenz
-system</a></li>
-<li><a href="https://www.youtube.com/embed/YPS1lkn-XT4">Predator-Prey
-process</a></li>
-<li><a href="https://www.youtube.com/embed/pmmOAh3-6iA">Schelling’s
-model of segregation</a></li>
+<li>Support frame-by-frame and motion-tween animations</li>
+<li>Real-time update (in contrast to pre-rendering)</li>
+<li>Uses dynamic scale</li>
+<li>Based on the <code>base</code> plot syntax, extended by three
+arguments: <code>id</code>, <code>transition</code>, and
+<code>style</code>
+</li>
+<li>Deployment
+<ul>
+<li>Support R Markdown Document (HTML document output)</li>
+<li>Support Shiny app (for interactivity)</li>
+<li>Support screencast to MP4 video output, which can be converted to
+other formats with <code>ffmpeg</code>
+</li>
+</ul>
+</li>
 </ol>
+</div>
+<div id="usage-and-examples" class="section level3">
+<h3 class="hasAnchor">
+<a href="#usage-and-examples" class="anchor"></a>Usage and Examples</h3>
+<div id="i-installation-and-setup" class="section level4">
+<h4 class="hasAnchor">
+<a href="#i-installation-and-setup" class="anchor"></a>i. Installation and Setup</h4>
+<pre class="{r}"><code><a href="https://remotes.r-lib.org/reference/install_github.html"># Installation
+remotes::install_github("kcf-jackson/animate")
+
+# Setup
+library(animate)
+device &lt;- animate$new(width = 600, height = 400)  # takes ~0.5 second to launch
+attach(device)</a></code></pre>
+</div>
+<div id="ii-frame-by-frame-animation" class="section level4">
+<h4 class="hasAnchor">
+<a href="#ii-frame-by-frame-animation" class="anchor"></a>ii. Frame-by-frame animation</h4>
+<p>Frame-by-frame animation is re-plotting many times with a
+for-loop.</p>
+<pre class="{r}"><code># Plotting the sine curve
+x &lt;- seq(1, 40, 0.1)
+y &lt;- sin(x * pi / 6)
+plot(x, y, type="l", id="line-1")
+
+# Update the plot with the same id
+for (n in 41:200) {
+  new_x &lt;- seq(1, n, 0.1)
+  new_y &lt;- sin(new_x * pi / 6)
+  plot(new_x, new_y, type="l", id="line-1")
+  Sys.sleep(0.02)   # about 50 frames per second
+}</code></pre>
+<p><img src="examples/screenshots/sine_curve.gif" width="480px" height="350px"></p>
+</div>
+<div id="iii-motion-tween-animation" class="section level4">
+<h4 class="hasAnchor">
+<a href="#iii-motion-tween-animation" class="anchor"></a>iii. Motion-tween animation</h4>
+<p>Motion-tween / key-frame animation is re-plotting with transition
+option enabled.</p>
+<pre class="{r}"><code># Plot 10 points at random locations
+x &lt;- 1:10
+y &lt;- 10 * runif(10)
+
+# Give each point an ID
+id &lt;- new_id(y, prefix="points") 
+plot(x, y, bg="orange", id=id)
+
+# Update the plot with transition animation
+new_y &lt;- 10 * runif(10)
+points(x, new_y, bg="blue", id=id, transition=TRUE)
+
+# Update the plot with specific transition animation
+new_y &lt;- 10 * runif(10)
+points(x, new_y, bg="green", cex=(1:10)*30, id=id, transition=list(duration = 2000))</code></pre>
+<p><img src="examples/screenshots/moving_points.gif" width="480px" height="350px"></p>
+</div>
+</div>
+<div id="gallery" class="section level3">
+<h3 class="hasAnchor">
+<a href="#gallery" class="anchor"></a>Gallery</h3>
+<div id="1-lorenz-system-code" class="section level4">
+<h4 class="hasAnchor">
+<a href="#1-lorenz-system-code" class="anchor"></a>1. Lorenz system <a href="examples/lorenz_system/lorenz.R">[code]</a>
+</h4>
+<p><img src="examples/screenshots/lorenz.gif" width="480px" height="350px"></p>
+</div>
+<div id="2-mathematical-rose-code-tutorial" class="section level4">
+<h4 class="hasAnchor">
+<a href="#2-mathematical-rose-code-tutorial" class="anchor"></a>2. Mathematical rose <a href="examples/mathematical_rose/roses.R">[code]</a> <a href="https://kcf-jackson.github.io/animate/articles/mathematical_rose.html">[tutorial]</a>
+</h4>
+<p><img src="examples/screenshots/roses.gif" width="450px" height="450px"></p>
+</div>
+<div id="3-hilbert-curve-code-tutorial" class="section level4">
+<h4 class="hasAnchor">
+<a href="#3-hilbert-curve-code-tutorial" class="anchor"></a>3. Hilbert curve <a href="examples/hilbert_curve/hilbert_curve.R">[code]</a> <a href="https://kcf-jackson.github.io/animate/articles/hilbert_curve.html">[tutorial]</a>
+</h4>
+<p><img src="examples/screenshots/hilbert_curve.gif" width="450px" height="450px"></p>
+</div>
+<div id="4-particle-system-code" class="section level4">
+<h4 class="hasAnchor">
+<a href="#4-particle-system-code" class="anchor"></a>4. Particle system <a href="examples/particle_system/particle_system.R">[code]</a>
+</h4>
+<p><img src="examples/screenshots/particle_system.gif" width="400px" height="400px"></p>
+</div>
+<div id="5-predator-prey-process-code" class="section level4">
+<h4 class="hasAnchor">
+<a href="#5-predator-prey-process-code" class="anchor"></a>5. Predator-Prey process <a href="examples/predator_prey/predator_prey.R">[code]</a>
+</h4>
+<p><img src="examples/screenshots/predator_prey_HD.gif" height="400px"></p>
+</div>
+<div id="6-schellings-model-of-segregation-code" class="section level4">
+<h4 class="hasAnchor">
+<a href="#6-schellings-model-of-segregation-code" class="anchor"></a>6. Schelling’s model of segregation <a href="examples/schelling_segregation/segregation.R">[code]</a>
+</h4>
+<p><img src="examples/screenshots/segregation_HD.gif" height="400px"></p>
+</div>
+<div id="7-maze-generation-code-tutorial" class="section level4">
+<h4 class="hasAnchor">
+<a href="#7-maze-generation-code-tutorial" class="anchor"></a>7. Maze generation <a href="examples/maze_generation/maze.R">[code]</a> <a href="https://kcf-jackson.github.io/animate/articles/maze_generation.html">[tutorial]</a>
+</h4>
+<p><img src="examples/screenshots/maze_generation.gif" height="300px"></p>
+</div>
+<div id="8-chess-code" class="section level4">
+<h4 class="hasAnchor">
+<a href="#8-chess-code" class="anchor"></a>8. Chess <a href="examples/chess_board/chess.R">[code]</a>
+</h4>
+<p><img src="examples/screenshots/chess_HD.gif" height="400px"></p>
+</div>
+<div id="9-hand-drawn-plots-code" class="section level4">
+<h4 class="hasAnchor">
+<a href="#9-hand-drawn-plots-code" class="anchor"></a>9. “Hand-drawn” plots <a href="examples/handdrawn_plots/handdrawn_plot.R">[code]</a>
+</h4>
+<p><img src="examples/screenshots/handdrawn_plot_2_HD.gif" height="400px"></p>
+</div>
+<div id="10-the-science-of-sentencing-code-reference" class="section level4">
+<h4 class="hasAnchor">
+<a href="#10-the-science-of-sentencing-code-reference" class="anchor"></a>10. The science of sentencing <a href="examples/science_of_sentencing/main.R">[code]</a> <a href="https://www.themarshallproject.org/2015/08/04/the-new-science-of-sentencing">[reference]</a>
+</h4>
+<p><img src="examples/screenshots/parole.gif"></p>
+</div>
+<div id="11-fairness-in-machine-learning-code-reference" class="section level4">
+<h4 class="hasAnchor">
+<a href="#11-fairness-in-machine-learning-code-reference" class="anchor"></a>11. Fairness in Machine Learning <a href="examples/fairness_in_machine_learning/app.R">[code]</a> <a href="https://bair.berkeley.edu/blog/2018/05/17/delayed-impact/">[reference]</a>
+</h4>
+<p><img src="examples/screenshots/credit_score.gif"></p>
+</div>
+<div id="12-berlin-marathon-code-reference" class="section level4">
+<h4 class="hasAnchor">
+<a href="#12-berlin-marathon-code-reference" class="anchor"></a>12. Berlin Marathon <a href="examples/berlin_marathon/marathon.R">[code]</a> <a href="http://interaktiv.morgenpost.de/berlin-marathon-2016/">[reference]</a>
+</h4>
+<p><img src="examples/screenshots/marathon_HD.gif" height="400px"></p>
+</div>
 </div>
 </div>
 <div id="acknowledgement" class="section level2">
@@ -153,7 +310,16 @@ McCarthy</a>.</p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="license">
+    <div class="links">
+<h2>Links</h2>
+<ul class="list-unstyled">
+<li>Browse source code at <br><a href="https://github.com/kcf-jackson/animate/">https://​github.com/​kcf-jackson/​animate/​</a>
+</li>
+<li>Report a bug at <br><a href="https://github.com/kcf-jackson/animate/issues">https://​github.com/​kcf-jackson/​animate/​issues</a>
+</li>
+</ul>
+</div>
+<div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
