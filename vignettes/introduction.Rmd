@@ -108,7 +108,7 @@ plot(x, new_y, id = id, transition = TRUE)  # Use transition
 Click to see the transition; click again to reset.
 
 ```{r, eval = T, echo = F}
-animate::insert_animate("source/basic_plot.json")
+animate::insert_animate("introduction/basic_plot.json")
 ```
 
 #### Transition with multiple attributes
@@ -129,7 +129,7 @@ points(x, new_y, id = id, bg = "lightgreen", cex = 1:10 * 30, transition = list(
 Click to see the transition; click again to reset.
 
 ```{r, eval = T, echo = F}
-animate::insert_animate("source/basic_points.json")
+animate::insert_animate("introduction/basic_points.json")
 ```
 
 
@@ -155,7 +155,7 @@ for (n in 101:200) {
 Click to see the animation.
 
 ```{r, eval = T, echo = F}
-animate::insert_animate("source/basic_lines.json.gz", animate::click_to_loop())
+animate::insert_animate("introduction/basic_lines.json.gz", animate::click_to_loop())
 ```
 
 When you are done. Don't forget to switch-off and detach the device with `off(); detach(device)`.
@@ -240,7 +240,7 @@ lines(world$xs, world$zs, id = "lines-1", xlim = c(-30, 30), ylim = range(world$
 Click to begin the visualisation
 
 ```{r, echo = F, eval = T}
-animate::insert_animate("source/Lorenz_system.json.gz", animate::click_to_loop())
+animate::insert_animate("introduction/Lorenz_system.json.gz", animate::click_to_loop())
 ```
 
 
@@ -305,7 +305,7 @@ for (i in 1:1000) {
 Click to begin the visualisation
 
 ```{r, echo = F, eval = T}
-animate::insert_animate("source/particle_system.json.gz", animate::click_to_loop(wait = 20))
+animate::insert_animate("introduction/particle_system.json.gz", animate::click_to_loop(wait = 20))
 ```
 
 
@@ -369,7 +369,7 @@ for (i in 1:100) {
 Click to begin the visualisation
 
 ```{r, echo = F, eval = T}
-animate::insert_animate("source/random_walk_2d.json.gz", animate::click_to_loop(wait = 300))
+animate::insert_animate("introduction/random_walk_2d.json.gz", animate::click_to_loop(wait = 300))
 ```
 
 
