@@ -38,3 +38,6 @@ ffmpeg -i maze_generation.mp4 -vf "fps=20,split[s0][s1];[s0]palettegen[p];[s1][p
 
 ffmpeg -r 60 -ss 5 -i marathon_source_HD.mp4 -vcodec h264 -vf "setpts=(PTS-STARTPTS)/2.0,crop=700:480:960:150" marathon_HD.mp4
 ffmpeg -i marathon_HD.mp4 -vf "fps=15,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 marathon_HD.gif
+
+ffmpeg -i moving_points.mp4 -vf "fps=15,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 moving_points.gif
+
