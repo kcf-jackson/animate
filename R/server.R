@@ -195,6 +195,16 @@ animate <- R6::R6Class(
     #' @param x The x coordinates of the points.
     #' @param y The y coordinates of the points.
     #' @param ... Additional graphical parameters.
+    #' @details
+    #' Options for the "pch" parameter: "circle", "plus", "diamond", "square",
+    #' "star", "triangle", "wye", "triangle_down", "triangle_left", "triangle_right",
+    #' "diamond_alt", "diamond_square", "pentagon", "hexagon", "hexagon_alt",
+    #' "octagon", "octagon_alt", "cross".
+    #'
+    #' The unit of the "cex" parameter is squared pixels, corresponding to how
+    #' much pixel space the symbol would cover. The convention comes from the
+    #' d3 library, and the choice is (believed) to make plots visually consistent
+    #' across the different symbols.
     points = function(x, y, ...) {
       self$send(Message("fn_points", list(x = x, y = y, ...)))
     },
@@ -274,7 +284,7 @@ animate <- R6::R6Class(
     #' Attach an interactive event to an element
     #' @param selector A character string; a CSS selector.
     #' @param event_type A character string; the event type. For example, "click", "mouseover",
-    #' "mouseout". See more options at \link{https://www.w3schools.com/jsref/dom_obj_event.asp}.
+    #' "mouseout". See more options at \url{https://www.w3schools.com/jsref/dom_obj_event.asp}.
     #' @param callback A function, to be called when the event is triggered.
     event = function(selector, event_type, callback) {
       event_name <- paste0(selector, ":", event_type)
@@ -379,6 +389,8 @@ animate <- R6::R6Class(
       }
     },
 
+    #' @description Event handler
+    #' @param input The input object in the `server` function of a Shiny app.
     observeAnimateEvent = function(input) {
       private$dispatch_event(input$message)
     }

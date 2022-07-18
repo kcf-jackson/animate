@@ -7,3 +7,5 @@
 ^makefile$
 ^readme.md$
 ^readme.Rmd$
+^development$
+^examples$

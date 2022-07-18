@@ -2,7 +2,15 @@
 
 _(Developer Preview: The API is maturing and feedback is welcome!)_
 
-[[Package website]](https://kcf-jackson.github.io/animate/)
+[[Package website]](https://kcf-jackson.github.io/animate/) 
+[[News]](#news)
+[[Introduction]](#introduction)
+[[Features]](#features)
+[[Usage and Examples]](#usage-and-examples)
+[[⭐Gallery]](#gallery)
+[[Acknowledgement]](#acknowledgement)
+
+
 
 ### News
 
@@ -11,7 +19,7 @@ _(Developer Preview: The API is maturing and feedback is welcome!)_
 - Add support to interactive events (experimental)
 - Add Gallery to `readme.md`
 
-23/06/2022: [Poster Presentation at UseR!2022 Conference](https://github.com/kcf-jackson/animate/tree/master/man/useR2022_poster)
+23/06/2022: [Poster Presentation at UseR!2022 Conference](man/useR2022_poster)
 
 12/06/2022: Minor updates
 
@@ -39,14 +47,14 @@ The device integrates well with Shiny and R Markdown Documents, making it easy t
 
 ### Features
 
-- Support frame-by-frame and motion-tween animations
-- Real-time update (in contrast to pre-rendering)
-- Uses dynamic scale
-- Based on the `base` plot syntax, extended by three arguments: `id`, `transition`, and `style`
-- Deployment
-  - Support R Markdown Document (HTML document output)
-  - Support Shiny app (for interactivity)
-  - Support screencast to MP4 video output, which can be converted to other formats with `ffmpeg`
+1. Support frame-by-frame and motion-tween animations
+2. Real-time update (in contrast to pre-rendering)
+3. Uses dynamic scale
+4. Based on the `base` plot syntax, extended by three arguments: `id`, `transition`, and `style`
+5. Deployment
+    - Support R Markdown Document (HTML document output)
+    - Support Shiny app (for interactivity)
+    - Support screencast to MP4 video output, which can be converted to other formats with `ffmpeg`
 
 
 
@@ -84,6 +92,8 @@ for (n in 41:200) {
 }
 ```
 
+<img src="examples/screenshots/sine_curve.gif" width="480px" height="350px"/>
+
 
 #### iii. Motion-tween animation
 
@@ -107,85 +117,96 @@ new_y <- 10 * runif(10)
 points(x, new_y, bg="green", cex=(1:10)*30, id=id, transition=list(duration = 2000))
 ```
 
+<img src="examples/screenshots/moving_points.gif" width="480px" height="350px"/>
+
 
 
 ### Gallery
 
-#### 1. Lorenz system [[code]]() [[tutorial]]()
+#### 1. Lorenz system [[code]](examples/lorenz_system/lorenz.R)
 
 <img src="examples/screenshots/lorenz.gif" width="480px" height="350px"/>
 
 
 
 
-#### 2. Mathematical rose [[code]]() [[tutorial]]()
+#### 2. Mathematical rose [[code]](examples/mathematical_rose/roses.R) [[tutorial]](https://kcf-jackson.github.io/animate/articles/mathematical_rose.html)
 
 <img src="examples/screenshots/roses.gif" width="450px" height="450px"/>
 
 
 
 
-#### 3. Hilbert Curve [[code]]() [[tutorial]]()
+#### 3. Hilbert curve [[code]](examples/hilbert_curve/hilbert_curve.R) [[tutorial]](https://kcf-jackson.github.io/animate/articles/hilbert_curve.html)
 
 <img src="examples/screenshots/hilbert_curve.gif" width="450px" height="450px"/>
 
 
 
 
-#### 4. Particle system [[code]]() [[tutorial]]()
+#### 4. Particle system [[code]](examples/particle_system/particle_system.R) 
 
 <img src="examples/screenshots/particle_system.gif" width="400px" height="400px"/>
 
 
 
 
-#### 5. Predator-Prey process [[code]]()
+#### 5. Predator-Prey process [[code]](examples/predator_prey/predator_prey.R)
 
 <img src="examples/screenshots/predator_prey_HD.gif" height="400px"/>
 
 
-#### 6. Schelling's model of segregation [[code]]()
+
+
+#### 6. Schelling's model of segregation [[code]](examples/schelling_segregation/segregation.R)
 
 <img src="examples/screenshots/segregation_HD.gif" height="400px"/>
 
 
 
-#### 7. Maze generation [[code]]() [[tutorial]]()
+
+#### 7. Maze generation [[code]](examples/maze_generation/maze.R) [[tutorial]](https://kcf-jackson.github.io/animate/articles/maze_generation.html)
 
 <img src="examples/screenshots/maze_generation.gif" height="300px"/>
 
 
 
-#### 8. Chess [[code]]()
+
+#### 8. Chess [[code]](examples/chess_board/chess.R)
 
 <img src="examples/screenshots/chess_HD.gif" height="400px"/>
 
 
 
-#### 9. "Hand-drawn" plots [[code]]()
+
+#### 9. "Hand-drawn" plots [[code]](examples/handdrawn_plots/handdrawn_plot.R)
 
 <img src="examples/screenshots/handdrawn_plot_2_HD.gif" height="400px"/>
 
 
 
-#### 10. The science of sentencing [[code]]() [[reference]](https://www.themarshallproject.org/2015/08/04/the-new-science-of-sentencing)
+
+#### 10. The science of sentencing [[code]](examples/science_of_sentencing/main.R) [[reference]](https://www.themarshallproject.org/2015/08/04/the-new-science-of-sentencing)
 
 ![](examples/screenshots/parole.gif)
 
 
-#### 11. Fairness in Machine Learning [[code]]() [[reference]](https://bair.berkeley.edu/blog/2018/05/17/delayed-impact/)
+
+
+#### 11. Fairness in Machine Learning [[code]](examples/fairness_in_machine_learning/app.R) [[reference]](https://bair.berkeley.edu/blog/2018/05/17/delayed-impact/)
 
 ![](examples/screenshots/credit_score.gif)
 
 
 
-#### 12. Berlin Marathon [[code]]() [[reference]](http://interaktiv.morgenpost.de/berlin-marathon-2016/)
+
+#### 12. Berlin Marathon [[code]](examples/berlin_marathon/marathon.R) [[reference]](http://interaktiv.morgenpost.de/berlin-marathon-2016/)
 
 <img src="examples/screenshots/marathon_HD.gif" height="400px"/>
 
 
 
+
 ## Acknowledgement
 
-This work is supported by my position at the [Bioinformatics and Cellular Genomics lab (BioCellGen)](https://www.svi.edu.au/research_themes/bioinformatics_and_cellular_genomics/) at the St. Vincent's Institute of Medical Research (SVI) under the 
-supervision of [Davis McCarthy](https://www.svi.edu.au/research_themes/research_staff/dr_davis_mccarthy).
+This work is supported by my position at the [Bioinformatics and Cellular Genomics lab (BioCellGen)](https://www.svi.edu.au/research_themes/bioinformatics_and_cellular_genomics/) at the St. Vincent's Institute of Medical Research (SVI) under the supervision of [Davis McCarthy](https://www.svi.edu.au/research_themes/research_staff/dr_davis_mccarthy).

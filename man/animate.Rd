@@ -22,6 +22,8 @@ A web-based graphics device
 \item{\code{virtual_meta}}{A list of device metadata.}
 
 \item{\code{virtual_session}}{A virtual session simulated with V8.}
+
+\item{\code{event_handlers}}{A named list of user-defined functions for handling events.}
 }
 \if{html}{\out{</div>}}
 }
@@ -34,6 +36,7 @@ A web-based graphics device
 \item \href{#method-set_max_stacksize}{\code{animate$set_max_stacksize()}}
 \item \href{#method-svg}{\code{animate$svg()}}
 \item \href{#method-bars}{\code{animate$bars()}}
+\item \href{#method-objects}{\code{animate$objects()}}
 \item \href{#method-plot}{\code{animate$plot()}}
 \item \href{#method-points}{\code{animate$points()}}
 \item \href{#method-lines}{\code{animate$lines()}}
@@ -41,6 +44,7 @@ A web-based graphics device
 \item \href{#method-axis}{\code{animate$axis()}}
 \item \href{#method-text}{\code{animate$text()}}
 \item \href{#method-image}{\code{animate$image()}}
+\item \href{#method-event}{\code{animate$event()}}
 \item \href{#method-set}{\code{animate$set()}}
 \item \href{#method-par}{\code{animate$par()}}
 \item \href{#method-remove}{\code{animate$remove()}}
@@ -49,6 +53,7 @@ A web-based graphics device
 \item \href{#method-import}{\code{animate$import()}}
 \item \href{#method-export}{\code{animate$export()}}
 \item \href{#method-record}{\code{animate$record()}}
+\item \href{#method-observeAnimateEvent}{\code{animate$observeAnimateEvent()}}
 \item \href{#method-clone}{\code{animate$clone()}}
 }
 }
@@ -147,7 +152,7 @@ and \code{root}. \code{id} assigns an id to the SVG element for future reference
 \if{html}{\out{<a id="method-bars"></a>}}
 \if{latex}{\out{\hypertarget{method-bars}{}}}
 \subsection{Method \code{bars()}}{
-Add points to a plot
+Add bars to a plot
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{animate$bars(x, y, w, h, ...)}\if{html}{\out{</div>}}
 }
@@ -162,6 +167,33 @@ Add points to a plot
 \item{\code{w}}{The width of the bars.}
 
 \item{\code{h}}{The height of the bars.}
+
+\item{\code{...}}{Additional graphical parameters.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-objects"></a>}}
+\if{latex}{\out{\hypertarget{method-objects}{}}}
+\subsection{Method \code{objects()}}{
+Add HTML objects to a plot
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$objects(x, y, w, h, content, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{The x coordinates of the objects.}
+
+\item{\code{y}}{The y coordinates of the objects.}
+
+\item{\code{w}}{The width of the objects.}
+
+\item{\code{h}}{The height of the objects.}
+
+\item{\code{content}}{The content of the objects; the HTML string.}
 
 \item{\code{...}}{Additional graphical parameters.}
 }
@@ -211,6 +243,18 @@ Add points to a plot
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+Options for the "pch" parameter: "circle", "plus", "diamond", "square",
+"star", "triangle", "wye", "triangle_down", "triangle_left", "triangle_right",
+"diamond_alt", "diamond_square", "pentagon", "hexagon", "hexagon_alt",
+"octagon", "octagon_alt", "cross".
+
+The unit of the "cex" parameter is squared pixels, corresponding to how
+much pixel space the symbol would cover. The convention comes from the
+d3 library, and the choice is (believed) to make plots visually consistent
+across the different symbols.
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-lines"></a>}}
@@ -328,6 +372,28 @@ Add background image to a plot
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-event"></a>}}
+\if{latex}{\out{\hypertarget{method-event}{}}}
+\subsection{Method \code{event()}}{
+Attach an interactive event to an element
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$event(selector, event_type, callback)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{selector}}{A character string; a CSS selector.}
+
+\item{\code{event_type}}{A character string; the event type. For example, "click", "mouseover",
+"mouseout". See more options at \url{https://www.w3schools.com/jsref/dom_obj_event.asp}.}
+
+\item{\code{callback}}{A function, to be called when the event is triggered.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-set"></a>}}
 \if{latex}{\out{\hypertarget{method-set}{}}}
 \subsection{Method \code{set()}}{
@@ -375,7 +441,7 @@ Remove elements from the active SVG element
 \describe{
 \item{\code{id}}{A character vector; the ID of the elements.}
 
-\item{\code{selector}}{A character vector; the CSS selector.}
+\item{\code{selector}}{A character vector; a CSS selector.}
 }
 \if{html}{\out{</div>}}
 }
@@ -481,6 +547,23 @@ See browser compatibility at: \url{https://developer.mozilla.org/en-US/docs/Web/
 See Media Streams API reference at: \url{https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API}
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-observeAnimateEvent"></a>}}
+\if{latex}{\out{\hypertarget{method-observeAnimateEvent}{}}}
+\subsection{Method \code{observeAnimateEvent()}}{
+Event handler
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$observeAnimateEvent(input)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{input}}{The input object in the \code{server} function of a Shiny app.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
