@@ -296,6 +296,22 @@ animate <- R6::R6Class(
     },
 
     #' @description
+    #' Attach a captured event to an element
+    #' @param selector A character string; a CSS selector.
+    #' @param event_type A character string; the event type. For example, "click", "mouseover",
+    #' "mouseout". See more options at \url{https://www.w3schools.com/jsref/dom_obj_event.asp}.
+    #' @param method A character string; the name of a device function (e.g. "points").
+    #' @param param A named list of arguments to be called with.
+    #' @note This function differs from the `event` function in that events
+    #' registered through `simple_event` do not require R at deployment to work.
+    simple_event = function(selector, event_type, method, param) {
+      self$send(Message("fn_simple_event", list(selector = selector,
+                                                event = event_type,
+                                                method = method,
+                                                param = param)))
+    },
+
+    #' @description
     #' Set the active device to a SVG element
     #' @param device_id A character vector; ID of the device.
     set = function(device_id) {
