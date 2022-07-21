@@ -14,6 +14,8 @@ _(Developer Preview: The API is maturing and feedback is welcome!)_
 
 ### News
 
+22/07/2022: Add a simple video editor based on FFMPEG for editing screenshots
+
 20/07/2022: Add support to detached interactive events (experimental) 
 
 - Detached events are events that can function without R

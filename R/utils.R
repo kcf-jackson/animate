@@ -12,3 +12,12 @@
 new_id <- function(x, prefix = "ID", sep = "-") {
     paste(prefix, seq_along(x), sep = sep)
 }
+
+
+#' Launch the ffmpeg-based video editor (Shiny app)
+#'
+#' @note This requires `ffmpeg` to work. The ffmpeg binary can be downloaded from
+#' \url{https://ffmpeg.org/download.html}.
+ffmpeg <- function() {
+  shiny::runApp(system.file("ffmpeg", package = "animate"))
+}

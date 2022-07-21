@@ -8,6 +8,10 @@ A web-based graphics device
 
 A web-based graphics device
 }
+\note{
+This function differs from the \code{event} function in that events
+registered through \code{simple_event} do not require R at deployment to work.
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -45,6 +49,7 @@ A web-based graphics device
 \item \href{#method-text}{\code{animate$text()}}
 \item \href{#method-image}{\code{animate$image()}}
 \item \href{#method-event}{\code{animate$event()}}
+\item \href{#method-simple_event}{\code{animate$simple_event()}}
 \item \href{#method-set}{\code{animate$set()}}
 \item \href{#method-par}{\code{animate$par()}}
 \item \href{#method-remove}{\code{animate$remove()}}
@@ -389,6 +394,30 @@ Attach an interactive event to an element
 "mouseout". See more options at \url{https://www.w3schools.com/jsref/dom_obj_event.asp}.}
 
 \item{\code{callback}}{A function, to be called when the event is triggered.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-simple_event"></a>}}
+\if{latex}{\out{\hypertarget{method-simple_event}{}}}
+\subsection{Method \code{simple_event()}}{
+Attach a captured event to an element
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$simple_event(selector, event_type, method, param)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{selector}}{A character string; a CSS selector.}
+
+\item{\code{event_type}}{A character string; the event type. For example, "click", "mouseover",
+"mouseout". See more options at \url{https://www.w3schools.com/jsref/dom_obj_event.asp}.}
+
+\item{\code{method}}{A character string; the name of a device function (e.g. "points").}
+
+\item{\code{param}}{A named list of arguments to be called with.}
 }
 \if{html}{\out{</div>}}
 }
