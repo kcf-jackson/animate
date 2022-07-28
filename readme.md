@@ -129,84 +129,84 @@ points(x, new_y, bg="green", cex=(1:10)*30, id=id, transition=list(duration = 20
 
 ### Gallery
 
-#### 1. Lorenz system [[code]](https://github.com/kcf-jackson/animate/blob/master/examples/lorenz_system/lorenz.R)
+#### 1. Lorenz system [[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/lorenz_system/lorenz.R)
 
 <img src="examples/screenshots/lorenz.gif" width="480px" height="350px"/>
 
 
 
 
-#### 2. Mathematical rose [[code]](https://github.com/kcf-jackson/animate/blob/master/examples/mathematical_rose/roses.R) [[tutorial]](https://kcf-jackson.github.io/animate/articles/mathematical_rose.html)
+#### 2. Mathematical rose [[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/mathematical_rose/roses.R) [[tutorial]](https://kcf-jackson.github.io/animate/articles/mathematical_rose.html)
 
 <img src="examples/screenshots/roses.gif" width="450px" height="450px"/>
 
 
 
 
-#### 3. Hilbert curve [[code]](https://github.com/kcf-jackson/animate/blob/master/examples/hilbert_curve/hilbert_curve.R) [[tutorial]](https://kcf-jackson.github.io/animate/articles/hilbert_curve.html)
+#### 3. Hilbert curve [[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/hilbert_curve/hilbert_curve.R) [[tutorial]](https://kcf-jackson.github.io/animate/articles/hilbert_curve.html)
 
 <img src="examples/screenshots/hilbert_curve.gif" width="450px" height="450px"/>
 
 
 
 
-#### 4. Particle system [[code]](https://github.com/kcf-jackson/animate/blob/master/examples/particle_system/particle_system.R) 
+#### 4. Particle system [[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/particle_system/particle_system.R) 
 
 <img src="examples/screenshots/particle_system.gif" width="400px" height="400px"/>
 
 
 
 
-#### 5. Predator-Prey process [[code]](https://github.com/kcf-jackson/animate/blob/master/examples/predator_prey/predator_prey.R)
+#### 5. Predator-Prey process [[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/predator_prey/predator_prey.R)
 
 <img src="examples/screenshots/predator_prey_HD.gif" height="400px"/>
 
 
 
 
-#### 6. Schelling's model of segregation [[code]](https://github.com/kcf-jackson/animate/blob/master/examples/schelling_segregation/segregation.R)
+#### 6. Schelling's model of segregation [[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/schelling_segregation/segregation.R)
 
 <img src="examples/screenshots/segregation_HD.gif" height="400px"/>
 
 
 
 
-#### 7. Maze generation [[code]](https://github.com/kcf-jackson/animate/blob/master/examples/maze_generation/maze.R) [[tutorial]](https://kcf-jackson.github.io/animate/articles/maze_generation.html)
+#### 7. Maze generation [[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/maze_generation/maze.R) [[tutorial]](https://kcf-jackson.github.io/animate/articles/maze_generation.html)
 
 <img src="examples/screenshots/maze_generation.gif" height="300px"/>
 
 
 
 
-#### 8. Chess [[code]](https://github.com/kcf-jackson/animate/blob/master/examples/chess_board/chess.R)
+#### 8. Chess [[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/chess_board/chess.R)
 
 <img src="examples/screenshots/chess_HD.gif" height="400px"/>
 
 
 
 
-#### 9. "Hand-drawn" plots [[code]](https://github.com/kcf-jackson/animate/blob/master/examples/handdrawn_plots/handdrawn_plot.R)
+#### 9. "Hand-drawn" plots [[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/handdrawn_plots/handdrawn_plot.R)
 
 <img src="examples/screenshots/handdrawn_plot_2_HD.gif" height="400px"/>
 
 
 
 
-#### 10. The science of sentencing [[code]](https://github.com/kcf-jackson/animate/blob/master/examples/science_of_sentencing/main.R) [[reference]](https://www.themarshallproject.org/2015/08/04/the-new-science-of-sentencing)
+#### 10. The science of sentencing [[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/science_of_sentencing/main.R) [[reference]](https://www.themarshallproject.org/2015/08/04/the-new-science-of-sentencing)
 
 ![](examples/screenshots/parole.gif)
 
 
 
 
-#### 11. Fairness in Machine Learning [[code]](https://github.com/kcf-jackson/animate/blob/master/examples/fairness_in_machine_learning/app.R) [[reference]](https://bair.berkeley.edu/blog/2018/05/17/delayed-impact/)
+#### 11. Fairness in Machine Learning [[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/fairness_in_machine_learning/app.R) [[reference]](https://bair.berkeley.edu/blog/2018/05/17/delayed-impact/)
 
 ![](examples/screenshots/credit_score.gif)
 
 
 
 
-#### 12. Berlin Marathon [[code]](https://github.com/kcf-jackson/animate/blob/master/examples/berlin_marathon/marathon.R) [[reference]](http://interaktiv.morgenpost.de/berlin-marathon-2016/)
+#### 12. Berlin Marathon [[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/berlin_marathon/marathon.R) [[reference]](http://interaktiv.morgenpost.de/berlin-marathon-2016/)
 
 <img src="examples/screenshots/marathon_HD.gif" height="400px"/>
 
