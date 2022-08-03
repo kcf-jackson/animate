@@ -1,6 +1,6 @@
 Package: animate
 Title: A Web-based Graphics Device For Animated Visualisations
-Version: 0.3.7
+Version: 0.3.8
 Authors@R: 
     person(given = "Chun Fung",
            family = "Kwok",
