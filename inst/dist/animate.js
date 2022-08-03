@@ -236,7 +236,7 @@ var d3_enter_update_exit = function(param, device, data0, tag, className, d3_upd
 
 var event = function(param, device) {
     return d3.selectAll(param.selector).on(param.event, function(d) {
-        var message = { "type": "user_event", "message": { "param": param, "data": d, "event": d3.event, "mouse": d3.mouse(this) } }
+        var message = { "type": "user_event", "message": { "param": param, "data": d, "event": d3.event, "keyCode": d3.event.keyCode, "mouse": d3.mouse(this) } }
         if (param.shiny) {
             Shiny.setInputValue("animate_event", message)
         } else {
