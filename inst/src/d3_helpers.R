@@ -31,7 +31,24 @@ d3_style <- curry(function(selection, styles) {
 d3_transition <- curry(function(selection, transition) {
   s <- selection$transition()
   for (x in Object::keys(transition)) {
-    s <- s[x](transition[x])
+    if (x == "on") {
+      # chained transition
+      param <- transition[x]
+      s <- s[x](param$event, function(d) {
+        message <- list(type = "user_event",
+                        message = list(param = param,
+                                       data = d,
+                                       event = d3$event))
+        if (param$shiny) {
+          Shiny::setInputValue("animate_event", message)
+        } else {
+          ws$send(JSON::stringify(message))
+        }
+        return(TRUE)
+      })
+    } else {
+      s <- s[x](transition[x])
+    }
   }
   return(s)
 })

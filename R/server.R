@@ -286,6 +286,8 @@ animate <- R6::R6Class(
     #' @param event_type A character string; the event type. For example, "click", "mouseover",
     #' "mouseout". See more options at \url{https://www.w3schools.com/jsref/dom_obj_event.asp}.
     #' @param callback A function, to be called when the event is triggered.
+    #' The function should take an argument to receive the data from the
+    #' browser end.
     event = function(selector, event_type, callback) {
       event_name <- paste0(selector, ":", event_type)
       self$event_handlers[[event_name]] <- callback
@@ -293,6 +295,40 @@ animate <- R6::R6Class(
                                          event = event_type,
                                          event_name = event_name,
                                          shiny = self$shiny)))
+    },
+
+    #' @description
+    #' Chain a transition after another.
+    #' @param callback A function, to be called when the event is triggered.
+    #' The function should take an argument to receive the data from the
+    #' browser end.
+    #'
+    #' @examples
+    #' \dontrun{
+    #' library(animate)
+    #' device <- animate$new(600, 600)
+    #' attach(device)
+    #' par(xlim = c(0, 10), ylim = c(0, 10))
+    #' plot(1:10, 1:10, id = 1:10)
+    #' points(1:10, sample(10, 10), id = 1:10,
+    #'   transition = list(
+    #'     duration = 1000,
+    #'     on = chain(function(message) {
+    #'       print(message)
+    #'       points(1:10, sample(10, 10), id = 1:10, bg = "green",
+    #'              transition = list(duration = 2000))
+    #'       })
+    #'   ))
+    #' }
+    chain = function(callback) {
+      event_name <- paste0("chained-transition-", private$event_counter)
+      private$event_counter <- private$event_counter + 1
+
+      self$event_handlers[[event_name]] <- callback
+      param <- list(event = "end",
+                    event_name = event_name,
+                    shiny = self$shiny)
+      param
     },
 
     #' @description
@@ -434,6 +470,7 @@ animate <- R6::R6Class(
         }
       }
       warning("No handler can handle the message:\n", message)
-    }
+    },
+    event_counter = 0
   )
 )
