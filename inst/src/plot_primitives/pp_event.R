@@ -10,6 +10,7 @@ event = function(param, device) {
           param = param,
           data = d,
           event = d3$event,
+          keyCode = d3$event$keyCode,
           mouse = d3$mouse(this)
         )
       )
