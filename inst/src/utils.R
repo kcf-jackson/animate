@@ -4,6 +4,8 @@
 
 # Alias ----
 isNull  <- lambda(x, x == NULL)
+isUndefined <- lambda(x, x == JS_UNDEFINED)
+isEmpty <- lambda(x, isNull(x) || isUndefined(x))
 isObject <- lambda(x, typeof(x) == "object")
 
 # Text related functions ----
@@ -57,7 +59,7 @@ seq <- function(from, to, by = 1) {
 #' The default will be set only for attributes that do not already have a value
 set_default <- function(param, default_param) {
   for (item in names(default_param)) {
-    if (!param[item]) {
+    if (isEmpty(param[item])) {
       param[item] <- default_param[item]
     }
   }
