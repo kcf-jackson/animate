@@ -216,7 +216,7 @@ points(x, new_y, bg="green", cex=(1:10)*30, id=id, transition=list(duration = 20
 
 
 #### 13. 2048
-[[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/2048/2048_animate.R) 
+[[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/2048/2048_animate.R) [[reference]](https://play2048.co/)
 
 <img src="https://github.com/kcf-jackson/animate/blob/gh-pages/examples/screenshots/2048.gif" height="400px"/>
 
