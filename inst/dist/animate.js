@@ -492,7 +492,20 @@ var d3_style = R.curry(function(selection, styles) {
 var d3_transition = R.curry(function(selection, transition) {
     var s = selection.transition()
     for (let x of Object.keys(transition)) {
-        var s = s[x](transition[x])
+        if (x == "on") {
+            var param = transition[x]
+            var s = s[x](param.event, function(d) {
+                var message = { "type": "user_event", "message": { "param": param, "data": d, "event": d3.event } }
+                if (param.shiny) {
+                    Shiny.setInputValue("animate_event", message)
+                } else {
+                    ws.send(JSON.stringify(message))
+                }
+                return true
+            })
+        } else {
+            var s = s[x](transition[x])
+        }
     }
     return s
 })
@@ -520,6 +533,8 @@ var as_scalar = function(x) {
 
 
 var isNull = function(x) { return x == null; }
+var isUndefined = function(x) { return x == undefined; }
+var isEmpty = function(x) { return isNull(x) || isUndefined(x); }
 var isObject = function(x) { return typeof x == "object"; }
 var Id = function(x) { return "#" + x; }
 var parse_px = function(x) { return parseInt(x.replace("px", "")); }
@@ -557,7 +572,7 @@ var seq = function(from, to, by = 1) {
 }
 var set_default = function(param, default_param) {
     for (let item of Object.keys(default_param)) {
-        if (!param[item]) {
+        if (isEmpty(param[item])) {
             param[item] = default_param[item]
         }
     }
