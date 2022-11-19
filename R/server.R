@@ -2,7 +2,9 @@ Message <- function(type, message) {
   list(type = type, message = message)
 }
 
-#' A web-based graphics device
+#' A web-based graphics device for animated visualisations
+#' @description Extends the 'base' graphics functions to support frame-by-frame
+#' animation and keyframes animation.
 #' @export
 animate <- R6::R6Class(
   "animate",
@@ -34,7 +36,9 @@ animate <- R6::R6Class(
     #' @param width An integer; the width in pixels.
     #' @param height An integer; the height in pixels.
     #' @param id A character string; the id assigned to the device.
-    #' @param ... Additional arguments.
+    #' @param ... Additional arguments. Use `virtual = TRUE` to use the virtual
+    #' device, `shiny = TRUE` for shiny application; everything else will be
+    #' passed to the SVG element that hosts the visualisation.
     initialize = function(width, height, id = "SVG_1", ...) {
       if (private$is_virtual(...)) {
         self$virtual_meta <- list(virtual = TRUE, width = width, height = height)

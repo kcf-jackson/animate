@@ -1,6 +1,6 @@
 Package: animate
-Title: A Web-based Graphics Device For Animated Visualisations
-Version: 0.3.8
+Title: A Web-Based Graphics Device for Animated Visualisations
+Version: 0.3.8.1
 Authors@R: 
     person(given = "Chun Fung",
            family = "Kwok",
@@ -8,13 +8,19 @@ Authors@R:
            email = "kcf.jackson@gmail.com",
            comment = c(ORCID = "0000-0002-0716-3879"))
 Description: Implements a web-based graphics device for animated visualisations. 
+  Powered by 'd3.js' and 'sketch', this package is modelled on the 'base' syntax, 
+  and it extends the 'base' graphics functions to support frame-by-frame animation and 
+  keyframes animation. The target use case is real-time animated visualisations, 
+  including agent-based models, dynamical systems, and animated diagrams. 
+  The generated visualisations can be deployed as GIFs / MP4 videos, as Shiny apps 
+  (with interactivity) and as HTML documents through embedding into R Markdown documents.
 License: MIT + file LICENSE
 URL: https://kcf-jackson.github.io/animate/
 BugReports: https://github.com/kcf-jackson/animate/issues
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Imports: 
     R6,
     httpuv,

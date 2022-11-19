@@ -2,11 +2,10 @@
 % Please edit documentation in R/server.R
 \name{animate}
 \alias{animate}
-\title{A web-based graphics device}
+\title{A web-based graphics device for animated visualisations}
 \description{
-A web-based graphics device
-
-A web-based graphics device
+Extends the 'base' graphics functions to support frame-by-frame
+animation and keyframes animation.
 }
 \note{
 This function differs from the \code{event} function in that events
@@ -34,37 +33,37 @@ registered through \code{simple_event} do not require R at deployment to work.
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{animate$new()}}
-\item \href{#method-off}{\code{animate$off()}}
-\item \href{#method-send}{\code{animate$send()}}
-\item \href{#method-set_max_stacksize}{\code{animate$set_max_stacksize()}}
-\item \href{#method-svg}{\code{animate$svg()}}
-\item \href{#method-bars}{\code{animate$bars()}}
-\item \href{#method-objects}{\code{animate$objects()}}
-\item \href{#method-plot}{\code{animate$plot()}}
-\item \href{#method-points}{\code{animate$points()}}
-\item \href{#method-lines}{\code{animate$lines()}}
-\item \href{#method-abline}{\code{animate$abline()}}
-\item \href{#method-axis}{\code{animate$axis()}}
-\item \href{#method-text}{\code{animate$text()}}
-\item \href{#method-image}{\code{animate$image()}}
-\item \href{#method-event}{\code{animate$event()}}
-\item \href{#method-simple_event}{\code{animate$simple_event()}}
-\item \href{#method-set}{\code{animate$set()}}
-\item \href{#method-par}{\code{animate$par()}}
-\item \href{#method-remove}{\code{animate$remove()}}
-\item \href{#method-clear}{\code{animate$clear()}}
-\item \href{#method-delete}{\code{animate$delete()}}
-\item \href{#method-import}{\code{animate$import()}}
-\item \href{#method-export}{\code{animate$export()}}
-\item \href{#method-record}{\code{animate$record()}}
-\item \href{#method-observeAnimateEvent}{\code{animate$observeAnimateEvent()}}
-\item \href{#method-clone}{\code{animate$clone()}}
+\item \href{#method-animate-new}{\code{animate$new()}}
+\item \href{#method-animate-off}{\code{animate$off()}}
+\item \href{#method-animate-send}{\code{animate$send()}}
+\item \href{#method-animate-set_max_stacksize}{\code{animate$set_max_stacksize()}}
+\item \href{#method-animate-svg}{\code{animate$svg()}}
+\item \href{#method-animate-bars}{\code{animate$bars()}}
+\item \href{#method-animate-objects}{\code{animate$objects()}}
+\item \href{#method-animate-plot}{\code{animate$plot()}}
+\item \href{#method-animate-points}{\code{animate$points()}}
+\item \href{#method-animate-lines}{\code{animate$lines()}}
+\item \href{#method-animate-abline}{\code{animate$abline()}}
+\item \href{#method-animate-axis}{\code{animate$axis()}}
+\item \href{#method-animate-text}{\code{animate$text()}}
+\item \href{#method-animate-image}{\code{animate$image()}}
+\item \href{#method-animate-event}{\code{animate$event()}}
+\item \href{#method-animate-simple_event}{\code{animate$simple_event()}}
+\item \href{#method-animate-set}{\code{animate$set()}}
+\item \href{#method-animate-par}{\code{animate$par()}}
+\item \href{#method-animate-remove}{\code{animate$remove()}}
+\item \href{#method-animate-clear}{\code{animate$clear()}}
+\item \href{#method-animate-delete}{\code{animate$delete()}}
+\item \href{#method-animate-import}{\code{animate$import()}}
+\item \href{#method-animate-export}{\code{animate$export()}}
+\item \href{#method-animate-record}{\code{animate$record()}}
+\item \href{#method-animate-observeAnimateEvent}{\code{animate$observeAnimateEvent()}}
+\item \href{#method-animate-clone}{\code{animate$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-animate-new"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-new}{}}}
 \subsection{Method \code{new()}}{
 Constructor of the device
 \subsection{Usage}{
@@ -80,14 +79,16 @@ Constructor of the device
 
 \item{\code{id}}{A character string; the id assigned to the device.}
 
-\item{\code{...}}{Additional arguments.}
+\item{\code{...}}{Additional arguments. Use \code{virtual = TRUE} to use the virtual
+device, \code{shiny = TRUE} for shiny application; everything else will be
+passed to the SVG element that hosts the visualisation.}
 }
 \if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-off"></a>}}
-\if{latex}{\out{\hypertarget{method-off}{}}}
+\if{html}{\out{<a id="method-animate-off"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-off}{}}}
 \subsection{Method \code{off()}}{
 Switch off the device; this function closes the WebSocket connection
 \subsection{Usage}{
@@ -96,8 +97,8 @@ Switch off the device; this function closes the WebSocket connection
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-send"></a>}}
-\if{latex}{\out{\hypertarget{method-send}{}}}
+\if{html}{\out{<a id="method-animate-send"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-send}{}}}
 \subsection{Method \code{send()}}{
 Send commands to device
 \subsection{Usage}{
@@ -113,8 +114,8 @@ Send commands to device
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set_max_stacksize"></a>}}
-\if{latex}{\out{\hypertarget{method-set_max_stacksize}{}}}
+\if{html}{\out{<a id="method-animate-set_max_stacksize"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-set_max_stacksize}{}}}
 \subsection{Method \code{set_max_stacksize()}}{
 Set the maximum size of the stack
 \subsection{Usage}{
@@ -131,8 +132,8 @@ Set the maximum size of the stack
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-svg"></a>}}
-\if{latex}{\out{\hypertarget{method-svg}{}}}
+\if{html}{\out{<a id="method-animate-svg"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-svg}{}}}
 \subsection{Method \code{svg()}}{
 Initialise a SVG element
 \subsection{Usage}{
@@ -154,8 +155,8 @@ and \code{root}. \code{id} assigns an id to the SVG element for future reference
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-bars"></a>}}
-\if{latex}{\out{\hypertarget{method-bars}{}}}
+\if{html}{\out{<a id="method-animate-bars"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-bars}{}}}
 \subsection{Method \code{bars()}}{
 Add bars to a plot
 \subsection{Usage}{
@@ -179,8 +180,8 @@ Add bars to a plot
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-objects"></a>}}
-\if{latex}{\out{\hypertarget{method-objects}{}}}
+\if{html}{\out{<a id="method-animate-objects"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-objects}{}}}
 \subsection{Method \code{objects()}}{
 Add HTML objects to a plot
 \subsection{Usage}{
@@ -206,8 +207,8 @@ Add HTML objects to a plot
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-plot"></a>}}
-\if{latex}{\out{\hypertarget{method-plot}{}}}
+\if{html}{\out{<a id="method-animate-plot"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-plot}{}}}
 \subsection{Method \code{plot()}}{
 Generic X-Y plotting
 \subsection{Usage}{
@@ -229,8 +230,8 @@ Generic X-Y plotting
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-points"></a>}}
-\if{latex}{\out{\hypertarget{method-points}{}}}
+\if{html}{\out{<a id="method-animate-points"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-points}{}}}
 \subsection{Method \code{points()}}{
 Add points to a plot
 \subsection{Usage}{
@@ -262,8 +263,8 @@ across the different symbols.
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-lines"></a>}}
-\if{latex}{\out{\hypertarget{method-lines}{}}}
+\if{html}{\out{<a id="method-animate-lines"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-lines}{}}}
 \subsection{Method \code{lines()}}{
 Add line segments / paths to a plot
 \subsection{Usage}{
@@ -283,8 +284,8 @@ Add line segments / paths to a plot
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-abline"></a>}}
-\if{latex}{\out{\hypertarget{method-abline}{}}}
+\if{html}{\out{<a id="method-animate-abline"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-abline}{}}}
 \subsection{Method \code{abline()}}{
 Add straight lines to a plot
 \subsection{Usage}{
@@ -308,8 +309,8 @@ Add straight lines to a plot
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-axis"></a>}}
-\if{latex}{\out{\hypertarget{method-axis}{}}}
+\if{html}{\out{<a id="method-animate-axis"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-axis}{}}}
 \subsection{Method \code{axis()}}{
 Add an axis to a plot
 \subsection{Usage}{
@@ -331,8 +332,8 @@ Add an axis to a plot
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-text"></a>}}
-\if{latex}{\out{\hypertarget{method-text}{}}}
+\if{html}{\out{<a id="method-animate-text"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-text}{}}}
 \subsection{Method \code{text()}}{
 Add text to a plot
 \subsection{Usage}{
@@ -354,8 +355,8 @@ Add text to a plot
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-image"></a>}}
-\if{latex}{\out{\hypertarget{method-image}{}}}
+\if{html}{\out{<a id="method-animate-image"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-image}{}}}
 \subsection{Method \code{image()}}{
 Add background image to a plot
 \subsection{Usage}{
@@ -377,8 +378,8 @@ Add background image to a plot
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-event"></a>}}
-\if{latex}{\out{\hypertarget{method-event}{}}}
+\if{html}{\out{<a id="method-animate-event"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-event}{}}}
 \subsection{Method \code{event()}}{
 Attach an interactive event to an element
 \subsection{Usage}{
@@ -399,8 +400,8 @@ Attach an interactive event to an element
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-simple_event"></a>}}
-\if{latex}{\out{\hypertarget{method-simple_event}{}}}
+\if{html}{\out{<a id="method-animate-simple_event"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-simple_event}{}}}
 \subsection{Method \code{simple_event()}}{
 Attach a captured event to an element
 \subsection{Usage}{
@@ -423,8 +424,8 @@ Attach a captured event to an element
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-set"></a>}}
-\if{latex}{\out{\hypertarget{method-set}{}}}
+\if{html}{\out{<a id="method-animate-set"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-set}{}}}
 \subsection{Method \code{set()}}{
 Set the active device to a SVG element
 \subsection{Usage}{
@@ -440,8 +441,8 @@ Set the active device to a SVG element
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-par"></a>}}
-\if{latex}{\out{\hypertarget{method-par}{}}}
+\if{html}{\out{<a id="method-animate-par"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-par}{}}}
 \subsection{Method \code{par()}}{
 Set the graphical parameters
 \subsection{Usage}{
@@ -457,8 +458,8 @@ Set the graphical parameters
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-remove"></a>}}
-\if{latex}{\out{\hypertarget{method-remove}{}}}
+\if{html}{\out{<a id="method-animate-remove"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-remove}{}}}
 \subsection{Method \code{remove()}}{
 Remove elements from the active SVG element
 \subsection{Usage}{
@@ -476,8 +477,8 @@ Remove elements from the active SVG element
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clear"></a>}}
-\if{latex}{\out{\hypertarget{method-clear}{}}}
+\if{html}{\out{<a id="method-animate-clear"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-clear}{}}}
 \subsection{Method \code{clear()}}{
 Remove all elements from the active SVG element
 \subsection{Usage}{
@@ -486,8 +487,8 @@ Remove all elements from the active SVG element
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-delete"></a>}}
-\if{latex}{\out{\hypertarget{method-delete}{}}}
+\if{html}{\out{<a id="method-animate-delete"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-delete}{}}}
 \subsection{Method \code{delete()}}{
 Remove a SVG element
 \subsection{Usage}{
@@ -510,8 +511,8 @@ self$send(Message("fn_group", c(...)))
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-import"></a>}}
-\if{latex}{\out{\hypertarget{method-import}{}}}
+\if{html}{\out{<a id="method-animate-import"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-import}{}}}
 \subsection{Method \code{import()}}{
 Import an animated plot
 \subsection{Usage}{
@@ -527,8 +528,8 @@ Import an animated plot
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-export"></a>}}
-\if{latex}{\out{\hypertarget{method-export}{}}}
+\if{html}{\out{<a id="method-animate-export"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-export}{}}}
 \subsection{Method \code{export()}}{
 Export an animated plot
 \subsection{Usage}{
@@ -546,8 +547,8 @@ Export an animated plot
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-record"></a>}}
-\if{latex}{\out{\hypertarget{method-record}{}}}
+\if{html}{\out{<a id="method-animate-record"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-record}{}}}
 \subsection{Method \code{record()}}{
 Record an animated plot as a MP4 video
 \subsection{Usage}{
@@ -578,8 +579,8 @@ See Media Streams API reference at: \url{https://developer.mozilla.org/en-US/doc
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-observeAnimateEvent"></a>}}
-\if{latex}{\out{\hypertarget{method-observeAnimateEvent}{}}}
+\if{html}{\out{<a id="method-animate-observeAnimateEvent"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-observeAnimateEvent}{}}}
 \subsection{Method \code{observeAnimateEvent()}}{
 Event handler
 \subsection{Usage}{
@@ -595,8 +596,8 @@ Event handler
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-animate-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
