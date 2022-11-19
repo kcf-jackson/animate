@@ -11,6 +11,29 @@ animation and keyframes animation.
 This function differs from the \code{event} function in that events
 registered through \code{simple_event} do not require R at deployment to work.
 }
+\examples{
+
+## ------------------------------------------------
+## Method `animate$chain`
+## ------------------------------------------------
+
+\dontrun{
+library(animate)
+device <- animate$new(600, 600)
+attach(device)
+par(xlim = c(0, 10), ylim = c(0, 10))
+plot(1:10, 1:10, id = 1:10)
+points(1:10, sample(10, 10), id = 1:10,
+  transition = list(
+    duration = 1000,
+    on = chain(function(message) {
+      print(message)
+      points(1:10, sample(10, 10), id = 1:10, bg = "green",
+             transition = list(duration = 2000))
+      })
+  ))
+}
+}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -48,6 +71,7 @@ registered through \code{simple_event} do not require R at deployment to work.
 \item \href{#method-animate-text}{\code{animate$text()}}
 \item \href{#method-animate-image}{\code{animate$image()}}
 \item \href{#method-animate-event}{\code{animate$event()}}
+\item \href{#method-animate-chain}{\code{animate$chain()}}
 \item \href{#method-animate-simple_event}{\code{animate$simple_event()}}
 \item \href{#method-animate-set}{\code{animate$set()}}
 \item \href{#method-animate-par}{\code{animate$par()}}
@@ -394,10 +418,54 @@ Attach an interactive event to an element
 \item{\code{event_type}}{A character string; the event type. For example, "click", "mouseover",
 "mouseout". See more options at \url{https://www.w3schools.com/jsref/dom_obj_event.asp}.}
 
-\item{\code{callback}}{A function, to be called when the event is triggered.}
+\item{\code{callback}}{A function, to be called when the event is triggered.
+The function should take an argument to receive the data from the
+browser end.}
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-animate-chain"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-chain}{}}}
+\subsection{Method \code{chain()}}{
+Chain a transition after another.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$chain(callback)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{callback}}{A function, to be called when the event is triggered.
+The function should take an argument to receive the data from the
+browser end.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+library(animate)
+device <- animate$new(600, 600)
+attach(device)
+par(xlim = c(0, 10), ylim = c(0, 10))
+plot(1:10, 1:10, id = 1:10)
+points(1:10, sample(10, 10), id = 1:10,
+  transition = list(
+    duration = 1000,
+    on = chain(function(message) {
+      print(message)
+      points(1:10, sample(10, 10), id = 1:10, bg = "green",
+             transition = list(duration = 2000))
+      })
+  ))
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-animate-simple_event"></a>}}
