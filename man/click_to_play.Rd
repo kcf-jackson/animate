@@ -14,5 +14,23 @@ of the visualisation. This is useful when one wants to start with some set-up
 instead of an empty canvas.}
 }
 \description{
-Click an element to play a frame
+Playback option for the functions \link{rmd_animate}
+and \link{insert_animate}.
+}
+\examples{
+\donttest{
+input <- tempfile(fileext = ".Rmd")
+output <- tempfile(fileext = ".html")
+writeLines('
+```{r, echo = FALSE, message = FALSE}
+# Run / include the following in a code chunk of an R Markdown document
+library(animate)
+insert_animate(system.file("tests/basic_points.json", package = "animate"),
+               options = click_to_play())
+```
+', input)
+knitr::knit(input, output)
+browseURL(output)
+}
+
 }

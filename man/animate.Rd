@@ -14,12 +14,31 @@ registered through \code{simple_event} do not require R at deployment to work.
 \examples{
 
 ## ------------------------------------------------
+## Method `animate$new`
+## ------------------------------------------------
+
+\dontrun{
+library(animate)
+device <- animate$new(400, 400)  # Launch a Websocket server
+attach(device)
+x <- 1:10
+y <- 1:10
+id <- new_id(x)   # Give each point an ID: c("ID-1", "ID-2", ..., "ID-10")
+plot(x, y, id = id)
+
+new_y <- 10:1
+plot(x, new_y, id = id, transition = TRUE)  # Use transition
+off()
+detach(device)
+}
+
+## ------------------------------------------------
 ## Method `animate$chain`
 ## ------------------------------------------------
 
 \dontrun{
 library(animate)
-device <- animate$new(600, 600)
+device <- animate$new(600, 600)  # Launch a Websocket server
 attach(device)
 par(xlim = c(0, 10), ylim = c(0, 10))
 plot(1:10, 1:10, id = 1:10)
@@ -32,6 +51,7 @@ points(1:10, sample(10, 10), id = 1:10,
              transition = list(duration = 2000))
       })
   ))
+device$off()
 }
 }
 \section{Public fields}{
@@ -41,13 +61,13 @@ points(1:10, sample(10, 10), id = 1:10,
 
 \item{\code{ready_state}}{The ready state of the connection.}
 
-\item{\code{shiny}}{Whether the device is used with shiny.}
+\item{\code{shiny}}{TRUE or FALSE; whether the device is used with in a 'Shiny' app.}
 
-\item{\code{session}}{A shiny session.}
+\item{\code{session}}{A 'Shiny' session.}
 
 \item{\code{virtual_meta}}{A list of device metadata.}
 
-\item{\code{virtual_session}}{A virtual session simulated with V8.}
+\item{\code{virtual_session}}{A virtual session simulated with 'V8'.}
 
 \item{\code{event_handlers}}{A named list of user-defined functions for handling events.}
 }
@@ -109,12 +129,33 @@ passed to the SVG element that hosts the visualisation.}
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+library(animate)
+device <- animate$new(400, 400)  # Launch a Websocket server
+attach(device)
+x <- 1:10
+y <- 1:10
+id <- new_id(x)   # Give each point an ID: c("ID-1", "ID-2", ..., "ID-10")
+plot(x, y, id = id)
+
+new_y <- 10:1
+plot(x, new_y, id = id, transition = TRUE)  # Use transition
+off()
+detach(device)
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-animate-off"></a>}}
 \if{latex}{\out{\hypertarget{method-animate-off}{}}}
 \subsection{Method \code{off()}}{
-Switch off the device; this function closes the WebSocket connection
+Switch off the device; this function closes the WebSocket connection.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{animate$off()}\if{html}{\out{</div>}}
 }
@@ -281,7 +322,7 @@ Options for the "pch" parameter: "circle", "plus", "diamond", "square",
 
 The unit of the "cex" parameter is squared pixels, corresponding to how
 much pixel space the symbol would cover. The convention comes from the
-d3 library, and the choice is (believed) to make plots visually consistent
+'D3' library, and the choice is (believed) to make plots visually consistent
 across the different symbols.
 }
 
@@ -447,7 +488,7 @@ browser end.}
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 library(animate)
-device <- animate$new(600, 600)
+device <- animate$new(600, 600)  # Launch a Websocket server
 attach(device)
 par(xlim = c(0, 10), ylim = c(0, 10))
 plot(1:10, 1:10, id = 1:10)
@@ -460,6 +501,7 @@ points(1:10, sample(10, 10), id = 1:10,
              transition = list(duration = 2000))
       })
   ))
+device$off()
 }
 }
 \if{html}{\out{</div>}}
@@ -635,7 +677,7 @@ and return the captured frames as a video. The entire process runs locally.
 The source file that provides this functionality can be found at
 \code{system.file("addons/screen_record.js", package = "animate")}.
 
-This function is disabled for Shiny and R Markdown Document.
+This function is disabled for 'Shiny' app and R Markdown document.
 
 This function does not work in the RStudio viewer. Please use the
 "show in new window" button to launch the page with a web browser.
@@ -658,7 +700,7 @@ Event handler
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{input}}{The input object in the \code{server} function of a Shiny app.}
+\item{\code{input}}{The input object in the \code{server} function of a 'Shiny' app.}
 }
 \if{html}{\out{</div>}}
 }

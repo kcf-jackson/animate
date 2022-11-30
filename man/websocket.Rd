@@ -7,22 +7,6 @@
 A thin wrapper of the \code{httpuv} package, modified to serve animated
 plots.
 }
-\examples{
-
-## ------------------------------------------------
-## Method `websocket$new`
-## ------------------------------------------------
-
-\dontrun{
-# Launch a WebSocket server
-ws <- websocket$new()
-ws$startServer()
-ws$listServers()    # Check that a server is running
-
-ws$stopServer()
-ws$listServers()    # Confirm no server is running
-}
-}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -39,8 +23,8 @@ browser session.}
 \item{\code{port}}{An integer; the TCP port number.}
 
 \item{\code{connected}}{TRUE or FALSE; whether a connection has been established.
-One should ways start the WebSocket server before visiting the web page
-that connects to the server.}
+One should start the WebSocket server before launching the web page that
+connects to the server.}
 
 \item{\code{started}}{TRUE or FALSE; whether a server has been started. Use
 the \code{startServer} method to start a server.}
@@ -121,22 +105,6 @@ any processing.}
 \subsection{Returns}{
 A 'websocket' object.
 }
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-# Launch a WebSocket server
-ws <- websocket$new()
-ws$startServer()
-ws$listServers()    # Check that a server is running
-
-ws$stopServer()
-ws$listServers()    # Confirm no server is running
-}
-}
-\if{html}{\out{</div>}}
-
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-websocket-clone"></a>}}

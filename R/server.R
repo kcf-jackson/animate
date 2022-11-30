@@ -15,16 +15,16 @@ animate <- R6::R6Class(
     #' @field ready_state The ready state of the connection.
     ready_state = 0,
 
-    #' @field shiny Whether the device is used with shiny.
+    #' @field shiny TRUE or FALSE; whether the device is used with in a 'Shiny' app.
     shiny = FALSE,
 
-    #' @field session A shiny session.
+    #' @field session A 'Shiny' session.
     session = NULL,
 
     #' @field virtual_meta A list of device metadata.
     virtual_meta = list(virtual = FALSE, width = "", height = ""),
 
-    #' @field virtual_session A virtual session simulated with V8.
+    #' @field virtual_session A virtual session simulated with 'V8'.
     virtual_session = NULL,
 
     #' @field event_handlers A named list of user-defined functions for handling events.
@@ -39,6 +39,21 @@ animate <- R6::R6Class(
     #' @param ... Additional arguments. Use `virtual = TRUE` to use the virtual
     #' device, `shiny = TRUE` for shiny application; everything else will be
     #' passed to the SVG element that hosts the visualisation.
+    #' @examples
+    #' \dontrun{
+    #' library(animate)
+    #' device <- animate$new(400, 400)  # Launch a Websocket server
+    #' attach(device)
+    #' x <- 1:10
+    #' y <- 1:10
+    #' id <- new_id(x)   # Give each point an ID: c("ID-1", "ID-2", ..., "ID-10")
+    #' plot(x, y, id = id)
+    #'
+    #' new_y <- 10:1
+    #' plot(x, new_y, id = id, transition = TRUE)  # Use transition
+    #' off()
+    #' detach(device)
+    #' }
     initialize = function(width, height, id = "SVG_1", ...) {
       if (private$is_virtual(...)) {
         self$virtual_meta <- list(virtual = TRUE, width = width, height = height)
@@ -113,7 +128,7 @@ animate <- R6::R6Class(
     },
 
     #' @description
-    #' Switch off the device; this function closes the WebSocket connection
+    #' Switch off the device; this function closes the WebSocket connection.
     off = function() {
       if (self$shiny) return(NULL)
       if (self$virtual_meta$virtual) return(NULL)
@@ -133,7 +148,7 @@ animate <- R6::R6Class(
         message("Device is not yet available.")
       } else {
         self$connection$ws$send(
-          jsonlite::toJSON(message, auto_unbox = T, null = "null")
+          jsonlite::toJSON(message, auto_unbox = TRUE, null = "null")
         )
       }
     },
@@ -207,7 +222,7 @@ animate <- R6::R6Class(
     #'
     #' The unit of the "cex" parameter is squared pixels, corresponding to how
     #' much pixel space the symbol would cover. The convention comes from the
-    #' d3 library, and the choice is (believed) to make plots visually consistent
+    #' 'D3' library, and the choice is (believed) to make plots visually consistent
     #' across the different symbols.
     points = function(x, y, ...) {
       self$send(Message("fn_points", list(x = x, y = y, ...)))
@@ -306,11 +321,10 @@ animate <- R6::R6Class(
     #' @param callback A function, to be called when the event is triggered.
     #' The function should take an argument to receive the data from the
     #' browser end.
-    #'
     #' @examples
     #' \dontrun{
     #' library(animate)
-    #' device <- animate$new(600, 600)
+    #' device <- animate$new(600, 600)  # Launch a Websocket server
     #' attach(device)
     #' par(xlim = c(0, 10), ylim = c(0, 10))
     #' plot(1:10, 1:10, id = 1:10)
@@ -323,6 +337,7 @@ animate <- R6::R6Class(
     #'              transition = list(duration = 2000))
     #'       })
     #'   ))
+    #' device$off()
     #' }
     chain = function(callback) {
       event_name <- paste0("chained-transition-", private$event_counter)
@@ -430,7 +445,7 @@ animate <- R6::R6Class(
     #' The source file that provides this functionality can be found at
     #' `system.file("addons/screen_record.js", package = "animate")`.
     #'
-    #' This function is disabled for Shiny and R Markdown Document.
+    #' This function is disabled for 'Shiny' app and R Markdown document.
     #'
     #' This function does not work in the RStudio viewer. Please use the
     #' "show in new window" button to launch the page with a web browser.
@@ -446,7 +461,7 @@ animate <- R6::R6Class(
     },
 
     #' @description Event handler
-    #' @param input The input object in the `server` function of a Shiny app.
+    #' @param input The input object in the `server` function of a 'Shiny' app.
     observeAnimateEvent = function(input) {
       private$dispatch_event(input$message)
     }
