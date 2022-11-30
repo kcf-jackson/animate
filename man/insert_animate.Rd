@@ -34,7 +34,7 @@ insert_animate(system.file("tests/Lorenz_system.json.gz", package = "animate"),
 ```
 ', input)
 knitr::knit(input, output)
-browseURL(output)
+# browseURL(output)
 }
 
 }

@@ -43,7 +43,7 @@ rmd_animate(device, click_to_play(start = 3))  # begin the plot at the third fra
 ```
 ', input)
 knitr::knit(input, output)
-browseURL(output)
+# browseURL(output)
 }
 
 }

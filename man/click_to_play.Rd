@@ -30,7 +30,7 @@ insert_animate(system.file("tests/basic_points.json", package = "animate"),
 ```
 ', input)
 knitr::knit(input, output)
-browseURL(output)
+# browseURL(output)
 }
 
 }

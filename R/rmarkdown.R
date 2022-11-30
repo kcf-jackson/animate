@@ -31,7 +31,7 @@
 #' ```
 #' ', input)
 #' knitr::knit(input, output)
-#' browseURL(output)
+#' # browseURL(output)
 #' }
 #'
 #' @export
@@ -77,7 +77,7 @@ rmd_animate <- function(device, ...) {
 #' ```
 #' ', input)
 #' knitr::knit(input, output)
-#' browseURL(output)
+#' # browseURL(output)
 #' }
 #'
 #' @export
@@ -151,7 +151,7 @@ insert_animate <- function(file, options = click_to_play(), style,
 #' ```
 #' ', input)
 #' knitr::knit(input, output)
-#' browseURL(output)
+#' # browseURL(output)
 #' }
 #'
 #' @export
@@ -196,7 +196,7 @@ click_to_play <- function(selector = "#SVG_1", start = 2) {
 #' ```
 #' ', input)
 #' knitr::knit(input, output)
-#' browseURL(output)
+#' # browseURL(output)
 #'
 #' @export
 click_to_loop <- function(selector = "#SVG_1", start = 2, wait = 20) {
@@ -234,7 +234,7 @@ click_to_loop <- function(selector = "#SVG_1", start = 2, wait = 20) {
 #' ```
 #' ', input)
 #' knitr::knit(input, output)
-#' browseURL(output)
+#' # browseURL(output)
 #'
 #' @export
 loop <- function(times = 1, wait = 20) {
