@@ -1,41 +1,47 @@
-particle_sim <- function(num_particles = 50) {
-  # Particles move within the unit box
-  x <- runif(num_particles)
-  y <- runif(num_particles)
-  vx <- rnorm(num_particles) * 0.01
-  vy <- rnorm(num_particles) * 0.01
-  id <- new_id(x)
-  color <- sample(c("black", "red"), num_particles, replace = TRUE, prob = c(0.5, 0.5))
+# device <- animate$new(500, 500)
+# attach(device)
 
-  env <- environment()
-  step <- function(n = 1) {
-    for (i in 1:n) {
-      evalq(envir = env, {
-        # The particles turn around when they hit the boundary of the box
-        x_turn <- x + vx > 1 | x + vx < 0
-        vx[x_turn] <- vx[x_turn] * -1
+# Number of particles
+n <- 50
 
-        y_turn <- y + vy > 1 | y + vy < 0
-        vy[y_turn] <- vy[y_turn] * -1
+# Data of the particles
+ps <- list(
+  # Position
+  x = runif(n),
+  y = runif(n),
+  # Velocity
+  vx = rnorm(n) * 0.01,
+  vy = rnorm(n) * 0.01,
+  # Class
+  color = sample(c("black", "red"), n, replace = TRUE),
+  # ID
+  id = new_id(x)
+)
 
-        x <- x + vx
-        y <- y + vy
-      })
-    }
-  }
+# Simulation of the evolution of one time step
+update_one_step <- function(ps) {
+  # Turns around when the particle hits the boundary
+  x_turn <- ps$x + ps$vx > 1 | ps$x + ps$vx < 0
+  ps$vx[x_turn] <- ps$vx[x_turn] * -1
 
-  env
+  y_turn <- ps$y + ps$vy > 1 | ps$y + ps$vy < 0
+  ps$vy[y_turn] <- ps$vy[y_turn] * -1
+
+  # Update position
+  ps$x <- ps$x + ps$vx
+  ps$y <- ps$y + ps$vy
+  ps
 }
 
-device <- animate$new(500, 500)
-attach(device)
-world <- particle_sim(num_particles = 50)
-for (i in 1:400) {
-  points(world$x, world$y, id = world$id, bg = world$color,
-         xlim = c(0, 1), ylim = c(0, 1))
-  world$step()
+# Visualising the system
+par(xlim = c(0, 1), ylim = c(0, 1))
+for (t in 1:1000) {
+  points(ps$x, ps$y, id = ps$id, bg = ps$color)
+  ps <- update_one_step(ps)
   Sys.sleep(0.02)
 }
-device$export("vignettes/source/particle_system.json", handler = "r")
-off()
-detach(device)
+
+# export("particle_system.json", handler = 'r')
+# R.utils::gzip("particle_system.json")
+# off()
+# detach(device)

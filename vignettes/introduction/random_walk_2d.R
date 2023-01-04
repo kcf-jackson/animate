@@ -1,46 +1,41 @@
-random_walk_sim <- function(grid_size = 20, num_walkers = 10) {
-  .side <- seq(0, 1, length.out = grid_size)
-  grid <- expand.grid(.side, .side)
-  id <- paste("ID", 1:grid_size^2, sep = "-")
-
-  .index_to_coord <- function(n) c(ceiling(n / grid_size), (n-1) %% grid_size + 1)
-  .coord_to_index <- function(x) (x[1] - 1) * grid_size + x[2]
-  .step <- function(coord) {
-    k <- sample(list(c(-1,0), c(1,0), c(0,-1), c(0,1)), 1)[[1]]
-    (coord + k - 1) %% grid_size + 1
-  }
-
-  .walkers_index <- sample(grid_size^2, num_walkers)
-  .walkers_coord <- Map(.index_to_coord, .walkers_index)
-  .walkers_color <- sample(c("red", "green", "blue", "black", "orange"), num_walkers, replace = TRUE)
-  color <- rep("lightgrey", grid_size^2)
-  color[.walkers_index] <- .walkers_color
-
-  env <- environment()
-  step <- function() {
-    evalq(envir = env, expr = {
-      # Update each walker's coordinate and change the color state
-      .walkers_coord <- Map(.step, .walkers_coord)
-      .walkers_index <- unlist(Map(.coord_to_index, .walkers_coord))
-      color <- rep("lightgrey", grid_size^2)
-      color[.walkers_index] <- .walkers_color
-    })
-  }
-
-  env
+random_walk <- function(n_steps) {
+  steps <- sample(
+    list(c(-1, 0), c(1, 0), c(0, -1), c(0, 1)),
+    n_steps, replace = T
+  )
+  coord <- do.call(rbind, steps)
+  x <- c(0, cumsum(coord[,1]))
+  y <- c(0, cumsum(coord[,2]))
+  data.frame(x = x, y = y)
 }
 
 
-device <- animate$new(500, 500)
+library(animate)
+device <- animate$new(height = 500, width = 500)
 attach(device)
-set.seed(123)
-world <- random_walk_sim(grid_size = 15, num_walkers = 8)
-for (i in 1:100) {
-  coord <- world$grid
-  points(coord[,1], coord[,2], id = world$id, bg = world$color, pch = "square", cex = 950, col = "black")
-  world$step()
-  Sys.sleep(0.3)
+
+set.seed(20230105)
+n_steps <- 250
+n_walkers <- 3
+color <- c("black", "orange", "blue", "green", "red")
+walkers <- lapply(1:n_walkers, function(ind) random_walk(n_steps))
+
+# Use static range
+xlim <- range(do.call(rbind, walkers)$x)
+ylim <- range(do.call(rbind, walkers)$y)
+par(xlim = xlim, ylim = ylim)
+
+for (i in 1:n_steps) {
+  for (ind in 1:n_walkers) {
+    x <- walkers[[ind]]$x
+    y <- walkers[[ind]]$y
+    plot(x[1:i], y[1:i], type = 'l', id = paste0("line-", ind), col = color[ind])
+    points(x[i], y[i], id = paste0("point-", ind), bg = color[ind])
+  }
+  Sys.sleep(0.02)
 }
-export("vignettes/source/random_walk_2d.json", handler = "r")
-off()
-detach(device)
+
+# export("random_walk_2d.json", handler = "r")
+# R.utils::gzip("random_walk_2d.json")
+# off()
+# detach(device)
