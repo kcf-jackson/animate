@@ -2,11 +2,15 @@ Package: animate
 Title: A Web-Based Graphics Device for Animated Visualisations
 Version: 0.3.9.3
 Authors@R: 
-    person(given = "Chun Fung",
+    c(person(given = "Chun Fung",
            family = "Kwok",
            role = c("aut", "cre"),
            email = "kcf.jackson@gmail.com",
-           comment = c(ORCID = "0000-0002-0716-3879"))
+           comment = c(ORCID = "0000-0002-0716-3879")),
+    person(given = "Davis",
+           family = "McCarthy",
+           role = "ctb",
+           comment = c(ORCID = "0000-0002-2218-6833")))
 Description: Implements a web-based graphics device for animated visualisations. 
   Modelled on the 'base' syntax, it extends the 'base' graphics functions to 
   support frame-by-frame animation and keyframes animation. 
