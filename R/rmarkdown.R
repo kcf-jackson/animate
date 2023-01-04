@@ -98,7 +98,7 @@ insert_animate <- function(file, options = click_to_play(), style,
     # args$style <- style
   # }
   asset_script <- if (use_cdn) {
-    script("https://cdn.jsdelivr.net/gh/kcf-jackson/animate/inst/dist/animate.js")
+    script("https://cdn.jsdelivr.net/gh/kcf-jackson/animate@latest/inst/dist/animate.js")
   } else {
     script(asset("dist/animate.js"))
   }
