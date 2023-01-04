@@ -1,5 +1,5 @@
-pandoc: 2.17.1.1
-pkgdown: 2.0.6
+pandoc: 2.19.2
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   hilbert_curve: hilbert_curve.html
@@ -7,7 +7,7 @@ articles:
   mathematical_rose: mathematical_rose.html
   maze_generation: maze_generation.html
   troubleshooting: troubleshooting.html
-last_built: 2022-07-28T16:31Z
+last_built: 2023-01-04T20:56Z
 urls:
   reference: https://kcf-jackson.github.io/animate/reference
   article: https://kcf-jackson.github.io/animate/articles

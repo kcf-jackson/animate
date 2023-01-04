@@ -18,7 +18,7 @@ A web-based graphics device"><!-- mathjax --><script src="https://cdnjs.cloudfla
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">animate</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.9</span>
       </span>
     </div>
 
@@ -135,6 +135,7 @@ registered through <code>simple_event</code> do not require R at deployment to w
 <li><p><a href="#method-text"><code>animate$text()</code></a></p></li>
 <li><p><a href="#method-image"><code>animate$image()</code></a></p></li>
 <li><p><a href="#method-event"><code>animate$event()</code></a></p></li>
+<li><p><a href="#method-chain"><code>animate$chain()</code></a></p></li>
 <li><p><a href="#method-simple_event"><code>animate$simple_event()</code></a></p></li>
 <li><p><a href="#method-set"><code>animate$set()</code></a></p></li>
 <li><p><a href="#method-par"><code>animate$par()</code></a></p></li>
@@ -532,21 +533,62 @@ across the different symbols.</p>
 
 
 <dt><code>callback</code></dt>
-<dd><p>A function, to be called when the event is triggered.</p></dd>
+<dd><p>A function, to be called when the event is triggered.
+The function should take an argument to receive the data from the
+browser end.</p></dd>
 
 
 </dl><p></p></div>
 </div>
 
-</div><p></p><hr><a id="method-simple_event"></a><div class="section">
-<h3 id="method-simple-event-">Method <code>simple_event()</code><a class="anchor" aria-label="anchor" href="#method-simple-event-"></a></h3>
-<p>Attach a captured event to an element</p><div class="section">
+</div><p></p><hr><a id="method-chain"></a><div class="section">
+<h3 id="method-chain-">Method <code>chain()</code><a class="anchor" aria-label="anchor" href="#method-chain-"></a></h3>
+<p>Chain a transition after another.</p><div class="section">
 <h4 id="usage-15">Usage<a class="anchor" aria-label="anchor" href="#usage-15"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">animate</span><span class="op">$</span><span class="fu">simple_event</span><span class="op">(</span><span class="va">selector</span>, <span class="va">event_type</span>, <span class="va">method</span>, <span class="va">param</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">animate</span><span class="op">$</span><span class="fu">chain</span><span class="op">(</span><span class="va">callback</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
 <h4 id="arguments-14">Arguments<a class="anchor" aria-label="anchor" href="#arguments-14"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>callback</code></dt>
+<dd><p>A function, to be called when the event is triggered.
+The function should take an argument to receive the data from the
+browser end.</p></dd>
+
+
+</dl><p></p></div>
+</div>
+<div class="section">
+<h4 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
+library(animate)
+device &lt;- animate$new(600, 600)
+attach(device)
+par(xlim = c(0, 10), ylim = c(0, 10))
+plot(1:10, 1:10, id = 1:10)
+points(1:10, sample(10, 10), id = 1:10,
+  transition = list(
+    duration = 1000,
+    on = chain(function(message) {
+      print(message)
+      points(1:10, sample(10, 10), id = 1:10, bg = "green",
+             transition = list(duration = 2000))
+      })
+  ))
+}
+</code></pre></div><p></p></div>
+</div>
+
+
+</div><p></p><hr><a id="method-simple_event"></a><div class="section">
+<h3 id="method-simple-event-">Method <code>simple_event()</code><a class="anchor" aria-label="anchor" href="#method-simple-event-"></a></h3>
+<p>Attach a captured event to an element</p><div class="section">
+<h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">animate</span><span class="op">$</span><span class="fu">simple_event</span><span class="op">(</span><span class="va">selector</span>, <span class="va">event_type</span>, <span class="va">method</span>, <span class="va">param</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+<div class="section">
+<h4 id="arguments-15">Arguments<a class="anchor" aria-label="anchor" href="#arguments-15"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>selector</code></dt>
 <dd><p>A character string; a CSS selector.</p></dd>
 
@@ -570,12 +612,12 @@ across the different symbols.</p>
 </div><p></p><hr><a id="method-set"></a><div class="section">
 <h3 id="method-set-">Method <code>set()</code><a class="anchor" aria-label="anchor" href="#method-set-"></a></h3>
 <p>Set the active device to a SVG element</p><div class="section">
-<h4 id="usage-16">Usage<a class="anchor" aria-label="anchor" href="#usage-16"></a></h4>
+<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">animate</span><span class="op">$</span><span class="fu">set</span><span class="op">(</span><span class="va">device_id</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-15">Arguments<a class="anchor" aria-label="anchor" href="#arguments-15"></a></h4>
+<h4 id="arguments-16">Arguments<a class="anchor" aria-label="anchor" href="#arguments-16"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>device_id</code></dt>
 <dd><p>A character vector; ID of the device.</p></dd>
 
@@ -586,12 +628,12 @@ across the different symbols.</p>
 </div><p></p><hr><a id="method-par"></a><div class="section">
 <h3 id="method-par-">Method <code><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par()</a></code><a class="anchor" aria-label="anchor" href="#method-par-"></a></h3>
 <p>Set the graphical parameters</p><div class="section">
-<h4 id="usage-17">Usage<a class="anchor" aria-label="anchor" href="#usage-17"></a></h4>
+<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">animate</span><span class="op">$</span><span class="fu">par</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-16">Arguments<a class="anchor" aria-label="anchor" href="#arguments-16"></a></h4>
+<h4 id="arguments-17">Arguments<a class="anchor" aria-label="anchor" href="#arguments-17"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>...</code></dt>
 <dd><p>The graphical parameters</p></dd>
 
@@ -602,12 +644,12 @@ across the different symbols.</p>
 </div><p></p><hr><a id="method-remove"></a><div class="section">
 <h3 id="method-remove-">Method <code><a href="https://rdrr.io/r/base/rm.html" class="external-link">remove()</a></code><a class="anchor" aria-label="anchor" href="#method-remove-"></a></h3>
 <p>Remove elements from the active SVG element</p><div class="section">
-<h4 id="usage-18">Usage<a class="anchor" aria-label="anchor" href="#usage-18"></a></h4>
+<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">animate</span><span class="op">$</span><span class="fu">remove</span><span class="op">(</span>id <span class="op">=</span> <span class="cn">NULL</span>, selector <span class="op">=</span> <span class="st">"*"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-17">Arguments<a class="anchor" aria-label="anchor" href="#arguments-17"></a></h4>
+<h4 id="arguments-18">Arguments<a class="anchor" aria-label="anchor" href="#arguments-18"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>id</code></dt>
 <dd><p>A character vector; the ID of the elements.</p></dd>
 
@@ -622,7 +664,7 @@ across the different symbols.</p>
 </div><p></p><hr><a id="method-clear"></a><div class="section">
 <h3 id="method-clear-">Method <code>clear()</code><a class="anchor" aria-label="anchor" href="#method-clear-"></a></h3>
 <p>Remove all elements from the active SVG element</p><div class="section">
-<h4 id="usage-19">Usage<a class="anchor" aria-label="anchor" href="#usage-19"></a></h4>
+<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">animate</span><span class="op">$</span><span class="fu">clear</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -630,12 +672,12 @@ across the different symbols.</p>
 </div><p></p><hr><a id="method-delete"></a><div class="section">
 <h3 id="method-delete-">Method <code>delete()</code><a class="anchor" aria-label="anchor" href="#method-delete-"></a></h3>
 <p>Remove a SVG element</p><div class="section">
-<h4 id="usage-20">Usage<a class="anchor" aria-label="anchor" href="#usage-20"></a></h4>
+<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">animate</span><span class="op">$</span><span class="fu">delete</span><span class="op">(</span>id <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-18">Arguments<a class="anchor" aria-label="anchor" href="#arguments-18"></a></h4>
+<h4 id="arguments-19">Arguments<a class="anchor" aria-label="anchor" href="#arguments-19"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>id</code></dt>
 <dd><p>A character string; the ID of the SVG. If not provided, remove
 the active SVG element.
@@ -653,12 +695,12 @@ self$send(Message("fn_group", c(...)))
 </div><p></p><hr><a id="method-import"></a><div class="section">
 <h3 id="method-import-">Method <code>import()</code><a class="anchor" aria-label="anchor" href="#method-import-"></a></h3>
 <p>Import an animated plot</p><div class="section">
-<h4 id="usage-21">Usage<a class="anchor" aria-label="anchor" href="#usage-21"></a></h4>
+<h4 id="usage-22">Usage<a class="anchor" aria-label="anchor" href="#usage-22"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">animate</span><span class="op">$</span><span class="fu">import</span><span class="op">(</span><span class="va">setting</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-19">Arguments<a class="anchor" aria-label="anchor" href="#arguments-19"></a></h4>
+<h4 id="arguments-20">Arguments<a class="anchor" aria-label="anchor" href="#arguments-20"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>setting</code></dt>
 <dd><p>A JSON file exported from previous runs.</p></dd>
 
@@ -669,12 +711,12 @@ self$send(Message("fn_group", c(...)))
 </div><p></p><hr><a id="method-export"></a><div class="section">
 <h3 id="method-export-">Method <code>export()</code><a class="anchor" aria-label="anchor" href="#method-export-"></a></h3>
 <p>Export an animated plot</p><div class="section">
-<h4 id="usage-22">Usage<a class="anchor" aria-label="anchor" href="#usage-22"></a></h4>
+<h4 id="usage-23">Usage<a class="anchor" aria-label="anchor" href="#usage-23"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">animate</span><span class="op">$</span><span class="fu">export</span><span class="op">(</span>path <span class="op">=</span> <span class="st">"./animate.json"</span>, handler <span class="op">=</span> <span class="st">"browser"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-20">Arguments<a class="anchor" aria-label="anchor" href="#arguments-20"></a></h4>
+<h4 id="arguments-21">Arguments<a class="anchor" aria-label="anchor" href="#arguments-21"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>path</code></dt>
 <dd><p>A character string; the file path to export to.</p></dd>
 
@@ -689,7 +731,7 @@ self$send(Message("fn_group", c(...)))
 </div><p></p><hr><a id="method-record"></a><div class="section">
 <h3 id="method-record-">Method <code>record()</code><a class="anchor" aria-label="anchor" href="#method-record-"></a></h3>
 <p>Record an animated plot as a MP4 video</p><div class="section">
-<h4 id="usage-23">Usage<a class="anchor" aria-label="anchor" href="#usage-23"></a></h4>
+<h4 id="usage-24">Usage<a class="anchor" aria-label="anchor" href="#usage-24"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">animate</span><span class="op">$</span><span class="fu">record</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
@@ -715,12 +757,12 @@ The source file that provides this functionality can be found at
 </div><p></p><hr><a id="method-observeAnimateEvent"></a><div class="section">
 <h3 id="method-observeanimateevent-">Method <code>observeAnimateEvent()</code><a class="anchor" aria-label="anchor" href="#method-observeanimateevent-"></a></h3>
 <p>Event handler</p><div class="section">
-<h4 id="usage-24">Usage<a class="anchor" aria-label="anchor" href="#usage-24"></a></h4>
+<h4 id="usage-25">Usage<a class="anchor" aria-label="anchor" href="#usage-25"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">animate</span><span class="op">$</span><span class="fu">observeAnimateEvent</span><span class="op">(</span><span class="va">input</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-21">Arguments<a class="anchor" aria-label="anchor" href="#arguments-21"></a></h4>
+<h4 id="arguments-22">Arguments<a class="anchor" aria-label="anchor" href="#arguments-22"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>input</code></dt>
 <dd><p>The input object in the <code>server</code> function of a Shiny app.</p></dd>
 
@@ -731,12 +773,12 @@ The source file that provides this functionality can be found at
 </div><p></p><hr><a id="method-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-25">Usage<a class="anchor" aria-label="anchor" href="#usage-25"></a></h4>
+<h4 id="usage-26">Usage<a class="anchor" aria-label="anchor" href="#usage-26"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">animate</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
-<h4 id="arguments-22">Arguments<a class="anchor" aria-label="anchor" href="#arguments-22"></a></h4>
+<h4 id="arguments-23">Arguments<a class="anchor" aria-label="anchor" href="#arguments-23"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -748,6 +790,31 @@ The source file that provides this functionality can be found at
 
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `animate$chain`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kcf-jackson.github.io/animate/">animate</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">device</span> <span class="op">&lt;-</span> <span class="va">animate</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="fl">600</span>, <span class="fl">600</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/attach.html" class="external-link">attach</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>, id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span></span>
+<span class="r-in"><span>  transition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    duration <span class="op">=</span> <span class="fl">1000</span>,</span></span>
+<span class="r-in"><span>    on <span class="op">=</span> <span class="fu">chain</span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">message</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">message</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>, id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, bg <span class="op">=</span> <span class="st">"green"</span>,</span></span>
+<span class="r-in"><span>             transition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>duration <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>      <span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
@@ -760,7 +827,7 @@ The source file that provides this functionality can be found at
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
