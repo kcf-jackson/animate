@@ -7,22 +7,6 @@
 A thin wrapper of the \code{httpuv} package, modified to serve animated
 plots.
 }
-\examples{
-
-## ------------------------------------------------
-## Method `websocket$new`
-## ------------------------------------------------
-
-\dontrun{
-# Launch a WebSocket server
-ws <- websocket$new()
-ws$startServer()
-ws$listServers()    # Check that a server is running
-
-ws$stopServer()
-ws$listServers()    # Confirm no server is running
-}
-}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
@@ -39,8 +23,8 @@ browser session.}
 \item{\code{port}}{An integer; the TCP port number.}
 
 \item{\code{connected}}{TRUE or FALSE; whether a connection has been established.
-One should ways start the WebSocket server before visiting the web page
-that connects to the server.}
+One should start the WebSocket server before launching the web page that
+connects to the server.}
 
 \item{\code{started}}{TRUE or FALSE; whether a server has been started. Use
 the \code{startServer} method to start a server.}
@@ -50,17 +34,17 @@ the \code{startServer} method to start a server.}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-startServer}{\code{websocket$startServer()}}
-\item \href{#method-stopServer}{\code{websocket$stopServer()}}
-\item \href{#method-listServers}{\code{websocket$listServers()}}
-\item \href{#method-stopAllServers}{\code{websocket$stopAllServers()}}
-\item \href{#method-new}{\code{websocket$new()}}
-\item \href{#method-clone}{\code{websocket$clone()}}
+\item \href{#method-websocket-startServer}{\code{websocket$startServer()}}
+\item \href{#method-websocket-stopServer}{\code{websocket$stopServer()}}
+\item \href{#method-websocket-listServers}{\code{websocket$listServers()}}
+\item \href{#method-websocket-stopAllServers}{\code{websocket$stopAllServers()}}
+\item \href{#method-websocket-new}{\code{websocket$new()}}
+\item \href{#method-websocket-clone}{\code{websocket$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-startServer"></a>}}
-\if{latex}{\out{\hypertarget{method-startServer}{}}}
+\if{html}{\out{<a id="method-websocket-startServer"></a>}}
+\if{latex}{\out{\hypertarget{method-websocket-startServer}{}}}
 \subsection{Method \code{startServer()}}{
 Start a WebSocket server
 \subsection{Usage}{
@@ -69,8 +53,8 @@ Start a WebSocket server
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-stopServer"></a>}}
-\if{latex}{\out{\hypertarget{method-stopServer}{}}}
+\if{html}{\out{<a id="method-websocket-stopServer"></a>}}
+\if{latex}{\out{\hypertarget{method-websocket-stopServer}{}}}
 \subsection{Method \code{stopServer()}}{
 Stop a WebSocket server
 \subsection{Usage}{
@@ -79,8 +63,8 @@ Stop a WebSocket server
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-listServers"></a>}}
-\if{latex}{\out{\hypertarget{method-listServers}{}}}
+\if{html}{\out{<a id="method-websocket-listServers"></a>}}
+\if{latex}{\out{\hypertarget{method-websocket-listServers}{}}}
 \subsection{Method \code{listServers()}}{
 List all running WebSocket servers
 \subsection{Usage}{
@@ -89,8 +73,8 @@ List all running WebSocket servers
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-stopAllServers"></a>}}
-\if{latex}{\out{\hypertarget{method-stopAllServers}{}}}
+\if{html}{\out{<a id="method-websocket-stopAllServers"></a>}}
+\if{latex}{\out{\hypertarget{method-websocket-stopAllServers}{}}}
 \subsection{Method \code{stopAllServers()}}{
 Stop all running WebSocket servers
 \subsection{Usage}{
@@ -99,8 +83,8 @@ Stop all running WebSocket servers
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-websocket-new"></a>}}
+\if{latex}{\out{\hypertarget{method-websocket-new}{}}}
 \subsection{Method \code{new()}}{
 Initialise a WebSocket connection
 \subsection{Usage}{
@@ -121,26 +105,10 @@ any processing.}
 \subsection{Returns}{
 A 'websocket' object.
 }
-\subsection{Examples}{
-\if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
-# Launch a WebSocket server
-ws <- websocket$new()
-ws$startServer()
-ws$listServers()    # Check that a server is running
-
-ws$stopServer()
-ws$listServers()    # Confirm no server is running
-}
-}
-\if{html}{\out{</div>}}
-
-}
-
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-websocket-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-websocket-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

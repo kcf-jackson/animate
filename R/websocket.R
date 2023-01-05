@@ -21,8 +21,8 @@ websocket <- R6::R6Class("websocket", public = list(
   port = 9454,
 
   #' @field connected TRUE or FALSE; whether a connection has been established.
-  #' One should ways start the WebSocket server before visiting the web page
-  #' that connects to the server.
+  #' One should start the WebSocket server before launching the web page that
+  #' connects to the server.
   connected = FALSE,
 
   #' @field started TRUE or FALSE; whether a server has been started. Use
@@ -77,17 +77,17 @@ websocket <- R6::R6Class("websocket", public = list(
   #' @param port An integer; the TCP port number.
   #'
   #' @return A 'websocket' object.
-  #'
-  #' @examples
-  #' \dontrun{
-  #' # Launch a WebSocket server
-  #' ws <- websocket$new()
-  #' ws$startServer()
-  #' ws$listServers()    # Check that a server is running
-  #'
-  #' ws$stopServer()
-  #' ws$listServers()    # Confirm no server is running
-  #' }
+  #
+  # @examples
+  # \dontrun{
+  # # Launch a WebSocket server
+  # ws <- websocket$new()
+  # ws$startServer()
+  # ws$listServers()    # Check that a server is running
+  #
+  # ws$stopServer()
+  # ws$listServers()    # Confirm no server is running
+  # }
   initialize = function(in_handler, port = 9454) {
     self$app <- list(
       call = function(req) {  # nocov start
