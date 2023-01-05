@@ -5,6 +5,35 @@
 #'
 #' @note This function should only be used in a code chunk of an R Markdown document.
 #'
+#' @examples
+#' \donttest{
+#' input <- tempfile(fileext = ".Rmd")
+#' output <- tempfile(fileext = ".html")
+#' writeLines('
+#' ```{r, echo = FALSE, message = FALSE}
+#' # Run / include the following in a code chunk of an R Markdown document
+#' library(animate)
+#' device <- animate$new(500, 500, virtual = TRUE)  # set `virtual = TRUE` for R Markdown document
+#' attach(device)
+#'
+#' # Data
+#' id <- new_id(1:10)
+#' s <- 1:10 * 2 * pi / 10
+#' s2 <- sample(s)
+#'
+#' # Plot
+#' par(xlim = c(-2.5, 2.5), ylim = c(-2.5, 2.5))
+#' plot(2*sin(s), 2*cos(s), id = id)
+#' points(sin(s2), cos(s2), id = id, transition = list(duration = 2000))
+#'
+#' # Render in-line in an R Markdown document
+#' rmd_animate(device, click_to_play(start = 3))  # begin the plot at the third frame
+#' ```
+#' ', input)
+#' knitr::knit(input, output)
+#' # browseURL(output)
+#' }
+#'
 #' @export
 rmd_animate <- function(device, ...) {
   if (!device$virtual_meta$virtual) {
@@ -35,6 +64,22 @@ rmd_animate <- function(device, ...) {
 #' @param use_cdn TRUE / FALSE; if TRUE, serve the assets from a CDN, otherwise
 #' embed the assets into the HTML.
 #'
+#' @examples
+#' \donttest{
+#' input <- tempfile(fileext = ".Rmd")
+#' output <- tempfile(fileext = ".html")
+#' writeLines('
+#' ```{r, echo = FALSE, message = FALSE}
+#' # Run / include the following in a code chunk of an R Markdown document
+#' library(animate)
+#' insert_animate(system.file("tests/Lorenz_system.json.gz", package = "animate"),
+#'                options = click_to_loop())
+#' ```
+#' ', input)
+#' knitr::knit(input, output)
+#' # browseURL(output)
+#' }
+#'
 #' @export
 insert_animate <- function(file, options = click_to_play(), style,
                            use_cdn = TRUE) {
@@ -53,7 +98,7 @@ insert_animate <- function(file, options = click_to_play(), style,
     # args$style <- style
   # }
   asset_script <- if (use_cdn) {
-    script("https://cdn.jsdelivr.net/gh/kcf-jackson/animate/inst/dist/animate.js")
+    script("https://cdn.jsdelivr.net/gh/kcf-jackson/animate@latest/inst/dist/animate.js")
   } else {
     script(asset("dist/animate.js"))
   }
@@ -84,10 +129,31 @@ insert_animate <- function(file, options = click_to_play(), style,
 }
 
 #' Click an element to play a frame
+#'
+#' @description Playback option for the functions \link{rmd_animate}
+#' and \link{insert_animate}.
+#'
 #' @param selector The ID of the DOM element.
 #' @param start An integer; the number of frames to execute upon the beginning
 #' of the visualisation. This is useful when one wants to start with some set-up
 #' instead of an empty canvas.
+#'
+#' @examples
+#' \donttest{
+#' input <- tempfile(fileext = ".Rmd")
+#' output <- tempfile(fileext = ".html")
+#' writeLines('
+#' ```{r, echo = FALSE, message = FALSE}
+#' # Run / include the following in a code chunk of an R Markdown document
+#' library(animate)
+#' insert_animate(system.file("tests/basic_points.json", package = "animate"),
+#'                options = click_to_play())
+#' ```
+#' ', input)
+#' knitr::knit(input, output)
+#' # browseURL(output)
+#' }
+#'
 #' @export
 click_to_play <- function(selector = "#SVG_1", start = 2) {
   sprintf(
@@ -106,12 +172,32 @@ click_to_play <- function(selector = "#SVG_1", start = 2) {
 }
 
 #' Click an element to play all frames
+#'
+#' @description Playback option for the functions \link{rmd_animate}
+#' and \link{insert_animate}.
+#'
 #' @param selector The ID of the DOM element.
 #' @param start An integer; the number of frames to execute upon the beginning
 #' of the visualisation. This is useful when one wants to start with some set-up
 #' instead of an empty canvas.
 #' @param wait A number; the number of milliseconds to wait for before the
 #' next frame is drawn.
+#'
+#' @examples
+#' \donttest{
+#' input <- tempfile(fileext = ".Rmd")
+#' output <- tempfile(fileext = ".html")
+#' writeLines('
+#' ```{r, echo = FALSE, message = FALSE}
+#' # Run / include the following in a code chunk of an R Markdown document
+#' library(animate)
+#' insert_animate(system.file("tests/Lorenz_system.json.gz", package = "animate"),
+#'                options = click_to_loop())
+#' ```
+#' ', input)
+#' knitr::knit(input, output)
+#' # browseURL(output)
+#'
 #' @export
 click_to_loop <- function(selector = "#SVG_1", start = 2, wait = 20) {
   sprintf(
@@ -127,9 +213,29 @@ click_to_loop <- function(selector = "#SVG_1", start = 2, wait = 20) {
 }
 
 #' Loop through the available frames n times
+#'
+#' @description Playback option for the functions \link{rmd_animate}
+#' and \link{insert_animate}.
+#'
 #' @param times An integer; the number of times to loop.
 #' @param wait A number; the number of milliseconds to wait for before the
 #' next frame is drawn.
+#'
+#' @examples
+#' \donttest{
+#' input <- tempfile(fileext = ".Rmd")
+#' output <- tempfile(fileext = ".html")
+#' writeLines('
+#' ```{r, echo = FALSE, message = FALSE}
+#' # Run / include the following in a code chunk of an R Markdown document
+#' library(animate)
+#' insert_animate(system.file("tests/Lorenz_system.json.gz", package = "animate"),
+#'                options = loop(times = 2, wait = 15))
+#' ```
+#' ', input)
+#' knitr::knit(input, output)
+#' # browseURL(output)
+#'
 #' @export
 loop <- function(times = 1, wait = 20) {
   sprintf(

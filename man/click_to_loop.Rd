@@ -17,5 +17,6 @@ instead of an empty canvas.}
 next frame is drawn.}
 }
 \description{
-Click an element to play all frames
+Playback option for the functions \link{rmd_animate}
+and \link{insert_animate}.
 }

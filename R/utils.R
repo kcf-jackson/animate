@@ -14,7 +14,7 @@ new_id <- function(x, prefix = "ID", sep = "-") {
 }
 
 
-#' Launch the ffmpeg-based video editor (Shiny app)
+#' Launch the ffmpeg-based video editor ('Shiny' app)
 #'
 #' @note This requires `ffmpeg` to work. The ffmpeg binary can be downloaded from
 #' \url{https://ffmpeg.org/download.html}.

@@ -13,5 +13,6 @@ loop(times = 1, wait = 20)
 next frame is drawn.}
 }
 \description{
-Loop through the available frames n times
+Playback option for the functions \link{rmd_animate}
+and \link{insert_animate}.
 }
