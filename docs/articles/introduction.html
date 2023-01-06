@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">animate</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.9.3</span>
       </span>
     </div>
 
@@ -347,22 +347,14 @@ snippets:</p>
 <span><span class="fu">clear</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">9</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">9</span>, type <span class="op">=</span> <span class="st">'l'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span><span class="op">:</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">:</span><span class="fl">0</span>, col <span class="op">=</span> <span class="st">"red"</span>, type <span class="op">=</span> <span class="st">'l'</span><span class="op">)</span>  <span class="co"># showing what had happened when `lines` was called</span></span></code></pre></div>
-<iframe srcdoc='&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/kcf-jackson/animate@latest/inst/dist/animate.js"&gt;&lt;/script&gt;
-&lt;script&gt;const test8abc5c05670c_json = {
-  "plot_commands": [{"type":"fn_init_svg","message":{"width":300,"height":200,"id":"SVG_1"}},{"type":"fn_par","message":{"mai":[0.18,0.082,0.082,0.082]}},{"type":"fn_plot","message":{"x":[0,1,2,3,4,5,6,7,8,9],"y":[0,1,2,3,4,5,6,7,8,9],"type":"l"}},{"type":"fn_lines","message":{"x":[-4,-3,-2,-1,0],"y":[4,3,2,1,0],"stroke":"red"}},{"type":"fn_text","message":{"x":0.7,"y":-1,"xlim":[1,10],"ylim":[1,10],"attr":{"font-size":"12px"},"text":"Plot 1: the red line seems to be at the wrong location."}},{"type":"fn_init_svg","message":{"width":300,"height":200,"id":"svg_2","style":{"left":"350px","position":"absolute"}}},{"type":"fn_par","message":{"mai":[0.18,0.082,0.082,0.082]}},{"type":"fn_plot","message":{"x":[0,1,2,3,4,5,6,7,8,9],"y":[0,1,2,3,4,5,6,7,8,9],"type":"l"}},{"type":"fn_plot","message":{"x":[-4,-3,-2,-1,0],"y":[4,3,2,1,0],"type":"l","stroke":"red"}},{"type":"fn_text","message":{"x":1.5,"y":-1,"xlim":[1,10],"ylim":[1,10],"attr":{"font-size":"12px"},"text":"Plot 2: a new scale is used for every new call."}}],
-  "device": {
-    "selection": "", "id": "", "par": {},
-    "height": 200,
-    "width": 300
-  },
-  "max_num_commands": -1
-}&lt;/script&gt;
+<iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/kcf-jackson/animate@latest/inst/dist/animate.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;const test26506fe15d31_json_gz = JSON.parse(pako.inflate([31,139,8,0,0,0,0,0,0,6,213,148,205,138,219,48,16,199,239,129,188,195,48,231,177,177,156,164,155,250,5,246,186,80,232,101,9,70,107,43,137,168,44,25,75,73,156,6,191,123,71,142,91,146,108,75,97,233,165,23,163,249,250,205,200,243,71,151,249,12,0,91,227,66,89,185,166,145,182,246,88,192,235,5,195,185,85,88,224,214,150,218,234,80,250,227,14,9,27,229,189,220,177,255,130,39,93,135,61,22,139,44,35,220,43,189,219,7,44,242,104,232,154,203,190,124,125,46,5,14,3,221,130,90,217,221,51,26,169,177,120,205,82,177,166,44,205,214,249,237,119,243,88,204,35,222,87,247,177,150,4,229,180,160,37,173,232,19,61,209,154,62,111,8,207,127,140,76,60,243,56,154,209,86,249,247,248,100,73,201,130,146,156,18,65,217,4,94,50,52,167,171,237,67,231,190,69,68,167,234,71,100,80,253,251,129,179,244,105,164,48,15,123,163,27,230,9,18,35,250,206,146,33,116,177,100,235,108,72,188,254,30,153,34,111,123,28,248,14,17,92,224,11,255,16,16,5,132,189,2,110,15,241,10,224,149,106,60,4,7,111,10,100,24,99,167,206,217,29,24,87,201,160,157,77,31,199,252,200,118,57,189,204,49,94,255,108,198,116,163,182,113,164,197,42,227,17,9,91,231,117,108,198,46,249,230,157,57,4,197,109,255,27,49,252,158,254,55,45,252,162,125,64,22,34,93,253,83,89,228,5,72,176,234,4,190,146,70,129,246,112,240,44,145,173,235,64,29,85,119,30,99,28,50,81,14,27,26,223,128,90,29,117,197,64,184,68,147,29,94,25,85,93,215,8,136,4,227,238,175,167,184,60,78,28,104,74,253,41,17,136,26,153,124,147,132,128,53,20,61,215,92,222,114,95,218,67,115,251,216,36,98,62,27,230,179,31,27,217,83,174,138,4,0,0], {to: 'string'}))&lt;/script&gt;
 &lt;script&gt;JS_device = new plot2(-1);
-JS_device.import(test8abc5c05670c_json);
+JS_device.import(test26506fe15d31_json_gz);
 ctrl = new controller(JS_device);
     ctrl.loop(1, 20);&lt;/script&gt;
-&lt;/body&gt;&lt;/html&gt;' style="min-width: 700px; min-height:250px; border:none;"></iframe>
+&lt;/body&gt;&lt;/html&gt;" style="min-width: 700px; min-height:250px; border:none;"></iframe>
 <p>In the left plot, we saw that the <code>lines</code> function seems
 to plot at the incorrect location, e.g. the point (-4,4) is located at
 (0, 9). But if you replace the <code>lines</code> function with the
@@ -388,22 +380,14 @@ plot.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">9</span>, <span class="fl">0</span><span class="op">:</span><span class="fl">9</span>, type <span class="op">=</span> <span class="st">'l'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="op">-</span><span class="fl">4</span><span class="op">:</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">:</span><span class="fl">0</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span> </span>
 <span><span class="co"># par(xlim = NULL, ylim = NULL)  # Clear the global setting</span></span></code></pre></div>
-<iframe srcdoc='&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/kcf-jackson/animate@latest/inst/dist/animate.js"&gt;&lt;/script&gt;
-&lt;script&gt;const test8abc77824804_json = {
-  "plot_commands": [{"type":"fn_init_svg","message":{"width":312,"height":200,"id":"SVG_1"}},{"type":"fn_plot","message":{"x":[0,1,2,3,4,5,6,7,8,9],"y":[0,1,2,3,4,5,6,7,8,9],"type":"l","xlim":[-4,10],"ylim":[0,9]}},{"type":"fn_lines","message":{"x":[-4,-3,-2,-1,0],"y":[4,3,2,1,0],"xlim":[-4,10],"ylim":[0,9],"stroke":"red"}},{"type":"fn_init_svg","message":{"width":312,"height":200,"id":"svg_2","style":{"left":"350px","position":"absolute"}}},{"type":"fn_par","message":{"xlim":[-4,10],"ylim":[0,9]}},{"type":"fn_plot","message":{"x":[0,1,2,3,4,5,6,7,8,9],"y":[0,1,2,3,4,5,6,7,8,9],"type":"l"}},{"type":"fn_lines","message":{"x":[-4,-3,-2,-1,0],"y":[4,3,2,1,0],"stroke":"red"}}],
-  "device": {
-    "selection": "", "id": "", "par": {},
-    "height": 200,
-    "width": 312
-  },
-  "max_num_commands": -1
-}&lt;/script&gt;
+<iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/kcf-jackson/animate@latest/inst/dist/animate.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;const test26503fe22462_json_gz = JSON.parse(pako.inflate([31,139,8,0,0,0,0,0,0,6,173,147,221,106,132,48,16,133,239,23,124,135,48,215,35,36,234,246,199,23,232,3,20,122,179,44,98,53,171,161,241,7,147,221,42,226,187,119,162,22,182,150,133,82,246,206,57,158,156,67,190,209,209,219,49,6,173,110,108,146,53,85,149,214,185,129,152,29,70,176,67,43,33,134,83,157,168,90,217,196,92,10,64,168,164,49,105,65,250,8,159,42,183,37,196,161,8,16,74,169,138,210,66,28,112,142,160,114,58,246,250,246,146,8,152,38,188,14,114,45,63,67,122,136,15,28,5,6,24,98,132,123,124,192,71,124,194,231,35,194,112,243,205,154,167,41,169,215,170,34,159,31,161,224,238,204,50,114,178,109,154,181,170,165,249,93,77,7,253,16,253,0,125,129,124,45,141,168,48,192,101,190,157,143,96,108,215,124,184,248,78,230,219,139,254,135,24,217,147,0,92,238,160,103,187,150,39,50,64,184,231,109,79,122,219,24,101,85,83,147,148,190,155,70,159,173,164,218,13,224,180,219,92,242,175,128,238,188,154,251,224,223,32,62,226,252,173,230,242,162,50,82,217,232,70,18,140,212,50,91,208,48,0,100,51,207,229,201,1,33,227,132,171,245,27,59,115,220,87,109,93,11,163,189,56,101,241,66,149,246,73,125,174,174,127,10,95,120,187,201,219,125,1,122,124,79,144,50,3,0,0], {to: 'string'}))&lt;/script&gt;
 &lt;script&gt;JS_device = new plot2(-1);
-JS_device.import(test8abc77824804_json);
+JS_device.import(test26503fe22462_json_gz);
 ctrl = new controller(JS_device);
     ctrl.loop(1, 20);&lt;/script&gt;
-&lt;/body&gt;&lt;/html&gt;' style="min-width: 700px; min-height:250px; border:none;"></iframe>
+&lt;/body&gt;&lt;/html&gt;" style="min-width: 700px; min-height:250px; border:none;"></iframe>
 </div>
 <div class="section level2">
 <h2 id="three-full-examples">5. Three full examples<a class="anchor" aria-label="anchor" href="#three-full-examples"></a>
@@ -641,22 +625,14 @@ flag,</li>
 <span></span>
 <span><span class="co"># Render in-line in an R Markdown document</span></span>
 <span><span class="fu"><a href="../reference/rmd_animate.html">rmd_animate</a></span><span class="op">(</span><span class="va">device</span>, <span class="fu"><a href="../reference/click_to_play.html">click_to_play</a></span><span class="op">(</span>start <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>  <span class="co"># begin the plot at the third frame</span></span></code></pre></div>
-<iframe srcdoc='&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;
-&lt;script src="https://cdn.jsdelivr.net/gh/kcf-jackson/animate@latest/inst/dist/animate.js"&gt;&lt;/script&gt;
-&lt;script&gt;const test8abc4dc71d45_json = {
-  "plot_commands": [{"type":"fn_init_svg","message":{"width":500,"height":500,"id":"SVG_1"}},{"type":"fn_par","message":{"xlim":[-2.5,2.5],"ylim":[-2.5,2.5]}},{"type":"fn_plot","message":{"x":[1.1756,1.9021,1.9021,1.1756,2.4492e-16,-1.1756,-1.9021,-1.9021,-1.1756,-4.8984e-16],"y":[1.618,0.618,-0.618,-1.618,-2,-1.618,-0.618,0.618,1.618,2],"type":"p","id":["ID-1","ID-2","ID-3","ID-4","ID-5","ID-6","ID-7","ID-8","ID-9","ID-10"]}},{"type":"fn_points","message":{"x":[0.5878,-2.4492e-16,0.5878,-0.9511,-0.5878,-0.9511,-0.5878,0.9511,1.2246e-16,0.9511],"y":[0.809,1,-0.809,-0.309,-0.809,0.309,0.809,0.309,-1,-0.309],"id":["ID-1","ID-2","ID-3","ID-4","ID-5","ID-6","ID-7","ID-8","ID-9","ID-10"],"transition":{"duration":2000}}}],
-  "device": {
-    "selection": "", "id": "", "par": {},
-    "height": 500,
-    "width": 500
-  },
-  "max_num_commands": -1
-}&lt;/script&gt;
+<iframe srcdoc="&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;
+&lt;script src=&quot;https://cdn.jsdelivr.net/gh/kcf-jackson/animate@latest/inst/dist/animate.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;const test26506c512674_json_gz = JSON.parse(pako.inflate([31,139,8,0,0,0,0,0,0,6,173,83,77,139,194,48,16,189,11,254,135,50,231,36,36,177,173,109,207,194,178,231,133,189,136,148,98,179,26,176,31,216,234,42,165,255,125,147,76,212,170,215,61,116,222,204,203,203,48,121,76,135,249,44,8,160,61,52,125,190,109,170,170,168,203,14,178,96,61,64,127,109,21,100,240,83,231,186,214,125,222,157,119,64,160,82,93,87,236,12,63,192,175,46,251,61,100,17,231,4,246,74,239,246,189,47,116,105,174,125,125,127,228,2,198,145,76,27,181,197,241,185,199,229,160,43,200,214,84,178,136,152,111,67,224,250,194,188,118,48,115,190,180,48,106,193,196,50,138,137,96,41,151,226,1,142,148,44,12,83,169,168,136,9,245,20,245,138,9,34,31,178,36,77,66,171,181,147,184,198,177,72,8,119,145,122,64,142,202,123,198,39,34,164,164,185,238,103,110,1,13,89,195,231,138,10,83,24,144,8,11,132,16,33,66,136,17,150,8,9,66,138,32,56,188,249,209,232,186,239,222,29,225,44,141,132,32,30,4,147,50,140,157,7,156,69,201,210,13,237,5,183,242,137,190,215,15,247,188,35,230,100,193,83,130,145,58,101,114,175,111,185,141,94,232,207,197,230,127,109,48,254,30,139,186,211,189,110,106,251,230,242,116,44,48,151,156,243,113,28,55,196,237,117,169,206,122,107,92,9,6,91,26,162,83,7,181,69,101,0,64,2,55,21,102,118,59,141,112,36,94,122,91,234,192,110,181,231,252,210,91,202,50,168,133,170,184,228,245,169,154,254,64,84,204,103,227,124,246,7,18,75,169,238,94,3,0,0], {to: 'string'}))&lt;/script&gt;
 &lt;script&gt;JS_device = new plot2(-1);
-JS_device.import(test8abc4dc71d45_json);
+JS_device.import(test26506c512674_json_gz);
 ctrl = new controller(JS_device);
     ctrl.play_until(3, 1, () =&gt; {
-      ctrl.watch("#SVG_1", "click", function() {
+      ctrl.watch(&quot;#SVG_1&quot;, &quot;click&quot;, function() {
         if (ctrl.player_pointer == 0) {
           ctrl.play_until(3, 1);
         } else {
@@ -664,7 +640,7 @@ ctrl = new controller(JS_device);
         }
       });
     })&lt;/script&gt;
-&lt;/body&gt;&lt;/html&gt;' style="border: none;width: 550px;height: 550px;"></iframe>
+&lt;/body&gt;&lt;/html&gt;" style="border: none;width: 550px;height: 550px;"></iframe>
 </div>
 <div class="section level4">
 <h4 id="import-from-a-file">Import from a file<a class="anchor" aria-label="anchor" href="#import-from-a-file"></a>

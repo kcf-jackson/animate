@@ -18,7 +18,7 @@ plots."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/math
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">animate</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.9.3</span>
       </span>
     </div>
 
@@ -103,8 +103,8 @@ browser session.</p></dd>
 
 <dt><code>connected</code></dt>
 <dd><p>TRUE or FALSE; whether a connection has been established.
-One should ways start the WebSocket server before visiting the web page
-that connects to the server.</p></dd>
+One should start the WebSocket server before launching the web page that
+connects to the server.</p></dd>
 
 
 <dt><code>started</code></dt>
@@ -120,13 +120,13 @@ the <code>startServer</code> method to start a server.</p></dd>
 <div class="section">
 <h3 id="public-methods">Public methods<a class="anchor" aria-label="anchor" href="#public-methods"></a></h3>
 
-<ul><li><p><a href="#method-startServer"><code>websocket$startServer()</code></a></p></li>
-<li><p><a href="#method-stopServer"><code>websocket$stopServer()</code></a></p></li>
-<li><p><a href="#method-listServers"><code>websocket$listServers()</code></a></p></li>
-<li><p><a href="#method-stopAllServers"><code>websocket$stopAllServers()</code></a></p></li>
-<li><p><a href="#method-new"><code>websocket$new()</code></a></p></li>
-<li><p><a href="#method-clone"><code>websocket$clone()</code></a></p></li>
-</ul></div><p></p><hr><a id="method-startServer"></a><div class="section">
+<ul><li><p><a href="#method-websocket-startServer"><code>websocket$startServer()</code></a></p></li>
+<li><p><a href="#method-websocket-stopServer"><code>websocket$stopServer()</code></a></p></li>
+<li><p><a href="#method-websocket-listServers"><code>websocket$listServers()</code></a></p></li>
+<li><p><a href="#method-websocket-stopAllServers"><code>websocket$stopAllServers()</code></a></p></li>
+<li><p><a href="#method-websocket-new"><code>websocket$new()</code></a></p></li>
+<li><p><a href="#method-websocket-clone"><code>websocket$clone()</code></a></p></li>
+</ul></div><p></p><hr><a id="method-websocket-startServer"></a><div class="section">
 <h3 id="method-startserver-">Method <code>startServer()</code><a class="anchor" aria-label="anchor" href="#method-startserver-"></a></h3>
 <p>Start a WebSocket server</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
@@ -134,7 +134,7 @@ the <code>startServer</code> method to start a server.</p></dd>
 </div>
 
 
-</div><p></p><hr><a id="method-stopServer"></a><div class="section">
+</div><p></p><hr><a id="method-websocket-stopServer"></a><div class="section">
 <h3 id="method-stopserver-">Method <code>stopServer()</code><a class="anchor" aria-label="anchor" href="#method-stopserver-"></a></h3>
 <p>Stop a WebSocket server</p><div class="section">
 <h4 id="usage-1">Usage<a class="anchor" aria-label="anchor" href="#usage-1"></a></h4>
@@ -142,7 +142,7 @@ the <code>startServer</code> method to start a server.</p></dd>
 </div>
 
 
-</div><p></p><hr><a id="method-listServers"></a><div class="section">
+</div><p></p><hr><a id="method-websocket-listServers"></a><div class="section">
 <h3 id="method-listservers-">Method <code>listServers()</code><a class="anchor" aria-label="anchor" href="#method-listservers-"></a></h3>
 <p>List all running WebSocket servers</p><div class="section">
 <h4 id="usage-2">Usage<a class="anchor" aria-label="anchor" href="#usage-2"></a></h4>
@@ -150,7 +150,7 @@ the <code>startServer</code> method to start a server.</p></dd>
 </div>
 
 
-</div><p></p><hr><a id="method-stopAllServers"></a><div class="section">
+</div><p></p><hr><a id="method-websocket-stopAllServers"></a><div class="section">
 <h3 id="method-stopallservers-">Method <code>stopAllServers()</code><a class="anchor" aria-label="anchor" href="#method-stopallservers-"></a></h3>
 <p>Stop all running WebSocket servers</p><div class="section">
 <h4 id="usage-3">Usage<a class="anchor" aria-label="anchor" href="#usage-3"></a></h4>
@@ -158,8 +158,8 @@ the <code>startServer</code> method to start a server.</p></dd>
 </div>
 
 
-</div><p></p><hr><a id="method-new"></a><div class="section">
-<h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
+</div><p></p><hr><a id="method-websocket-new"></a><div class="section">
+<h3 id="method-new-">Method <code><a href="https://rdrr.io/r/methods/new.html" class="external-link">new()</a></code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>Initialise a WebSocket connection</p><div class="section">
 <h4 id="usage-4">Usage<a class="anchor" aria-label="anchor" href="#usage-4"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/websocket.html">websocket</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">in_handler</span>, port <span class="op">=</span> <span class="fl">9454</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -183,22 +183,8 @@ any processing.</p></dd>
 <h4 id="returns">Returns<a class="anchor" aria-label="anchor" href="#returns"></a></h4>
 <p>A 'websocket' object.</p>
 </div>
-<div class="section">
-<h4 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
-# Launch a WebSocket server
-ws &lt;- websocket$new()
-ws$startServer()
-ws$listServers()    # Check that a server is running
 
-ws$stopServer()
-ws$listServers()    # Confirm no server is running
-}
-</code></pre></div><p></p></div>
-</div>
-
-
-</div><p></p><hr><a id="method-clone"></a><div class="section">
+</div><p></p><hr><a id="method-websocket-clone"></a><div class="section">
 <h3 id="method-clone-">Method <code>clone()</code><a class="anchor" aria-label="anchor" href="#method-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
 <h4 id="usage-5">Usage<a class="anchor" aria-label="anchor" href="#usage-5"></a></h4>
@@ -218,24 +204,6 @@ ws$listServers()    # Confirm no server is running
 
     </div>
 
-    <div id="ref-examples">
-    <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
-<span class="r-in"><span><span class="co">## Method `websocket$new`</span></span></span>
-<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># Launch a WebSocket server</span></span></span>
-<span class="r-in"><span><span class="va">ws</span> <span class="op">&lt;-</span> <span class="va">websocket</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ws</span><span class="op">$</span><span class="fu">startServer</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ws</span><span class="op">$</span><span class="fu">listServers</span><span class="op">(</span><span class="op">)</span>    <span class="co"># Check that a server is running</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">ws</span><span class="op">$</span><span class="fu">stopServer</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">ws</span><span class="op">$</span><span class="fu">listServers</span><span class="op">(</span><span class="op">)</span>    <span class="co"># Confirm no server is running</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-</code></pre></div>
-    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

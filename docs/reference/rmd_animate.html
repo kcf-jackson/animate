@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">animate</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.9.3</span>
       </span>
     </div>
 
@@ -93,6 +93,56 @@
     <p>This function should only be used in a code chunk of an R Markdown document.</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">input</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".Rmd"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".html"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="st">'</span></span></span>
+<span class="r-in"><span><span class="st">```{r, echo = FALSE, message = FALSE}</span></span></span>
+<span class="r-in"><span><span class="st"># Run / include the following in a code chunk of an R Markdown document</span></span></span>
+<span class="r-in"><span><span class="st">library(animate)</span></span></span>
+<span class="r-in"><span><span class="st">device &lt;- animate$new(500, 500, virtual = TRUE)  # set `virtual = TRUE` for R Markdown document</span></span></span>
+<span class="r-in"><span><span class="st">attach(device)</span></span></span>
+<span class="r-in"><span><span class="st"></span></span></span>
+<span class="r-in"><span><span class="st"># Data</span></span></span>
+<span class="r-in"><span><span class="st">id &lt;- new_id(1:10)</span></span></span>
+<span class="r-in"><span><span class="st">s &lt;- 1:10 * 2 * pi / 10</span></span></span>
+<span class="r-in"><span><span class="st">s2 &lt;- sample(s)</span></span></span>
+<span class="r-in"><span><span class="st"></span></span></span>
+<span class="r-in"><span><span class="st"># Plot</span></span></span>
+<span class="r-in"><span><span class="st">par(xlim = c(-2.5, 2.5), ylim = c(-2.5, 2.5))</span></span></span>
+<span class="r-in"><span><span class="st">plot(2*sin(s), 2*cos(s), id = id)</span></span></span>
+<span class="r-in"><span><span class="st">points(sin(s2), cos(s2), id = id, transition = list(duration = 2000))</span></span></span>
+<span class="r-in"><span><span class="st"></span></span></span>
+<span class="r-in"><span><span class="st"># Render in-line in an R Markdown document</span></span></span>
+<span class="r-in"><span><span class="st">rmd_animate(device, click_to_play(start = 3))  # begin the plot at the third frame</span></span></span>
+<span class="r-in"><span><span class="st">```</span></span></span>
+<span class="r-in"><span><span class="st">'</span>, <span class="va">input</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/knit.html" class="external-link">knit</a></span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> processing file: C:\Users\jkwok\AppData\Local\Temp\Rtmpa441FN\file23d84d59555.Rmd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |                                                                      |   0%  |                                                                              |.......................                                               |  33%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ordinary text without R code</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |...............................................                       |  67%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> label: unnamed-chunk-1 (with options) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ echo   : logi FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ message: logi FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   |                                                                              |......................................................................| 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ordinary text without R code</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> output file: C:\Users\jkwok\AppData\Local\Temp\Rtmpa441FN\file23d81cc8905.html</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:\\Users\\jkwok\\AppData\\Local\\Temp\\Rtmpa441FN\\file23d81cc8905.html"</span>
+<span class="r-in"><span><span class="co"># browseURL(output)</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
