@@ -10,7 +10,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  results = 'hold'
 )
 ```
 
@@ -245,7 +246,8 @@ animate_it({
   par(xlim = c(0, 20), ylim = c(0, 10))
   cell_1 <- cell("cell-1", 1, 1, visited = TRUE)
   draw_cells(cell_1$x, cell_1$y, cell_1$id, cell_color(cell_1$visited))
-}, click_to_play(start = 3))
+})
+# Click to play the animation
 ```
 
 
@@ -274,7 +276,8 @@ animate_it({
   cell_1 <- cell("cell-1", 1, 1, visited = FALSE)
   draw_cells(cell_1$x, cell_1$y, cell_1$id, cell_color(cell_1$visited))
   draw_walls(cell_1$x, cell_1$y, cell_1$id, cell_1$walls)
-}, click_to_play(start = 3))
+})
+# Click to play the animation
 ```
 
 ---
@@ -315,7 +318,8 @@ visualise_maze <- function(cells, active_cell_id) {
 animate_it({
   par(xlim = c(1, 21), ylim = c(1, 11))
   generate_maze(20, 10)
-}, click_to_play(start = 3))
+})
+# Click to play the animation
 ```
 
 
