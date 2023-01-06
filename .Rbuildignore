@@ -9,3 +9,6 @@
 ^readme.Rmd$
 ^development$
 ^examples$
+^vignettes/hilbert_curve.Rmd$
+^vignettes/mathematical_rose.Rmd$
+^vignettes/maze_generation.Rmd$

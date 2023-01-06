@@ -215,6 +215,13 @@ points(x, new_y, bg="green", cex=(1:10)*30, id=id, transition=list(duration = 20
 
 
 
+#### 13. 2048
+[[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/2048/2048_animate.R) [[reference]](https://play2048.co/)
+
+<img src="https://github.com/kcf-jackson/animate/blob/gh-pages/examples/screenshots/2048.gif" height="400px"/>
+
+
+
 ## Acknowledgement
 
 This work is supported by my position at the [Bioinformatics and Cellular Genomics lab (BioCellGen)](https://www.svi.edu.au/research_themes/bioinformatics_and_cellular_genomics/) at the St. Vincent's Institute of Medical Research (SVI) under the supervision of [Davis McCarthy](https://www.svi.edu.au/research_themes/research_staff/dr_davis_mccarthy).

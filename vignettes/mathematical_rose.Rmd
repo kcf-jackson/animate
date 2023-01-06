@@ -37,8 +37,8 @@ attach(device)
 set_max_stacksize(0)
 par(xlim = extendrange(pts$x), ylim = extendrange(pts$y))
 for (step in seq_along(time)) {
-    lines(pts$x[1:step], pts$y[1:step], id = "line-1")
     points(pts$x[step], pts$y[step], id = "point-1")
+    lines(pts$x[1:step], pts$y[1:step], id = "line-1")
 }
 rmd_animate(device, loop(1))
 ```
@@ -120,8 +120,8 @@ attach(device)
 set_max_stacksize(0)
 par(xlim = extendrange(pts$x), ylim = extendrange(pts$y))
 for (step in seq_along(time)) {
-    lines(pts$x[1:step], pts$y[1:step], id = "line-1")
     points(pts$x[step], pts$y[step], id = "point-1")
+    lines(pts$x[1:step], pts$y[1:step], id = "line-1")
 }
 rmd_animate(device, click_to_loop(start = 3, wait = 10))
 ```
@@ -130,7 +130,7 @@ rmd_animate(device, click_to_loop(start = 3, wait = 10))
 
 - line 1: `set_max_stacksize(0)` sets the internal memory of the device to 0, so that it does not use any memory. 
 - line 2: `par(xlim = ..., ylim = ...)` sets the ranges of the x-axis and the y-axis to be fixed at the specified values.
-- line 3-6: `lines(...)` and `points(...)` draw lines and points on the screen. The argument `id` needs to be provided so that the graphics elements are updated, rather than redrawn, on the screen.
+- line 3-6: `points(...)` and `lines(...)` draw points and lines on the screen. The argument `id` needs to be provided so that the graphics elements are updated, rather than redrawn, on the screen.
 - line 7: this line is needed only for in-line RMD usage. It executes the animation using the virtual device and embeds the output in the RMD file.
 
 
@@ -138,8 +138,8 @@ rmd_animate(device, click_to_loop(start = 3, wait = 10))
 set_max_stacksize(0)
 par(xlim = extendrange(pts$x), ylim = extendrange(pts$y))
 for (step in seq_along(time)) {
-    lines(pts$x[1:step], pts$y[1:step], id = "line-1")
     points(pts$x[step], pts$y[step], id = "point-1")
+    lines(pts$x[1:step], pts$y[1:step], id = "line-1")
 }
 rmd_animate(device, click_to_loop(start = 3, wait = 10))
 ```
@@ -200,8 +200,8 @@ for (step in 1:400) {
     set(paste0("SVG_", i))  # Make plot area named "SVG_i" active
     pts <- roses[[i]]
     par(xlim = extendrange(pts$x), ylim = extendrange(pts$y))
-    lines(pts$x[1:step], pts$y[1:step], id = "line-1")
     points(pts$x[step], pts$y[step], id = "point-1")
+    lines(pts$x[1:step], pts$y[1:step], id = "line-1")
   }
 }
 ```
