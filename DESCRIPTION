@@ -31,7 +31,8 @@ Imports:
     httpuv,
     base64enc,
     jsonlite,
-    glue
+    glue,
+    R.utils
 Suggests:
     rmarkdown,
     knitr,

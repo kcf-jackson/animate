@@ -50,7 +50,8 @@ rmd_animate <- function(device, ...) {
     "max_num_commands": -1
   }', .open = "<", .close = ">")
   write(json_obj, json_file)
-  insert_animate(json_file, ...)
+  R.utils::gzip(json_file)
+  insert_animate(paste0(json_file, ".gz"), ...)
 }
 
 
