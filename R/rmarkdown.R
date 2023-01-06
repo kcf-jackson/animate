@@ -50,7 +50,8 @@ rmd_animate <- function(device, ...) {
     "max_num_commands": -1
   }', .open = "<", .close = ">")
   write(json_obj, json_file)
-  insert_animate(json_file, ...)
+  R.utils::gzip(json_file)
+  insert_animate(paste0(json_file, ".gz"), ...)
 }
 
 
@@ -87,16 +88,12 @@ insert_animate <- function(file, options = click_to_play(), style,
   asset <- function(x) system.file(x, package = "animate")
   script <- function(x) as.character(to_shiny_tag(x))
 
-  # args <- list(...)
-  # if (!"style" %in% names(args)) {
   device <- jsonlite::fromJSON(file)$device
   if (missing(style)) {
     style <- paste0("border: none;",
                     sprintf("width: %spx;", device$width + 50),
                     sprintf("height: %spx;", device$height + 50))
   }
-    # args$style <- style
-  # }
   asset_script <- if (use_cdn) {
     script("https://cdn.jsdelivr.net/gh/kcf-jackson/animate@latest/inst/dist/animate.js")
   } else {
@@ -116,16 +113,22 @@ insert_animate <- function(file, options = click_to_play(), style,
   )
 
   # Create html app
-  html_str <- paste(
-    "<!DOCTYPE html><html><head></head><body>",
-    asset_script,
-    sprintf("<script>%s</script>", data_str),
-    sprintf("<script>%s</script>", init_str),
-    "</body></html>",
-    sep = "\n"
+  # html_str <- paste(
+  #   "<!DOCTYPE html><html><head></head><body>",
+  #   asset_script,
+  #   sprintf("<script>%s</script>", data_str),
+  #   sprintf("<script>%s</script>", init_str),
+  #   "</body></html>",
+  #   sep = "\n"
+  # )
+  #
+  # shiny::tags$iframe(srcdoc = html_str, style = style)
+  shiny::tagList(
+    to_shiny_tag(asset("dist/animate.js")),
+    shiny::tags$script(data_str),
+    shiny::tags$script(init_str),
+    shiny::tags$div(id = "svg_container", style = style)
   )
-
-  shiny::tags$iframe(srcdoc = html_str, style = style)
 }
 
 #' Click an element to play a frame
