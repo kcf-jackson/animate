@@ -38,5 +38,6 @@ Suggests:
     knitr,
     shiny,
     htmltools,
-    pryr
+    pryr,
+    V8
 VignetteBuilder: knitr
