@@ -1,0 +1,54 @@
+.height-20pc{
+  height: 20pc;
+  overflow-y: scroll;
+}
+
+.move-up {
+  margin-top: -30px;
+}
+
+.embedded-app {
+    border-radius: 20px;
+}
+
+.red {
+  color: red;
+}
+
+.small {
+  font-size: 80%;
+}
+
+.tiny {
+  font-size: 60%;
+}
+
+.medium {
+  font-size: 120%;
+}
+
+p.large {
+  font-size: 150%;
+}
+
+.large {
+  font-size: 150%;
+}
+
+.vlarge {
+  font-size: 200%;
+}
+
+.huge {
+  font-size: 250%;
+}
+
+.vhuge {
+  font-size: 350%;
+}
+
+.full-width {
+  display: flex;
+  width: 100%;
+  flex: 1 1 auto;
+}
