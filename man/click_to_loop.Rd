@@ -20,3 +20,20 @@ next frame is drawn.}
 Playback option for the functions \link{rmd_animate}
 and \link{insert_animate}.
 }
+\examples{
+\donttest{
+input <- tempfile(fileext = ".Rmd")
+output <- tempfile(fileext = ".html")
+writeLines('
+```{r, echo = FALSE, message = FALSE}
+# Run / include the following in a code chunk of an R Markdown document
+library(animate)
+insert_animate(system.file("tests/Lorenz_system.json.gz", package = "animate"),
+               options = click_to_loop())
+```
+', input)
+knitr::knit(input, output)
+# browseURL(output)
+}
+
+}
