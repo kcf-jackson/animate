@@ -14,10 +14,10 @@ new_id <- function(x, prefix = "ID", sep = "-") {
 }
 
 
-#' Launch the ffmpeg-based video editor ('Shiny' app)
+#' Launch the 'FFmpeg'-based video editor ('Shiny' app)
 #'
-#' @note This requires `ffmpeg` to work. The ffmpeg binary can be downloaded from
+#' @note This requires `ffmpeg` to work. The 'ffmpeg' binary can be downloaded from
 #' \url{https://ffmpeg.org/download.html}.
 ffmpeg <- function() {
-  shiny::runApp(system.file("ffmpeg", package = "animate"))
+  shiny::runApp(ffmpeg_shiny(), launch.browser = TRUE)
 }

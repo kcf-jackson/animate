@@ -17,9 +17,9 @@ registered through \code{simple_event} do not require R at deployment to work.
 ## Method `animate$new`
 ## ------------------------------------------------
 
-\dontrun{
+\donttest{
 library(animate)
-device <- animate$new(400, 400)  # Launch a Websocket server
+device <- animate$new(400, 400)  # Launch a WebSocket server
 attach(device)
 x <- 1:10
 y <- 1:10
@@ -36,9 +36,9 @@ detach(device)
 ## Method `animate$chain`
 ## ------------------------------------------------
 
-\dontrun{
+\donttest{
 library(animate)
-device <- animate$new(600, 600)  # Launch a Websocket server
+device <- animate$new(600, 600)  # Launch a WebSocket server
 attach(device)
 par(xlim = c(0, 10), ylim = c(0, 10))
 plot(1:10, 1:10, id = 1:10)
@@ -51,7 +51,9 @@ points(1:10, sample(10, 10), id = 1:10,
              transition = list(duration = 2000))
       })
   ))
-device$off()
+par(xlim = NULL, ylim = NULL)  # Reset `xlim` and `ylim` in `par`
+off()
+detach(device)
 }
 }
 \section{Public fields}{
@@ -111,7 +113,7 @@ device$off()
 \subsection{Method \code{new()}}{
 Constructor of the device
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{animate$new(width, height, id = "SVG_1", ...)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{animate$new(width, height, id = "SVG_1", launch.browser, ...)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -123,6 +125,11 @@ Constructor of the device
 
 \item{\code{id}}{A character string; the id assigned to the device.}
 
+\item{\code{launch.browser}}{A function to launch a viewer; two options are
+\code{rstudioapi::viewer} and \code{utils::browseURL}. It defaults to the first
+option if the user is using RStudio and to the second option otherwise.
+The default applies to interactive session only.}
+
 \item{\code{...}}{Additional arguments. Use \code{virtual = TRUE} to use the virtual
 device, \code{shiny = TRUE} for shiny application; everything else will be
 passed to the SVG element that hosts the visualisation.}
@@ -131,9 +138,9 @@ passed to the SVG element that hosts the visualisation.}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
+\preformatted{\donttest{
 library(animate)
-device <- animate$new(400, 400)  # Launch a Websocket server
+device <- animate$new(400, 400)  # Launch a WebSocket server
 attach(device)
 x <- 1:10
 y <- 1:10
@@ -486,9 +493,9 @@ browser end.}
 }
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
-\preformatted{\dontrun{
+\preformatted{\donttest{
 library(animate)
-device <- animate$new(600, 600)  # Launch a Websocket server
+device <- animate$new(600, 600)  # Launch a WebSocket server
 attach(device)
 par(xlim = c(0, 10), ylim = c(0, 10))
 plot(1:10, 1:10, id = 1:10)
@@ -501,7 +508,9 @@ points(1:10, sample(10, 10), id = 1:10,
              transition = list(duration = 2000))
       })
   ))
-device$off()
+par(xlim = NULL, ylim = NULL)  # Reset `xlim` and `ylim` in `par`
+off()
+detach(device)
 }
 }
 \if{html}{\out{</div>}}
