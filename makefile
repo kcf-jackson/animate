@@ -22,6 +22,9 @@ cran-build:
 	cd ../ && R CMD build animate-CRAN
 
 cran-check:
-	R CMD check --as-cran "../animate_0.3.9.3.tar.gz"
+	R CMD check --as-cran "../animate_0.3.9.4.tar.gz"
 
-cran: cran-clean cran-build cran-check
+dev-check:
+	Rscript inst/dev/check.R
+
+cran: dev-check cran-clean cran-build cran-check

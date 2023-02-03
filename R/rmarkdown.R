@@ -29,6 +29,12 @@
 #' # Render in-line in an R Markdown document
 #' rmd_animate(device, click_to_play(start = 3))  # begin the plot at the third frame
 #' ```
+#' ```{r, echo = FALSE, message = FALSE}
+#' par(xlim = NULL, ylim = NULL)  # Reset `xlim` and `ylim` in `par`
+#' # Do some other plots
+#' off()
+#' detach(device)
+#' ```
 #' ', input)
 #' knitr::knit(input, output)
 #' # browseURL(output)
