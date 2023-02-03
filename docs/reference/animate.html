@@ -18,7 +18,7 @@ animation and keyframes animation."><!-- mathjax --><script src="https://cdnjs.c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">animate</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.9.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.9.4</span>
       </span>
     </div>
 
@@ -151,7 +151,7 @@ registered through <code>simple_event</code> do not require R at deployment to w
 <h3 id="method-new-">Method <code>new()</code><a class="anchor" aria-label="anchor" href="#method-new-"></a></h3>
 <p>Constructor of the device</p><div class="section">
 <h4 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/animate.html">animate</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">width</span>, <span class="va">height</span>, id <span class="op">=</span> <span class="st">"SVG_1"</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va"><a href="../reference/animate.html">animate</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">width</span>, <span class="va">height</span>, id <span class="op">=</span> <span class="st">"SVG_1"</span>, <span class="va">launch.browser</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 <div class="section">
@@ -168,6 +168,13 @@ registered through <code>simple_event</code> do not require R at deployment to w
 <dd><p>A character string; the id assigned to the device.</p></dd>
 
 
+<dt><code>launch.browser</code></dt>
+<dd><p>A function to launch a viewer; two options are
+<code><a href="https://rstudio.github.io/rstudioapi/reference/viewer.html" class="external-link">rstudioapi::viewer</a></code> and <code><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">utils::browseURL</a></code>. It defaults to the first
+option if the user is using RStudio and to the second option otherwise.
+The default applies to interactive session only.</p></dd>
+
+
 <dt><code>...</code></dt>
 <dd><p>Additional arguments. Use <code>virtual = TRUE</code> to use the virtual
 device, <code>shiny = TRUE</code> for shiny application; everything else will be
@@ -178,9 +185,9 @@ passed to the SVG element that hosts the visualisation.</p></dd>
 </div>
 <div class="section">
 <h4 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\donttest{
 library(animate)
-device &lt;- animate$new(400, 400)  # Launch a Websocket server
+device &lt;- animate$new(400, 400)  # Launch a WebSocket server
 attach(device)
 x &lt;- 1:10
 y &lt;- 1:10
@@ -581,9 +588,9 @@ browser end.</p></dd>
 </div>
 <div class="section">
 <h4 id="examples-1">Examples<a class="anchor" aria-label="anchor" href="#examples-1"></a></h4>
-<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\dontrun{
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code>\donttest{
 library(animate)
-device &lt;- animate$new(600, 600)  # Launch a Websocket server
+device &lt;- animate$new(600, 600)  # Launch a WebSocket server
 attach(device)
 par(xlim = c(0, 10), ylim = c(0, 10))
 plot(1:10, 1:10, id = 1:10)
@@ -596,7 +603,9 @@ points(1:10, sample(10, 10), id = 1:10,
              transition = list(duration = 2000))
       })
   ))
-device$off()
+par(xlim = NULL, ylim = NULL)  # Reset `xlim` and `ylim` in `par`
+off()
+detach(device)
 }
 </code></pre></div><p></p></div>
 </div>
@@ -819,31 +828,62 @@ The source file that provides this functionality can be found at
 <span class="r-in"><span><span class="co">## Method `animate$new`</span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kcf-jackson.github.io/animate/">animate</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">device</span> <span class="op">&lt;-</span> <span class="va">animate</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="fl">400</span>, <span class="fl">400</span><span class="op">)</span>  <span class="co"># Launch a Websocket server</span></span></span>
+<span class="r-in"><span><span class="va">device</span> <span class="op">&lt;-</span> <span class="va">animate</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="fl">400</span>, <span class="fl">400</span><span class="op">)</span>  <span class="co"># Launch a WebSocket server</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Server started.</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/attach.html" class="external-link">attach</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from package:graphics:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     abline, axis, image, lines, par, plot, points, text</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from package:grDevices:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     svg</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from package:methods:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     initialize</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from package:base:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     objects, plot, remove</span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_id.html">new_id</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>   <span class="co"># Give each point an ID: c("ID-1", "ID-2", ..., "ID-10")</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, id <span class="op">=</span> <span class="va">id</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Device is not yet available.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">new_y</span> <span class="op">&lt;-</span> <span class="fl">10</span><span class="op">:</span><span class="fl">1</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">new_y</span>, id <span class="op">=</span> <span class="va">id</span>, transition <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># Use transition</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Device is not yet available.</span>
 <span class="r-in"><span><span class="fu">off</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Server stopped.</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/detach.html" class="external-link">detach</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span><span class="co">## Method `animate$chain`</span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://kcf-jackson.github.io/animate/">animate</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">device</span> <span class="op">&lt;-</span> <span class="va">animate</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="fl">600</span>, <span class="fl">600</span><span class="op">)</span>  <span class="co"># Launch a Websocket server</span></span></span>
+<span class="r-in"><span><span class="va">device</span> <span class="op">&lt;-</span> <span class="va">animate</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="fl">600</span>, <span class="fl">600</span><span class="op">)</span>  <span class="co"># Launch a WebSocket server</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Server started.</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/attach.html" class="external-link">attach</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from package:graphics:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     abline, axis, image, lines, par, plot, points, text</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from package:grDevices:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     svg</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from package:methods:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     initialize</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from package:base:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     objects, plot, remove</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Device is not yet available.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Device is not yet available.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span>, id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,</span></span>
 <span class="r-in"><span>  transition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    duration <span class="op">=</span> <span class="fl">1000</span>,</span></span>
@@ -853,8 +893,13 @@ The source file that provides this functionality can be found at
 <span class="r-in"><span>             transition <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>duration <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span>      <span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">device</span><span class="op">$</span><span class="fu">off</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Device is not yet available.</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>xlim <span class="op">=</span> <span class="cn">NULL</span>, ylim <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>  <span class="co"># Reset `xlim` and `ylim` in `par`</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Device is not yet available.</span>
+<span class="r-in"><span><span class="fu">off</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Server stopped.</span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/detach.html" class="external-link">detach</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
