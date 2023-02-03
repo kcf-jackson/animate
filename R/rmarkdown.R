@@ -29,6 +29,12 @@
 #' # Render in-line in an R Markdown document
 #' rmd_animate(device, click_to_play(start = 3))  # begin the plot at the third frame
 #' ```
+#' ```{r, echo = FALSE, message = FALSE}
+#' par(xlim = NULL, ylim = NULL)  # Reset `xlim` and `ylim` in `par`
+#' # Do some other plots
+#' off()
+#' detach(device)
+#' ```
 #' ', input)
 #' knitr::knit(input, output)
 #' # browseURL(output)
@@ -198,6 +204,7 @@ click_to_play <- function(selector = "#SVG_1", start = 2) {
 #' ', input)
 #' knitr::knit(input, output)
 #' # browseURL(output)
+#' }
 #'
 #' @export
 click_to_loop <- function(selector = "#SVG_1", start = 2, wait = 20) {
@@ -236,6 +243,7 @@ click_to_loop <- function(selector = "#SVG_1", start = 2, wait = 20) {
 #' ', input)
 #' knitr::knit(input, output)
 #' # browseURL(output)
+#' }
 #'
 #' @export
 loop <- function(times = 1, wait = 20) {

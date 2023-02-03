@@ -36,13 +36,17 @@ animate <- R6::R6Class(
     #' @param width An integer; the width in pixels.
     #' @param height An integer; the height in pixels.
     #' @param id A character string; the id assigned to the device.
+    #' @param launch.browser A function to launch a viewer; two options are
+    #' `rstudioapi::viewer` and `utils::browseURL`. It defaults to the first
+    #' option if the user is using RStudio and to the second option otherwise.
+    #' The default applies to interactive session only.
     #' @param ... Additional arguments. Use `virtual = TRUE` to use the virtual
     #' device, `shiny = TRUE` for shiny application; everything else will be
     #' passed to the SVG element that hosts the visualisation.
     #' @examples
-    #' \dontrun{
+    #' \donttest{
     #' library(animate)
-    #' device <- animate$new(400, 400)  # Launch a Websocket server
+    #' device <- animate$new(400, 400)  # Launch a WebSocket server
     #' attach(device)
     #' x <- 1:10
     #' y <- 1:10
@@ -54,7 +58,7 @@ animate <- R6::R6Class(
     #' off()
     #' detach(device)
     #' }
-    initialize = function(width, height, id = "SVG_1", ...) {
+    initialize = function(width, height, id = "SVG_1", launch.browser, ...) {
       if (private$is_virtual(...)) {
         self$virtual_meta <- list(virtual = TRUE, width = width, height = height)
 
@@ -123,7 +127,17 @@ animate <- R6::R6Class(
       app <- system.file("dist/animate.html", package = "animate")
       temp <- file.path(tempdir(), "index.html")
       file.copy(app, temp)
-      viewer <- ifelse(rstudioapi::isAvailable(), rstudioapi::viewer, utils::browseURL)
+      if (!missing(launch.browser)) {
+        viewer <- launch.browser
+      } else {
+        if (interactive()) {
+          viewer <- ifelse(rstudioapi::isAvailable(),
+                           rstudioapi::viewer,
+                           utils::browseURL)
+        } else {
+          viewer <- function(x) NULL
+        }
+      }
       viewer(temp)
     },
 
@@ -322,9 +336,9 @@ animate <- R6::R6Class(
     #' The function should take an argument to receive the data from the
     #' browser end.
     #' @examples
-    #' \dontrun{
+    #' \donttest{
     #' library(animate)
-    #' device <- animate$new(600, 600)  # Launch a Websocket server
+    #' device <- animate$new(600, 600)  # Launch a WebSocket server
     #' attach(device)
     #' par(xlim = c(0, 10), ylim = c(0, 10))
     #' plot(1:10, 1:10, id = 1:10)
@@ -337,7 +351,9 @@ animate <- R6::R6Class(
     #'              transition = list(duration = 2000))
     #'       })
     #'   ))
-    #' device$off()
+    #' par(xlim = NULL, ylim = NULL)  # Reset `xlim` and `ylim` in `par`
+    #' off()
+    #' detach(device)
     #' }
     chain = function(callback) {
       event_name <- paste0("chained-transition-", private$event_counter)

@@ -2,14 +2,14 @@
 % Please edit documentation in R/utils.R
 \name{ffmpeg}
 \alias{ffmpeg}
-\title{Launch the ffmpeg-based video editor ('Shiny' app)}
+\title{Launch the 'FFmpeg'-based video editor ('Shiny' app)}
 \usage{
 ffmpeg()
 }
 \description{
-Launch the ffmpeg-based video editor ('Shiny' app)
+Launch the 'FFmpeg'-based video editor ('Shiny' app)
 }
 \note{
-This requires \code{ffmpeg} to work. The ffmpeg binary can be downloaded from
+This requires \code{ffmpeg} to work. The 'ffmpeg' binary can be downloaded from
 \url{https://ffmpeg.org/download.html}.
 }

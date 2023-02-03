@@ -1,0 +1,1 @@
+The `build_helpers.R` and `build.R` are required only if one wishes to compile the JavaScript part of the package from source. For publishing on CRAN, these files are commented out to indicate that they are not needed at run-time.

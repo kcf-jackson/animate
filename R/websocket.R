@@ -79,7 +79,7 @@ websocket <- R6::R6Class("websocket", public = list(
   #' @return A 'websocket' object.
   #
   # @examples
-  # \dontrun{
+  # \donttest{
   # # Launch a WebSocket server
   # ws <- websocket$new()
   # ws$startServer()
