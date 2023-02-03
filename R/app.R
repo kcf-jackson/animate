@@ -1,4 +1,5 @@
 #' 'FFmpeg'-based video editor ('Shiny' app)
+#' @keywords internal
 ffmpeg_shiny <- function() {
   options(shiny.maxRequestSize = 1024^3) # 1GB limit for input
 

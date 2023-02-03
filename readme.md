@@ -1,7 +1,5 @@
 ## R package 'animate': A web-based graphics device for animated visualisation
 
-_(Developer Preview: The API is maturing and feedback is welcome!)_
-
 [[Package website]](https://kcf-jackson.github.io/animate/) 
 [[News]](#news)
 [[Introduction]](#introduction)
@@ -13,6 +11,8 @@ _(Developer Preview: The API is maturing and feedback is welcome!)_
 
 
 ### News
+
+03/02/2023: Publish on CRAN
 
 07/08/2022: Add support to chained transition
 
@@ -218,7 +218,7 @@ points(x, new_y, bg="green", cex=(1:10)*30, id=id, transition=list(duration = 20
 #### 13. 2048
 [[code]](https://github.com/kcf-jackson/animate/blob/gh-pages/examples/2048/2048_animate.R) [[reference]](https://play2048.co/)
 
-<img src="https://github.com/kcf-jackson/animate/blob/gh-pages/examples/screenshots/2048.gif" height="400px"/>
+<img src="examples/screenshots/2048.gif" height="400px"/>
 
 
 
