@@ -22,3 +22,8 @@ navbar:
   right:
   - icon: fa-github fa-lg
     href: https://github.com/kcf-jackson/animate
+
+template:
+  includes:
+    after_body: >
+      <script data-goatcounter="https://kcf-jackson.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
