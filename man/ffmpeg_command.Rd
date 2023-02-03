@@ -19,3 +19,4 @@ A character string; the 'FFmpeg' command.
 \description{
 'FFmpeg' command builder
 }
+\keyword{internal}

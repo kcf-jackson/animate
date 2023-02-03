@@ -9,3 +9,4 @@ ffmpeg_shiny()
 \description{
 'FFmpeg'-based video editor ('Shiny' app)
 }
+\keyword{internal}
