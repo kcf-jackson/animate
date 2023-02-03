@@ -10,6 +10,8 @@
 # ffmpeg_command("abc.mp4", "abc.gif", frame_rate = 20, loop = 0, palette = TRUE) |> print()
 #
 #' @return A character string; the 'FFmpeg' command.
+#'
+#' @keywords internal
 ffmpeg_command <- function(input, output, ...) {
   param <- list(...)
   FFMPEG(
