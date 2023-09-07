@@ -12,6 +12,8 @@
 
 ### News
 
+29/08/2023: Port to [webR](https://github.com/kcf-jackson/webr-animate) with live demo
+
 03/02/2023: Publish on CRAN
 
 07/08/2022: Add support to chained transition
@@ -27,7 +29,7 @@
 - Add support to interactive events (experimental)
 - Add Gallery to `readme.md`
 
-23/06/2022: [Poster Presentation at UseR!2022 Conference](man/useR2022_poster)
+23/06/2022: [Poster Presentation at UseR!2022 Conference](https://docs.google.com/presentation/d/1fbzb-Awf0EC4ZmJHzwdlx59rV1UbdMZ0MN70YYjFmKw/edit?usp=sharing)
 
 12/06/2022: Minor updates
 
