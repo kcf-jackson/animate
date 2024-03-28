@@ -2,6 +2,12 @@ Message <- function(type, message) {
   list(type = type, message = message)
 }
 
+uuid <- function() {
+  digits <- strsplit(as.character(sample(1e8, 1)), split = "")[[1]]
+  alpha <- sample(c(letters, LETTERS), 8, replace = TRUE)
+  paste0("ID-", paste(sample(c(alpha, digits)), collapse = ""))
+}
+
 #' A web-based graphics device for animated visualisations
 #' @description Extends the 'base' graphics functions to support frame-by-frame
 #' animation and keyframes animation.
@@ -252,6 +258,66 @@ animate <- R6::R6Class(
     },
 
     #' @description
+    #' Add arrows to a plot
+    #' @param x0 The x coordinates of the start of the arrow.
+    #' @param y0 The y coordinates of the start of the arrow.
+    #' @param x1 The x coordinates of the end of the arrow.
+    #' @param y1 The y coordinates of the end of the arrow.
+    #' @param length The length of the arrow head.
+    #' @param angle The angle of the arrow head.
+    #' @param code The code of the arrow head. Use 1,2,3 or "start"/"end"/"both".
+    #' @param ... Additional graphical parameters
+    arrows = function(x0, y0, x1, y1, length, angle = pi / 6, code = 2, ...) {
+      args <- list(...)
+      id <- ifelse("id" %in% names(args), args$id, uuid())
+      if (is.numeric(code)) {
+        head.pos <- switch(code, "1" = "start", "2" = "end", "3" = "both")
+      }
+
+      # Draw the main line
+      self$lines(x = c(x0, x1), y = c(y0, y1), id = paste0("arrow-line-", id), ...)
+
+      # Calculate the direction of the line
+      dx <- x1 - x0
+      dy <- y1 - y0
+      angle0 <- atan2(dy, dx)
+
+      # Calculate the length of the line
+      len <- sqrt(dx^2 + dy^2)
+
+      # Scale the arrowhead size to the length of the line
+      head.len <- ifelse(missing(length), len * 0.1, length)
+
+      # Calculate points for the arrowhead
+      angle1 <- angle0 - angle
+      angle2 <- angle0 + angle
+
+      head.x0 <- x1 - head.len * cos(angle1)
+      head.y0 <- y1 - head.len * sin(angle1)
+
+      head.x1 <- x1 - head.len * cos(angle2)
+      head.y1 <- y1 - head.len * sin(angle2)
+
+      # Draw arrowhead at the end
+      if (head.pos == "end" || head.pos == "both") {
+        self$lines(x = c(x1, head.x0), y = c(y1, head.y0), id = paste0("arrow-end-1-", id), ...)
+        self$lines(x = c(x1, head.x1), y = c(y1, head.y1), id = paste0("arrow-end-2-", id), ...)
+      }
+
+      # Draw arrowhead at the start
+      if (head.pos == "start" || head.pos == "both") {
+        start.head.x0 <- x0 + head.len * cos(angle1)
+        start.head.y0 <- y0 + head.len * sin(angle1)
+
+        start.head.x1 <- x0 + head.len * cos(angle2)
+        start.head.y1 <- y0 + head.len * sin(angle2)
+
+        self$lines(x = c(x0, start.head.x0), y = c(y0, start.head.y0), id = paste0("arrow-start-1-", id), ...)
+        self$lines(x = c(x0, start.head.x1), y = c(y0, start.head.y1), id = paste0("arrow-start-2-", id), ...)
+      }
+    },
+
+    #' @description
     #' Add straight lines to a plot
     #' @param a The intercept.
     #' @param b The slope.
@@ -474,6 +540,10 @@ animate <- R6::R6Class(
       if (tolower(trimws(ans)) == "y") {
         self$send(Message("fn_export_video", list()))
       }
+    },
+
+    screenshot = function(selector) {
+      self$send(Message("fn_screenshot", list(selector = selector)))
     },
 
     #' @description Event handler
