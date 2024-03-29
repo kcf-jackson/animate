@@ -12,6 +12,8 @@
 
 ### News
 
+30/03/2024: Add support to direct GIF generation
+
 29/08/2023: Port to [webR](https://github.com/kcf-jackson/webr-animate) with live demo
 
 03/02/2023: Publish on CRAN
