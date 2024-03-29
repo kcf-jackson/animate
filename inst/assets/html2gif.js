@@ -7,19 +7,22 @@ const workerScriptURL = URL.createObjectURL(blob);
 
 class HTMLToGIFConverter {
     constructor(elementsSelector, gifOutputOptions) {
+        console.log(gifOutputOptions);
+
         this.elements = document.querySelectorAll(elementsSelector);
         gifOutputOptions = {
             workerScript: workerScriptURL,
             ...gifOutputOptions
         }
         this.gif = new GIF(gifOutputOptions);
+        this.handle = null;
     }
 
     capture(options) {
-        options = { delay: 50, ...options }
+        options = { delay: 100, ...options }
         Array.from(this.elements).forEach(element => {
             html2canvas(element).then(canvas => {
-                console.log("html2canvas capture:", canvas);
+                // console.log("html2canvas capture:", canvas);
                 this.gif.addFrame(canvas, options); // Adjust delay as needed
             });
         });
@@ -27,11 +30,17 @@ class HTMLToGIFConverter {
 
     save() {
         const progressModal = document.createElement('dialog');
+        progressModal.style = 'display:flex; flex-direction: column;';
         progressModal.innerHTML = `
                 <h1>Generating GIF...</h1>
                 <progress max="100" value="0" style="width: 100%;"></progress>
                 <div class="progress-label" id="progressLabel" style="text-align: center;">0%</div>
+                <button>Cancel</button>
             `;
+        progressModal.querySelector('button').addEventListener('click', () => {
+            this.stop();
+            progressModal.remove();
+        });
 
         const updateProgress = (p) => {
             const progress = progressModal.querySelector('progress');
@@ -71,5 +80,20 @@ class HTMLToGIFConverter {
         });
 
         this.gif.render();
+    }
+
+    setCaptureInterval(options) {
+        this.handle = setInterval(() => {
+            this.capture(options);
+        }, options.delayCapture);
+    }
+
+    clearCaptureInterval() {
+        this.handle && clearInterval(this.handle);
+        setTimeout(() => this.save(), 500);
+    }
+
+    stop() {
+        this.gif.abort();
     }
 }

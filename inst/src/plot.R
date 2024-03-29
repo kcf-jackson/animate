@@ -197,24 +197,42 @@ plot2 <- R6Class(
 
     #' Capture a screenshot of a selected DOM element for GIF generation
     screenshot = function(param) {
-      console::log(param$options)
+      # console::log(param$options)
       if (param$action == "new") {
-        console::log("Initialise new converter")
+        console::log("Initialise new GIF converter")
         self$gif_converter <- HTMLToGIFConverter$new(param$selector, param$options)
+
       } else if (param$action == "capture") {
         if (self$gif_converter == NULL) {
-          self$gif_converter <- HTMLToGIFConverter$new(param$selector, param$options)
+          console::warn("GIF converter is not initialised.")
+          return(NULL)
         }
-        console::log("Capturing")
+        console::log("Capture frame")
         self$gif_converter$capture()
+        
       } else if (param$action == "save") {
-        if (self$gif_converter != NULL) {
-          console::log("Saving")
-          self$gif_converter$save()
+        if (self$gif_converter == NULL) {
+          console::warn("GIF converter is not initialised.")
+          return(NULL)
         }
+        console::log("Rendering and saving...")
+        self$gif_converter$save()
+
       } else if (param$action == "start") {
+        if (self$gif_converter == NULL) {
+          console::warn("GIF converter is not initialised.")
+          return(NULL)
+        }
+        console::log("Capturing key-frame animation at a fixed interval...")
+        self$gif_converter$setCaptureInterval(param$options)
 
       } else if (param$action == "end") {
+        if (self$gif_converter == NULL) {
+          console::warn("GIF converter is not initialised.")
+          return(NULL)
+        }
+        console::log("End key-frame capturing")
+        self$gif_converter$clearCaptureInterval()
 
       }
       return(NULL)

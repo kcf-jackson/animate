@@ -591,16 +591,46 @@ animate <- R6::R6Class(
     #'   new_x <- seq(1, n, 0.1)
     #'   new_y <- sin(new_x * pi / 6)
     #'   plot(new_x, new_y, type="l", id="line-1")
-    #'   screenshot("capture")  # capture the frame
+    #'   screenshot("capture", options = list(delay = 100))  # capture the frame with options
     #'   Sys.sleep(0.2)  # allow ample time for the screen capture to process
     #' }
     #'
     #' # Render and save the GIF file (this can take some time to complete)
     #' screenshot("save")
+    #' off()
+    #' det
     #'
     #'
     #' # Key-frame animation example
+    #' device <- animate::animate$new(500, 500)
+    #' attach(device)
     #'
+    #' # Initialise the generator
+    #' screenshot("new", "body", list(width = 1000, height = 900, quality = 10))
+    #'
+    #' # Plot 10 points at random locations
+    #' x <- 1:10
+    #' y <- 10 * runif(10)
+    #' id <- new_id(y, prefix="points")
+    #' plot(x, y, bg="orange", id=id)
+    #'
+    #' # Capture screenshot every 100ms and output to GIF frame with 200ms gap in-between
+    #' screenshot("start", options = list(delayCapture = 100, delay = 200))
+    #'
+    #' # Update the plot with default transition animation
+    #' new_y <- 10 * runif(10)
+    #' points(x, new_y, bg="blue", id=id, transition=TRUE)
+    #'
+    #' # Update the plot with specific transition animation
+    #' new_y <- 10 * runif(10)
+    #' points(x, new_y, bg="green", cex=(1:10)*30, id=id, transition=list(duration = 2000))
+    #'
+    #' # End the screen capturing and generate the GIF file
+    #' screenshot("end")
+    #'
+    #' # Clean up
+    #' off()
+    #' detach(device)
     #' }
     #'
     #'
@@ -609,6 +639,14 @@ animate <- R6::R6Class(
     #' [html2canvas.js](https://github.com/niklasvh/html2canvas) to capture the
     #' screenshot and [gif.js](https://github.com/jnordberg/gif.js/) to string
     #' them into a GIF file.
+    #'
+    #'
+    #' Some known limitations: Simultaneously playing (SVG) animation and
+    #' rendering them to raster image on the fly can be resource heavy; there
+    #' is no guarantee that the specified frame rate will be met.
+    #' Also, since html2canvas is used to take the screenshot, its restrictions
+    #' also apply here. For cases where `screenshot` is insufficient, use the
+    #' `record` function instead. See more detail [here](https://github.com/kcf-jackson/animate/issues/8).
     #'
     #'
     #' For "new" action, the options are as given by the GIF.js library:
@@ -637,34 +675,33 @@ animate <- R6::R6Class(
     #'   | copy         | `false`         | copy the pixel data                                |
     #'   | dispose      | `-1`            | frame disposal code. See [GIF89a Spec][https://www.w3.org/Graphics/GIF/spec-gif89a.txt] |
     #'
-    screenshot = function(action, selector, options) {
+    screenshot = function(action, selector = NULL, options = list()) {
       if (!(action %in% c("new", "capture", "save", "start", "end"))) {
         stop("The 'action' argument must be one of 'new', 'capture', 'save', 'start', and 'end'.")
       }
 
+      default_arg <- function(x, y) if (is.null(x)) y else x
+
       # Set up default parameters for different actions
       if (action == "new") {
-        if (missing(selector)) selector <- "body"
-        if (missing(options)) options <- list(width = 1000, height = 1000, quality = 10)
+        selector <- default_arg(selector, "body")
+        options$width <- default_arg(options$width, 1000)
+        options$height <- default_arg(options$height, 1000)
+        options$quality <- default_arg(options$quality, 10)
       }
 
       if (action == "capture") {
-        if (missing(selector)) selector <- NULL
-        if (missing(options)) options <- list(delay = 50)
+        options$delay <- default_arg(options$delay, 100)
       }
 
-      if (action == "save") {
-        if (missing(selector)) selector <- NULL
-        if (missing(options)) options <- list()
-      }
+      # action "save" does not require argument
 
       if (action == "start") {
-
+        options$delay <- default_arg(options$delay, 100)
+        options$delayCapture <- default_arg(options$delayCapture, options$delay)
       }
 
-      if (action == "end") {
-
-      }
+      # action "end" does not require argument
 
       self$send(Message("fn_screenshot", list(action = action, selector = selector, options = options)))
     },

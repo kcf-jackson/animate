@@ -97,16 +97,46 @@ for (n in 41:200) {
   new_x <- seq(1, n, 0.1)
   new_y <- sin(new_x * pi / 6)
   plot(new_x, new_y, type="l", id="line-1")
-  screenshot("capture")  # capture the frame
+  screenshot("capture", options = list(delay = 100))  # capture the frame with options
   Sys.sleep(0.2)  # allow ample time for the screen capture to process
 }
 
 # Render and save the GIF file (this can take some time to complete)
 screenshot("save")
+off()
+det
 
 
 # Key-frame animation example
+device <- animate::animate$new(500, 500)
+attach(device)
 
+# Initialise the generator
+screenshot("new", "body", list(width = 1000, height = 900, quality = 10))
+
+# Plot 10 points at random locations
+x <- 1:10
+y <- 10 * runif(10)
+id <- new_id(y, prefix="points")
+plot(x, y, bg="orange", id=id)
+
+# Capture screenshot every 100ms and output to GIF frame with 200ms gap in-between
+screenshot("start", options = list(delayCapture = 100, delay = 200))
+
+# Update the plot with default transition animation
+new_y <- 10 * runif(10)
+points(x, new_y, bg="blue", id=id, transition=TRUE)
+
+# Update the plot with specific transition animation
+new_y <- 10 * runif(10)
+points(x, new_y, bg="green", cex=(1:10)*30, id=id, transition=list(duration = 2000))
+
+# End the screen capturing and generate the GIF file
+screenshot("end")
+
+# Clean up
+off()
+detach(device)
 }
 
 
@@ -808,7 +838,7 @@ See Media Streams API reference at: \url{https://developer.mozilla.org/en-US/doc
 \subsection{Method \code{screenshot()}}{
 Take screenshot for GIF generation
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{animate$screenshot(action, selector, options)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{animate$screenshot(action, selector = NULL, options = list())}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -832,6 +862,13 @@ The function uses
 \href{https://github.com/niklasvh/html2canvas}{html2canvas.js} to capture the
 screenshot and \href{https://github.com/jnordberg/gif.js/}{gif.js} to string
 them into a GIF file.
+
+Some known limitations: Simultaneously playing (SVG) animation and
+rendering them to raster image on the fly can be resource heavy; there
+is no guarantee that the specified frame rate will be met.
+Also, since html2canvas is used to take the screenshot, its restrictions
+also apply here. For cases where \code{screenshot} is insufficient, use the
+\code{record} function instead. See more detail \href{https://github.com/kcf-jackson/animate/issues/8}{here}.
 
 For "new" action, the options are as given by the GIF.js library:\tabular{lll}{
    Name \tab Default \tab Description \cr
@@ -881,16 +918,46 @@ for (n in 41:200) {
   new_x <- seq(1, n, 0.1)
   new_y <- sin(new_x * pi / 6)
   plot(new_x, new_y, type="l", id="line-1")
-  screenshot("capture")  # capture the frame
+  screenshot("capture", options = list(delay = 100))  # capture the frame with options
   Sys.sleep(0.2)  # allow ample time for the screen capture to process
 }
 
 # Render and save the GIF file (this can take some time to complete)
 screenshot("save")
+off()
+det
 
 
 # Key-frame animation example
+device <- animate::animate$new(500, 500)
+attach(device)
 
+# Initialise the generator
+screenshot("new", "body", list(width = 1000, height = 900, quality = 10))
+
+# Plot 10 points at random locations
+x <- 1:10
+y <- 10 * runif(10)
+id <- new_id(y, prefix="points")
+plot(x, y, bg="orange", id=id)
+
+# Capture screenshot every 100ms and output to GIF frame with 200ms gap in-between
+screenshot("start", options = list(delayCapture = 100, delay = 200))
+
+# Update the plot with default transition animation
+new_y <- 10 * runif(10)
+points(x, new_y, bg="blue", id=id, transition=TRUE)
+
+# Update the plot with specific transition animation
+new_y <- 10 * runif(10)
+points(x, new_y, bg="green", cex=(1:10)*30, id=id, transition=list(duration = 2000))
+
+# End the screen capturing and generate the GIF file
+screenshot("end")
+
+# Clean up
+off()
+detach(device)
 }
 
 
