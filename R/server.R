@@ -259,6 +259,10 @@ animate <- R6::R6Class(
 
     #' @description
     #' Add arrows to a plot
+    #'
+    #' @note Currently, the 'arrows' function is not supported as a primitive;
+    #' instead, it calls the 'lines' function.
+    #'
     #' @param x0 The x coordinates of the start of the arrow.
     #' @param y0 The y coordinates of the start of the arrow.
     #' @param x1 The x coordinates of the end of the arrow.
@@ -542,8 +546,11 @@ animate <- R6::R6Class(
       }
     },
 
-    screenshot = function(selector) {
-      self$send(Message("fn_screenshot", list(selector = selector)))
+    screenshot = function(action, selector, options) {
+      if (!(action %in% c("new", "capture", "save"))) {
+        stop("The 'action' argument must be one of 'new', 'capture' and 'save'.")
+      }
+      self$send(Message("fn_screenshot", list(action = action, selector = selector, options = options)))
     },
 
     #' @description Event handler

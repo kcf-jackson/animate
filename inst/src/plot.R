@@ -3,7 +3,7 @@
 #! load_library("dom")
 #! load_library("io")
 
-#! load_script("../assets/")  # d3, ramda, broadcast, d3-symbol
+#! load_script("../assets/")  # d3, ramda, broadcast, d3-symbol, gif, html2canvas
 #! load_script("plot_primitives/")
 #! load_script("class_interface.R")
 #! load_script("d3_helpers.R")
@@ -31,6 +31,10 @@ plot2 <- R6Class(
     #' -1 for unlimited. This is useful when one wants to replay the animation
     #' without regenerating the animation.
     max_num_commands = 0,
+
+    #' @field gif_converter An object to manage the screen capture and GIF file
+    #' generation.
+    gif_converter = NULL,
 
     # Constructor, Get and Set -------------------------------------------------
     #' Constructing / initialising the 'plot2' object
@@ -189,8 +193,34 @@ plot2 <- R6Class(
         startRecording()
       }
       TRUE
+    },
+
+    #' Capture a screenshot of a selected DOM element for GIF generation
+    screenshot = function(param) {
+      console::log(param$options)
+      if (param$action == "new") {
+        console::log("Initialise new converter")
+        self$gif_converter <- HTMLToGIFConverter$new(param$selector, param$options)
+      } else if (param$action == "capture") {
+        if (self$gif_converter == NULL) {
+          self$gif_converter <- HTMLToGIFConverter$new(param$selector, param$options)
+        }
+        console::log("Capturing")
+        self$gif_converter$capture()
+      } else if (param$action == "save") {
+        if (self$gif_converter != NULL) {
+          console::log("Saving")
+          self$gif_converter$save()
+        }
+      } else if (param$action == "start") {
+
+      } else if (param$action == "end") {
+
+      }
+      return(NULL)
     }
   ),
+
   # Private fields and methods =================================================
   list(
     dispatchers = c(
@@ -214,6 +244,7 @@ plot2 <- R6Class(
       Decoder("fn_objects", message %=>% self$objects(message)),
       Decoder("fn_event", message %=>% self$event(message)),
       Decoder("fn_simple_event", message %=>% self$simple_event(message)),
+      Decoder("fn_screenshot", message %=>% self$screenshot(message))
     )
   )
 )
