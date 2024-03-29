@@ -8,6 +8,9 @@ Extends the 'base' graphics functions to support frame-by-frame
 animation and keyframes animation.
 }
 \note{
+Currently, the 'arrows' function is not supported as a primitive;
+instead, it calls the 'lines' function.
+
 This function differs from the \code{event} function in that events
 registered through \code{simple_event} do not require R at deployment to work.
 }
@@ -33,6 +36,21 @@ detach(device)
 }
 
 ## ------------------------------------------------
+## Method `animate$arrows`
+## ------------------------------------------------
+
+\donttest{
+library(animate)
+device <- animate$new(500, 500)
+attach(device)
+par(xlim = c(0, 10), ylim = c(0, 10))  # Use static axes
+plot(1:10, 1:10, id = paste0("point-", 1:10))
+lines(c(3, 6), c(6, 3), id = "line-1")
+arrows(4, 8, 8, 4, id='arrow-1')
+arrows(1, 2, 3, 6, id='arrow-1', transition = TRUE)
+}
+
+## ------------------------------------------------
 ## Method `animate$chain`
 ## ------------------------------------------------
 
@@ -55,6 +73,43 @@ par(xlim = NULL, ylim = NULL)  # Reset `xlim` and `ylim` in `par`
 off()
 detach(device)
 }
+
+## ------------------------------------------------
+## Method `animate$screenshot`
+## ------------------------------------------------
+
+\donttest{
+# Frame-by-frame animation example
+device <- animate::animate$new(500, 500)
+attach(device)
+
+# Initialise the generator
+screenshot("new", "body", list(width = 1000, height = 1000, quality = 10))
+
+# Plotting the sine curve
+x <- seq(1, 40, 0.1)
+y <- sin(x * pi / 6)
+plot(x, y, type="l", id="line-1")
+screenshot("capture")  # capture the frame
+
+# Update the plot with the same id
+for (n in 41:200) {
+  new_x <- seq(1, n, 0.1)
+  new_y <- sin(new_x * pi / 6)
+  plot(new_x, new_y, type="l", id="line-1")
+  screenshot("capture")  # capture the frame
+  Sys.sleep(0.2)  # allow ample time for the screen capture to process
+}
+
+# Render and save the GIF file (this can take some time to complete)
+screenshot("save")
+
+
+# Key-frame animation example
+
+}
+
+
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
@@ -88,6 +143,7 @@ detach(device)
 \item \href{#method-animate-plot}{\code{animate$plot()}}
 \item \href{#method-animate-points}{\code{animate$points()}}
 \item \href{#method-animate-lines}{\code{animate$lines()}}
+\item \href{#method-animate-arrows}{\code{animate$arrows()}}
 \item \href{#method-animate-abline}{\code{animate$abline()}}
 \item \href{#method-animate-axis}{\code{animate$axis()}}
 \item \href{#method-animate-text}{\code{animate$text()}}
@@ -103,6 +159,7 @@ detach(device)
 \item \href{#method-animate-import}{\code{animate$import()}}
 \item \href{#method-animate-export}{\code{animate$export()}}
 \item \href{#method-animate-record}{\code{animate$record()}}
+\item \href{#method-animate-screenshot}{\code{animate$screenshot()}}
 \item \href{#method-animate-observeAnimateEvent}{\code{animate$observeAnimateEvent()}}
 \item \href{#method-animate-clone}{\code{animate$clone()}}
 }
@@ -354,6 +411,54 @@ Add line segments / paths to a plot
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-animate-arrows"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-arrows}{}}}
+\subsection{Method \code{arrows()}}{
+Add arrows to a plot
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$arrows(x0, y0, x1, y1, length, angle = pi/6, code = 2, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x0}}{The x coordinates of the start of the arrow.}
+
+\item{\code{y0}}{The y coordinates of the start of the arrow.}
+
+\item{\code{x1}}{The x coordinates of the end of the arrow.}
+
+\item{\code{y1}}{The y coordinates of the end of the arrow.}
+
+\item{\code{length}}{The length of the arrow head.}
+
+\item{\code{angle}}{The angle of the arrow head.}
+
+\item{\code{code}}{The code of the arrow head. Use 1,2,3 or "start"/"end"/"both".}
+
+\item{\code{...}}{Additional graphical parameters}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\donttest{
+library(animate)
+device <- animate$new(500, 500)
+attach(device)
+par(xlim = c(0, 10), ylim = c(0, 10))  # Use static axes
+plot(1:10, 1:10, id = paste0("point-", 1:10))
+lines(c(3, 6), c(6, 3), id = "line-1")
+arrows(4, 8, 8, 4, id='arrow-1')
+arrows(1, 2, 3, 6, id='arrow-1', transition = TRUE)
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-animate-abline"></a>}}
@@ -694,6 +799,104 @@ This function does not work in the RStudio viewer. Please use the
 See browser compatibility at: \url{https://developer.mozilla.org/en-US/docs/Web/API/MediaStream_Recording_API#browser_compatibility}
 
 See Media Streams API reference at: \url{https://developer.mozilla.org/en-US/docs/Web/API/Media_Streams_API}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-animate-screenshot"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-screenshot}{}}}
+\subsection{Method \code{screenshot()}}{
+Take screenshot for GIF generation
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$screenshot(action, selector, options)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{action}}{One of "new", "capture", "save", "start" and "end". They
+correspond to two modes of generating the GIF. "new" is used to set up
+the generator. "capture" and "save" are for frame-by-frame animation,
+and "start" and "end" are for key-frame animation.}
+
+\item{\code{selector}}{A string; the element on the page to capture. It captures
+the "body" element by default, as direct capture of the "svg" element does
+not work.}
+
+\item{\code{options}}{Options for the actions. See details for more information.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Details}{
+The function uses
+\href{https://github.com/niklasvh/html2canvas}{html2canvas.js} to capture the
+screenshot and \href{https://github.com/jnordberg/gif.js/}{gif.js} to string
+them into a GIF file.
+
+For "new" action, the options are as given by the GIF.js library:\tabular{lll}{
+   Name \tab Default \tab Description \cr
+   repeat \tab \code{0} \tab repeat count, \code{-1} = no repeat, \code{0} = forever \cr
+   quality \tab \code{10} \tab pixel sample interval, lower is better \cr
+   workers \tab \code{2} \tab number of web workers to spawn \cr
+   workerScript \tab \code{gif.worker.js} \tab url to load worker script from \cr
+   background \tab \verb{#fff} \tab background color where source image is transparent \cr
+   width \tab \code{null} \tab output image width \cr
+   height \tab \code{null} \tab output image height \cr
+   transparent \tab \code{null} \tab transparent hex color, \code{0x00FF00} = green \cr
+   dither \tab \code{false} \tab dithering method, e.g. \code{FloydSteinberg-serpentine} \cr
+   debug \tab \code{false} \tab whether to print debug information to console \cr
+   The option 'workerScript' is taken care of by \code{animate}. \tab  \tab  \cr
+}
+
+
+Available dithering methods are: \code{FloydSteinberg}, \code{FalseFloydSteinberg}, \code{Stucki}, \code{Atkinson}.
+You can add \code{-serpentine} to use serpentine scanning, e.g. \code{Stucki-serpentine}.
+
+For the "capture" action, the options are:\tabular{lll}{
+   Name \tab Default \tab Description \cr
+   delay \tab \code{500} \tab frame delay \cr
+   copy \tab \code{false} \tab copy the pixel data \cr
+   dispose \tab \code{-1} \tab frame disposal code. See \link[=https://www.w3.org/Graphics/GIF/spec-gif89a.txt]{GIF89a Spec} \cr
+}
+}
+
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\donttest{
+# Frame-by-frame animation example
+device <- animate::animate$new(500, 500)
+attach(device)
+
+# Initialise the generator
+screenshot("new", "body", list(width = 1000, height = 1000, quality = 10))
+
+# Plotting the sine curve
+x <- seq(1, 40, 0.1)
+y <- sin(x * pi / 6)
+plot(x, y, type="l", id="line-1")
+screenshot("capture")  # capture the frame
+
+# Update the plot with the same id
+for (n in 41:200) {
+  new_x <- seq(1, n, 0.1)
+  new_y <- sin(new_x * pi / 6)
+  plot(new_x, new_y, type="l", id="line-1")
+  screenshot("capture")  # capture the frame
+  Sys.sleep(0.2)  # allow ample time for the screen capture to process
+}
+
+# Render and save the GIF file (this can take some time to complete)
+screenshot("save")
+
+
+# Key-frame animation example
+
+}
+
+
+}
+\if{html}{\out{</div>}}
+
 }
 
 }

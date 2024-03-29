@@ -130,7 +130,7 @@ animate <- R6::R6Class(
       self$connection <- conn
 
       # Serve the app
-      app <- system.file("dist/animate.html", package = "animate")
+      app <- system.file("dist/animate.html", package = "animate")  # Note: modify this for different builds if needed
       temp <- file.path(tempdir(), "index.html")
       file.copy(app, temp)
       if (!missing(launch.browser)) {
@@ -271,6 +271,17 @@ animate <- R6::R6Class(
     #' @param angle The angle of the arrow head.
     #' @param code The code of the arrow head. Use 1,2,3 or "start"/"end"/"both".
     #' @param ... Additional graphical parameters
+    #' @examples
+    #' \donttest{
+    #' library(animate)
+    #' device <- animate$new(500, 500)
+    #' attach(device)
+    #' par(xlim = c(0, 10), ylim = c(0, 10))  # Use static axes
+    #' plot(1:10, 1:10, id = paste0("point-", 1:10))
+    #' lines(c(3, 6), c(6, 3), id = "line-1")
+    #' arrows(4, 8, 8, 4, id='arrow-1')
+    #' arrows(1, 2, 3, 6, id='arrow-1', transition = TRUE)
+    #' }
     arrows = function(x0, y0, x1, y1, length, angle = pi / 6, code = 2, ...) {
       args <- list(...)
       id <- ifelse("id" %in% names(args), args$id, uuid())
@@ -546,10 +557,115 @@ animate <- R6::R6Class(
       }
     },
 
+    #' @description
+    #' Take screenshot for GIF generation
+    #'
+    #'
+    #' @param action One of "new", "capture", "save", "start" and "end". They
+    #'   correspond to two modes of generating the GIF. "new" is used to set up
+    #'   the generator. "capture" and "save" are for frame-by-frame animation,
+    #'   and "start" and "end" are for key-frame animation.
+    #' @param selector A string; the element on the page to capture. It captures
+    #' the "body" element by default, as direct capture of the "svg" element does
+    #' not work.
+    #' @param options Options for the actions. See details for more information.
+    #'
+    #'
+    #' @examples
+    #' \donttest{
+    #' # Frame-by-frame animation example
+    #' device <- animate::animate$new(500, 500)
+    #' attach(device)
+    #'
+    #' # Initialise the generator
+    #' screenshot("new", "body", list(width = 1000, height = 1000, quality = 10))
+    #'
+    #' # Plotting the sine curve
+    #' x <- seq(1, 40, 0.1)
+    #' y <- sin(x * pi / 6)
+    #' plot(x, y, type="l", id="line-1")
+    #' screenshot("capture")  # capture the frame
+    #'
+    #' # Update the plot with the same id
+    #' for (n in 41:200) {
+    #'   new_x <- seq(1, n, 0.1)
+    #'   new_y <- sin(new_x * pi / 6)
+    #'   plot(new_x, new_y, type="l", id="line-1")
+    #'   screenshot("capture")  # capture the frame
+    #'   Sys.sleep(0.2)  # allow ample time for the screen capture to process
+    #' }
+    #'
+    #' # Render and save the GIF file (this can take some time to complete)
+    #' screenshot("save")
+    #'
+    #'
+    #' # Key-frame animation example
+    #'
+    #' }
+    #'
+    #'
+    #' @details
+    #' The function uses
+    #' [html2canvas.js](https://github.com/niklasvh/html2canvas) to capture the
+    #' screenshot and [gif.js](https://github.com/jnordberg/gif.js/) to string
+    #' them into a GIF file.
+    #'
+    #'
+    #' For "new" action, the options are as given by the GIF.js library:
+    #'   | Name         | Default         | Description                                        |
+    #'   | -------------|-----------------|----------------------------------------------------|
+    #'   | repeat       | `0`             | repeat count, `-1` = no repeat, `0` = forever      |
+    #'   | quality      | `10`            | pixel sample interval, lower is better             |
+    #'   | workers      | `2`             | number of web workers to spawn                     |
+    #'   | workerScript | `gif.worker.js` | url to load worker script from                     |
+    #'   | background   | `#fff`          | background color where source image is transparent |
+    #'   | width        | `null`          | output image width                                 |
+    #'   | height       | `null`          | output image height                                |
+    #'   | transparent  | `null`          | transparent hex color, `0x00FF00` = green          |
+    #'   | dither       | `false`         | dithering method, e.g. `FloydSteinberg-serpentine` |
+    #'   | debug        | `false`         | whether to print debug information to console      |
+    #'   The option 'workerScript' is taken care of by `animate`.
+    #'
+    #'   Available dithering methods are: `FloydSteinberg`, `FalseFloydSteinberg`, `Stucki`, `Atkinson`.
+    #'   You can add `-serpentine` to use serpentine scanning, e.g. `Stucki-serpentine`.
+    #'
+    #'
+    #' For the "capture" action, the options are:
+    #'   | Name         | Default         | Description                                        |
+    #'   | -------------|-----------------|----------------------------------------------------|
+    #'   | delay        | `500`           | frame delay                                        |
+    #'   | copy         | `false`         | copy the pixel data                                |
+    #'   | dispose      | `-1`            | frame disposal code. See [GIF89a Spec][https://www.w3.org/Graphics/GIF/spec-gif89a.txt] |
+    #'
     screenshot = function(action, selector, options) {
-      if (!(action %in% c("new", "capture", "save"))) {
-        stop("The 'action' argument must be one of 'new', 'capture' and 'save'.")
+      if (!(action %in% c("new", "capture", "save", "start", "end"))) {
+        stop("The 'action' argument must be one of 'new', 'capture', 'save', 'start', and 'end'.")
       }
+
+      # Set up default parameters for different actions
+      if (action == "new") {
+        if (missing(selector)) selector <- "body"
+        if (missing(options)) options <- list(width = 1000, height = 1000, quality = 10)
+      }
+
+      if (action == "capture") {
+        if (missing(selector)) selector <- NULL
+        if (missing(options)) options <- list(delay = 50)
+      }
+
+      if (action == "save") {
+        if (missing(selector)) selector <- NULL
+        if (missing(options)) options <- list()
+      }
+
+      if (action == "start") {
+
+      }
+
+      if (action == "end") {
+
+      }
+
       self$send(Message("fn_screenshot", list(action = action, selector = selector, options = options)))
     },
 
