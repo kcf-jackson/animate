@@ -145,6 +145,7 @@ animate <- R6::R6Class(
         }
       }
       viewer(temp)
+      invisible(temp)
     },
 
     #' @description
@@ -220,6 +221,19 @@ animate <- R6::R6Class(
     },
 
     #' @description
+    #' Add TeX symbols to a plot
+    #' @param x The x coordinates of the objects.
+    #' @param y The y coordinates of the objects.
+    #' @param w The width of the objects.
+    #' @param h The height of the objects.
+    #' @param tex The TeX string.
+    #' @param ... Additional graphical parameters.
+    katex = function(x, y, w, h, tex, ...) {
+      self$send(Message("fn_katex", list(x = x, y = y, w = w, h = h,
+                                         content = "", tex = tex, ...)))
+    },
+
+    #' @description
     #' Generic X-Y plotting
     #' @param x The x coordinates of the data.
     #' @param y The y coordinates of the data.
@@ -260,7 +274,7 @@ animate <- R6::R6Class(
     #' @description
     #' Add arrows to a plot
     #'
-    #' @note Currently, the 'arrows' function is not supported as a primitive;
+    #' @details Currently, the 'arrows' function is not supported as a primitive;
     #' instead, it calls the 'lines' function.
     #'
     #' @param x0 The x coordinates of the start of the arrow.
@@ -281,6 +295,8 @@ animate <- R6::R6Class(
     #' lines(c(3, 6), c(6, 3), id = "line-1")
     #' arrows(4, 8, 8, 4, id='arrow-1')
     #' arrows(1, 2, 3, 6, id='arrow-1', transition = TRUE)
+    #' off()
+    #' detach(device)
     #' }
     arrows = function(x0, y0, x1, y1, length, angle = pi / 6, code = 2, ...) {
       args <- list(...)
@@ -380,6 +396,8 @@ animate <- R6::R6Class(
     #' @param y The y coordinates of the text.
     #' @param labels The text.
     #' @param ... Additional graphical parameters.
+    #' @details Useful tips: use `style = list("text-anchor" = "middle", "dominant-baseline" = "middle")` or
+    #' `style = list("text-anchor" = "middle", "dominant-baseline" = "central")` to center the text.
     text = function(x, y, labels, ...) {
       self$send(Message("fn_text", list(x = x, y = y, labels = labels, ...)))
     },
@@ -454,7 +472,7 @@ animate <- R6::R6Class(
     #' "mouseout". See more options at \url{https://www.w3schools.com/jsref/dom_obj_event.asp}.
     #' @param method A character string; the name of a device function (e.g. "points").
     #' @param param A named list of arguments to be called with.
-    #' @note This function differs from the `event` function in that events
+    #' @details This function differs from the `event` function in that events
     #' registered through `simple_event` do not require R at deployment to work.
     simple_event = function(selector, event_type, method, param) {
       self$send(Message("fn_simple_event", list(selector = selector,

@@ -3,7 +3,7 @@
 #! load_library("dom")
 #! load_library("io")
 
-#! load_script("../assets/")  # d3, ramda, broadcast, d3-symbol, gif, html2canvas
+#! load_script("../assets/")  # d3, ramda, broadcast, d3-symbol
 #! load_script("plot_primitives/")
 #! load_script("class_interface.R")
 #! load_script("d3_helpers.R")
@@ -97,6 +97,11 @@ plot2 <- R6Class(
     image  = function(param) { image(param, self$device)  },
     bars   = function(param) { bars(param, self$device)   },
     objects = function(param) { objects(param, self$device) },
+    katex = function(param) {
+      objects(param, self$device)
+      katex && katex$render &&
+        katex$render(param$tex, document::querySelector("#" %+% param$id))
+    },
     event = function(param) { event(param, self$device) },
     simple_event = function(param) { simple_event(param, self) },
 
@@ -209,7 +214,7 @@ plot2 <- R6Class(
         }
         console::log("Capture frame")
         self$gif_converter$capture()
-        
+
       } else if (param$action == "save") {
         if (self$gif_converter == NULL) {
           console::warn("GIF converter is not initialised.")
@@ -260,6 +265,7 @@ plot2 <- R6Class(
       Decoder("fn_max_stacksize", message %=>% self$set_max_num_commands(message$n)),
       Decoder("fn_export_video", message %=>% self$export_video()),
       Decoder("fn_objects", message %=>% self$objects(message)),
+      Decoder("fn_katex", message %=>% self$katex(message)),
       Decoder("fn_event", message %=>% self$event(message)),
       Decoder("fn_simple_event", message %=>% self$simple_event(message)),
       Decoder("fn_screenshot", message %=>% self$screenshot(message))

@@ -12,6 +12,13 @@
 #'   lines <- append(lines, "#! load_library('websocket')", 4)
 #'   lines <- append(lines, "#! load_script('message.R')", 5)
 #'   lines <- append(lines, "#! load_script('../addons/screen_record.js')", 6)
+#'   lines <- append(lines, "#! load_script('../addons/html2canvas.min.js')", 7)
+#'   lines <- append(lines, "#! load_script('../addons/gif.js')", 8)
+#'   lines <- append(lines, "#! load_script('../addons/html2gif.js')", 9)
+#'   # lines <- append(lines, "#! load_script('../addons/katex.min.css')", 10)  # many font files are required: https://www.jsdelivr.com/package/npm/katex?tab=files&path=dist%2Ffonts
+#'   # lines <- append(lines, "#! load_script('../addons/katex.min.js')", 11)
+#'   lines <- append(lines, "#! load_script('https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css')", 10)
+#'   lines <- append(lines, "#! load_script('https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js')", 11)
 #'   lines <- append(lines, glue::glue("JS_device <- plot2$new({stack_size})"))
 #'
 #'   message("Writing to ", file.path("./inst/src", "dist.R"))

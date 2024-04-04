@@ -7,13 +7,6 @@
 Extends the 'base' graphics functions to support frame-by-frame
 animation and keyframes animation.
 }
-\note{
-Currently, the 'arrows' function is not supported as a primitive;
-instead, it calls the 'lines' function.
-
-This function differs from the \code{event} function in that events
-registered through \code{simple_event} do not require R at deployment to work.
-}
 \examples{
 
 ## ------------------------------------------------
@@ -48,6 +41,8 @@ plot(1:10, 1:10, id = paste0("point-", 1:10))
 lines(c(3, 6), c(6, 3), id = "line-1")
 arrows(4, 8, 8, 4, id='arrow-1')
 arrows(1, 2, 3, 6, id='arrow-1', transition = TRUE)
+off()
+detach(device)
 }
 
 ## ------------------------------------------------
@@ -170,6 +165,7 @@ detach(device)
 \item \href{#method-animate-svg}{\code{animate$svg()}}
 \item \href{#method-animate-bars}{\code{animate$bars()}}
 \item \href{#method-animate-objects}{\code{animate$objects()}}
+\item \href{#method-animate-katex}{\code{animate$katex()}}
 \item \href{#method-animate-plot}{\code{animate$plot()}}
 \item \href{#method-animate-points}{\code{animate$points()}}
 \item \href{#method-animate-lines}{\code{animate$lines()}}
@@ -366,6 +362,33 @@ Add HTML objects to a plot
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-animate-katex"></a>}}
+\if{latex}{\out{\hypertarget{method-animate-katex}{}}}
+\subsection{Method \code{katex()}}{
+Add TeX symbols to a plot
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{animate$katex(x, y, w, h, tex, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{The x coordinates of the objects.}
+
+\item{\code{y}}{The y coordinates of the objects.}
+
+\item{\code{w}}{The width of the objects.}
+
+\item{\code{h}}{The height of the objects.}
+
+\item{\code{tex}}{The TeX string.}
+
+\item{\code{...}}{Additional graphical parameters.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-animate-plot"></a>}}
 \if{latex}{\out{\hypertarget{method-animate-plot}{}}}
 \subsection{Method \code{plot()}}{
@@ -472,6 +495,11 @@ Add arrows to a plot
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+Currently, the 'arrows' function is not supported as a primitive;
+instead, it calls the 'lines' function.
+}
+
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\donttest{
@@ -483,6 +511,8 @@ plot(1:10, 1:10, id = paste0("point-", 1:10))
 lines(c(3, 6), c(6, 3), id = "line-1")
 arrows(4, 8, 8, 4, id='arrow-1')
 arrows(1, 2, 3, 6, id='arrow-1', transition = TRUE)
+off()
+detach(device)
 }
 }
 \if{html}{\out{</div>}}
@@ -560,6 +590,11 @@ Add text to a plot
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+Useful tips: use \code{style = list("text-anchor" = "middle", "dominant-baseline" = "middle")} or
+\code{style = list("text-anchor" = "middle", "dominant-baseline" = "central")} to center the text.
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-animate-image"></a>}}
@@ -676,6 +711,11 @@ Attach a captured event to an element
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+This function differs from the \code{event} function in that events
+registered through \code{simple_event} do not require R at deployment to work.
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-animate-set"></a>}}

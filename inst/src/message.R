@@ -5,8 +5,11 @@
 ws$onmessage <- function(msg) {
   data <- JSON::parse(msg$data, remap_args)
   # console::log(JSON::stringify(data))
-  JS_device$record(data)
-  JS_device$dispatch(data)
+  if (typeof(JS_device) != 'undefined') {
+    JS_device$record(data)
+    JS_device$dispatch(data)
+  }
+  JS_UNDEFINED
 }
 
 
