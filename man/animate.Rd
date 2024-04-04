@@ -29,6 +29,38 @@ detach(device)
 }
 
 ## ------------------------------------------------
+## Method `animate$objects`
+## ------------------------------------------------
+
+# Add a HTML DIV element
+device <- animate::animate$new(500, 500)
+attach(device)
+par(xlim = c(0, 10), ylim = c(0, 10))
+# Add a grid to aid positioning
+abline(h = 0, v = 0)
+abline(h = 0:10, v = 0:10, col = "#22222222")
+# Add the DIV element
+objects(x=1, y=1, w=2, h=1, id = "obj-1", content = "<div>PlaceHolder</div>")
+off()
+detach(device)
+
+## ------------------------------------------------
+## Method `animate$katex`
+## ------------------------------------------------
+
+# Add a KaTeX equation (see KaTeX.js )
+device <- animate::animate$new(500, 500)
+attach(device)
+par(xlim = c(0, 10), ylim = c(0, 10))
+# Add a grid to aid positioning
+abline(h = 0, v = 0)
+abline(h = 0:10, v = 0:10, col = "#22222222")
+# Add the KaTeX equation
+katex(x=1, y=3, w=3, h=1, id = 'tex-1', tex = 'a^2 + b^2 = c^2')
+off()
+detach(device)
+
+## ------------------------------------------------
 ## Method `animate$arrows`
 ## ------------------------------------------------
 
@@ -360,6 +392,24 @@ Add HTML objects to a plot
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{# Add a HTML DIV element
+device <- animate::animate$new(500, 500)
+attach(device)
+par(xlim = c(0, 10), ylim = c(0, 10))
+# Add a grid to aid positioning
+abline(h = 0, v = 0)
+abline(h = 0:10, v = 0:10, col = "#22222222")
+# Add the DIV element
+objects(x=1, y=1, w=2, h=1, id = "obj-1", content = "<div>PlaceHolder</div>")
+off()
+detach(device)
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-animate-katex"></a>}}
@@ -387,6 +437,32 @@ Add TeX symbols to a plot
 }
 \if{html}{\out{</div>}}
 }
+\subsection{Details}{
+See https://katex.org/docs/supported for all the supported TeX functions.
+Currently, the function loads the JavaScript library and the CSS stylesheet
+from CDN links, so you must be online to use this function. The reason
+for this is that KaTeX comes with many fonts. If they are all included
+in the bundle, then the bundle size becomes too large.
+}
+
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{# Add a KaTeX equation (see KaTeX.js )
+device <- animate::animate$new(500, 500)
+attach(device)
+par(xlim = c(0, 10), ylim = c(0, 10))
+# Add a grid to aid positioning
+abline(h = 0, v = 0)
+abline(h = 0:10, v = 0:10, col = "#22222222")
+# Add the KaTeX equation
+katex(x=1, y=3, w=3, h=1, id = 'tex-1', tex = 'a^2 + b^2 = c^2')
+off()
+detach(device)
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-animate-plot"></a>}}

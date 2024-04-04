@@ -215,6 +215,19 @@ animate <- R6::R6Class(
     #' @param h The height of the objects.
     #' @param content The content of the objects; the HTML string.
     #' @param ... Additional graphical parameters.
+    #'
+    #' @examples
+    #' # Add a HTML DIV element
+    #' device <- animate::animate$new(500, 500)
+    #' attach(device)
+    #' par(xlim = c(0, 10), ylim = c(0, 10))
+    #' # Add a grid to aid positioning
+    #' abline(h = 0, v = 0)
+    #' abline(h = 0:10, v = 0:10, col = "#22222222")
+    #' # Add the DIV element
+    #' objects(x=1, y=1, w=2, h=1, id = "obj-1", content = "<div>PlaceHolder</div>")
+    #' off()
+    #' detach(device)
     objects = function(x, y, w, h, content, ...) {
       self$send(Message("fn_objects", list(x = x, y = y, w = w, h = h,
                                            content = content, ...)))
@@ -228,6 +241,26 @@ animate <- R6::R6Class(
     #' @param h The height of the objects.
     #' @param tex The TeX string.
     #' @param ... Additional graphical parameters.
+    #'
+    #' @details
+    #' See https://katex.org/docs/supported for all the supported TeX functions.
+    #' Currently, the function loads the JavaScript library and the CSS stylesheet
+    #' from CDN links, so you must be online to use this function. The reason
+    #' for this is that KaTeX comes with many fonts. If they are all included
+    #' in the bundle, then the bundle size becomes too large.
+    #'
+    #' @examples
+    #' # Add a KaTeX equation (see KaTeX.js )
+    #' device <- animate::animate$new(500, 500)
+    #' attach(device)
+    #' par(xlim = c(0, 10), ylim = c(0, 10))
+    #' # Add a grid to aid positioning
+    #' abline(h = 0, v = 0)
+    #' abline(h = 0:10, v = 0:10, col = "#22222222")
+    #' # Add the KaTeX equation
+    #' katex(x=1, y=3, w=3, h=1, id = 'tex-1', tex = 'a^2 + b^2 = c^2')
+    #' off()
+    #' detach(device)
     katex = function(x, y, w, h, tex, ...) {
       self$send(Message("fn_katex", list(x = x, y = y, w = w, h = h,
                                          content = "", tex = tex, ...)))
