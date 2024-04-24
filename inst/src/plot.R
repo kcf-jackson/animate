@@ -99,8 +99,24 @@ plot2 <- R6Class(
     objects = function(param) { objects(param, self$device) },
     katex = function(param) {
       objects(param, self$device)
+      # https://katex.org/docs/options
+      # Hot patch for allowing HTML utilities in LaTeX commands
+      if (param$strict) {
+        strict <- param$strict
+      } else {
+        strict <- TRUE  # deafult is use strict mode
+      }
+      if (param$trust) {
+        trust <- param$trust
+      } else {
+        trust <- FALSE  # default is don't trust input
+      }
+
       katex && katex$render &&
-        katex$render(param$tex, document::querySelector("#" %+% param$id))
+        katex$render(param$tex, document::querySelector("#" %+% param$id), list(
+          strict = param$strict,
+          trust = param$trust
+        ))
     },
     event = function(param) { event(param, self$device) },
     simple_event = function(param) { simple_event(param, self) },
